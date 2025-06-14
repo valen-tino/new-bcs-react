@@ -1,17 +1,19 @@
 import AOS from 'aos'
 import 'aos/dist/aos.css'
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import Picture from '../../components/picture'
 import { Images } from '../all/alldata'
 
 import { content } from './content'
 
-function Team(props){
+function Gallery(props){
   
   const lang = props.language === "Indonesia" ? (content.Indonesia) : (content.English);
   
-AOS.init();
+  useEffect(() => {
+    AOS.init();
+  }, []);
   return (
     <>
       <section id='gallery'>
@@ -35,4 +37,4 @@ AOS.init();
   )
 }
 
-export default Team
+export default Gallery

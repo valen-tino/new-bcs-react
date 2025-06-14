@@ -1,7 +1,7 @@
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Vinsen } from '../all/allpics'
 
 import { content } from './content';
@@ -10,7 +10,9 @@ function About(props){
   
   const lang = props.language === "Indonesia" ? (content.Indonesia) : (content.English);
   
-  AOS.init();
+  useEffect(() => {
+    AOS.init();
+  }, []);
   return (
     <>
         <section id='about'>
@@ -35,3 +37,4 @@ function About(props){
 }
 
 export default About
+

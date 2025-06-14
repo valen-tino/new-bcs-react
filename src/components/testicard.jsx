@@ -1,10 +1,12 @@
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 
-import React from 'react'
+import React, { useEffect } from 'react'
 
 export default function Testicard (props) {
-    AOS.init();
+    useEffect(() => {
+        AOS.init();
+    }, []);
     const clientName = props.clientName
     const email = props.email
     const desc = props.desc
