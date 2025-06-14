@@ -1,7 +1,7 @@
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 
-import React from 'react'
+import React, { useEffect } from 'react'
 
 import TeamCard from '../../components/teamcard'
 import { Pattern } from '../all/allpics'
@@ -13,7 +13,9 @@ function Team (props){
 
   const lang = props.language === "Indonesia" ? (content.Indonesia) : (content.English);
   
-  AOS.init();
+  useEffect(() => {
+    AOS.init();
+  }, []);
   return (
     <div>
       <section id='about'>
@@ -39,3 +41,4 @@ function Team (props){
 }
 
 export default Team
+

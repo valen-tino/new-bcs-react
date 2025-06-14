@@ -1,6 +1,6 @@
 import AOS from 'aos';
 import 'aos/dist/aos.css';
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 
 import { logoIcon} from '../all/allpics'
 import useScrollPosition from '../../hooks/useScrollPosition'
@@ -9,7 +9,9 @@ import { content } from './content';
 import { Link } from "react-scroll";
 
 function Navbar(props) {
-  AOS.init();
+  useEffect(() => {
+    AOS.init();
+  }, []);
   const [Nav, setNav] = useState(false)
   
   const scrollPosition = useScrollPosition()

@@ -1,10 +1,12 @@
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 
-import React from 'react'
+import React, { useEffect } from 'react'
 
 export default function teamCard (props) {
-    AOS.init();
+    useEffect(() => {
+        AOS.init();
+    }, []);
     const name = props.name
     const title = props.title
     const desc = props.desc

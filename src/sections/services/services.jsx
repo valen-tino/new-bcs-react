@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 
@@ -10,7 +10,9 @@ import { Emailbutton } from '../../components/emailbutton';
 import { content } from './content';
 
 function Services(props){
-    AOS.init();
+    useEffect(() => {
+        AOS.init();
+    }, []);
 
     const [modal, setModal] = useState(false)
     const [tempData, setTempData] = useState([])

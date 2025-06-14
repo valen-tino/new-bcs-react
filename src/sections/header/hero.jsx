@@ -1,14 +1,16 @@
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import { heroImage } from '../all/allpics'
 import Longwabutton from '../../components/longwabutton';
 
 import { content } from './content';
 
 function Hero(props){
-AOS.init();
+  useEffect(() => {
+    AOS.init();
+  }, []);
 
 const lang = props.language === "Indonesia" ? (content.Indonesia) : (content.English);
 
@@ -41,3 +43,4 @@ const lang = props.language === "Indonesia" ? (content.Indonesia) : (content.Eng
 }
 
 export default Hero
+

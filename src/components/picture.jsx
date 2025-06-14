@@ -1,9 +1,11 @@
 import AOS from 'aos';
 import 'aos/dist/aos.css';
-import React from 'react'
+import React, { useEffect } from 'react'
 
 export default function Picture (props) {
-  AOS.init();
+  useEffect(() => {
+    AOS.init();
+  }, []);
   const alt = props.alt
   const path = "gallery/" + props.path
   return (

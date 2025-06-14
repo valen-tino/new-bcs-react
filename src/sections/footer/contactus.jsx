@@ -1,7 +1,7 @@
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 
-import React,{useState} from 'react'
+import React,{useState, useEffect} from 'react'
 import { logoIcon } from '../all/allpics'
 import Longwabutton from '../../components/longwabutton';
 import { Emailbutton } from '../../components/emailbutton';
@@ -11,7 +11,9 @@ import { content } from './content';
 import NotifModal from '../../components/NotifModal';
 
 function ContactUs (props){
-  AOS.init();
+  useEffect(() => {
+    AOS.init();
+  }, []);
   const [showInfo,setShowInfo] = useState(false)
   const handleOnClose = () => setShowInfo(false)
   const lang = props.language === "Indonesia" ? (content.Indonesia) : (content.English);
@@ -110,3 +112,4 @@ function ContactUs (props){
 }
 
 export default ContactUs
+
