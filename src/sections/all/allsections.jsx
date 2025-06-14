@@ -1,0 +1,7 @@
+export { default as Navbar} from "../nav/nav"
+export { default as Hero} from "../header/hero"
+export { default as Services} from "../services/services"
+export { default as About} from "../about/about"
+export { default as Team} from "../team/team"
+export { default as Gallery} from "../gallery/gallery"
+export { default as Testimonial} from "../testimonial/testimonial"

@@ -1,0 +1,11 @@
+@layer base{
+
+    .main-container{
+        @apply relative flex flex-col justify-between w-full px-5 bg-orange-100 font-Sora md:p-0;
+    }
+
+    .service-item-container{
+        @apply grid md:grid-cols-2 max-w-[1240px] m-auto rounded-full pt-8;
+    }
+}
+

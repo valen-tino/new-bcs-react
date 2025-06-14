@@ -1,0 +1,7 @@
+export { default as VisaAbroad } from '../../data/dataVisaAbroad'
+export { default as VisaBali } from '../../data/dataVisaBali'
+export { default as Images } from '../../data/dataGallery'
+export { default as OurTeam } from '../../data/dataTeam'
+export { default as Testimony } from '../../data/dataTestimonial'
+export { default as Province } from '../../data/dataProvinces'
+export { default as OurServices } from '../../data/dataServices'
