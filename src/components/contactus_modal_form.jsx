@@ -1,39 +1,78 @@
 import React, { useState, useEffect } from 'react';
+import { useLanguage } from '../contexts/LanguageContext';
+import { useCMS } from '../contexts/CMSContext';
+import { toast } from 'react-toastify';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import Province from '../data/dataProvinces';
 import OurServices from '../data/dataServices';
 import { content } from '../data/dataContactForm';
 
-export default function ContactUsModal({ hide }, props) {
-  const lang = props.language === "Indonesia" ? content.Indonesia : content.English;
+export default function ContactUsModal({ hide }) {
+  const { language } = useLanguage();
+  const { addContactRequest } = useCMS();
+  const lang = language === "Indonesia" ? content.Indonesia : content.English;
 
   const [formFields, setFormFields] = useState({
     name: '',
-    phone_number: '',
+    phone: '',
     email: '',
     province: '',
-    services: '',
+    service: '',
     message: '',
   });
 
   const [errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const validateForm = () => {
     const newErrors = {};
     if (!formFields.name.trim()) newErrors.name = 'Name is required';
-    if (!formFields.phone_number.trim()) newErrors.phone_number = 'Phone number is required';
+    if (!formFields.phone.trim()) newErrors.phone = 'Phone number is required';
     if (!formFields.email.trim()) newErrors.email = 'Email is required';
+    else if (!/\S+@\S+\.\S+/.test(formFields.email)) newErrors.email = 'Email is invalid';
     if (!formFields.province) newErrors.province = 'Province is required';
-    if (!formFields.services) newErrors.services = 'Service is required';
+    if (!formFields.service) newErrors.service = 'Service is required';
     if (!formFields.message.trim()) newErrors.message = 'Message is required';
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     if (!validateForm()) return;
+    
+    setIsSubmitting(true);
+    
+    try {
+      await addContactRequest({
+        name: formFields.name,
+        email: formFields.email,
+        phone: formFields.phone,
+        service: formFields.service,
+        province: formFields.province,
+        message: formFields.message,
+      });
+      
+      // Reset form
+      setFormFields({
+        name: '',
+        phone: '',
+        email: '',
+        province: '',
+        service: '',
+        message: '',
+      });
+      setErrors({});
+      
+      toast.success('Your request has been submitted successfully!');
+      hide(); // Close the modal
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      toast.error('There was an error submitting your request. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (event) => {
@@ -54,7 +93,7 @@ export default function ContactUsModal({ hide }, props) {
         <div className="relative w-auto max-w-3xl mx-auto my-6 mt-36">
           <div className="relative flex flex-col w-full bg-orange-100 border-0 rounded-lg shadow-lg outline-none focus:outline-none" data-aos="fade-down">
             <div className="relative flex-auto p-4">
-              <form className='flex flex-wrap text-left md:pt-10 xl:p-18 lg:p-12' action="https://formsubmit.co/admin@bcsvisa.com" method="POST" onSubmit={handleSubmit}>
+              <form className='flex flex-wrap text-left md:pt-10 xl:p-18 lg:p-12' onSubmit={handleSubmit}>
                 <div className='w-full p-2'>
                   <h5 className="mb-2 text-4xl tracking-tight text-center text-gray-900 text-bold">{lang.title}</h5>
                 </div>
@@ -62,23 +101,34 @@ export default function ContactUsModal({ hide }, props) {
                 <div className='w-1/2 p-2'>
                   <div className="relative">
                     <label htmlFor="name" className="text-sm leading-7 text-gray-600">{lang.name}</label>
-                    <input placeholder='' type="text" id="name" name="name" className="w-full px-3 py-1 text-base leading-8 text-gray-700 transition-colors duration-200 ease-in-out bg-white border-2 rounded-lg outline-none border-neutral-500 focus:border-red-500" value={formFields.name} onChange={handleChange} />
+                    <input 
+                      placeholder='' 
+                      type="text" 
+                      id="name" 
+                      name="name" 
+                      className="w-full px-3 py-1 text-base leading-8 text-gray-700 transition-colors duration-200 ease-in-out bg-white border-2 rounded-lg outline-none border-neutral-500 focus:border-red-500" 
+                      value={formFields.name} 
+                      onChange={handleChange}
+                      disabled={isSubmitting}
+                    />
                     {errors.name && <p className="text-xs italic text-red-500">{errors.name}</p>}
                   </div>
                 </div>
 
                 <div className="w-1/2 p-2">
                   <div className="relative">
-                    <label htmlFor="tel" className="text-sm leading-7 text-gray-600">{lang.phone}</label>
+                    <label htmlFor="phone" className="text-sm leading-7 text-gray-600">{lang.phone}</label>
                     <input
                       placeholder='Ex. +6281807082004'
                       type="tel"
-                      id="tel"
-                      name="phone_number"
+                      id="phone"
+                      name="phone"
                       className="w-full px-3 py-1 text-base leading-8 text-gray-700 transition-colors duration-200 ease-in-out bg-white border-2 rounded-lg outline-none border-neutral-500 focus:border-red-500"
-                      value={formFields.phone_number} onChange={handleChange}
+                      value={formFields.phone} 
+                      onChange={handleChange}
+                      disabled={isSubmitting}
                     />
-                    {errors.phone_number && <p className="text-xs italic text-red-500">{errors.phone_number}</p>}
+                    {errors.phone && <p className="text-xs italic text-red-500">{errors.phone}</p>}
                   </div>
                 </div>
 
@@ -91,7 +141,9 @@ export default function ContactUsModal({ hide }, props) {
                       id="email"
                       name="email"
                       className="w-full px-3 py-1 text-base leading-8 text-gray-700 transition-colors duration-200 ease-in-out bg-white border-2 rounded-lg outline-none border-neutral-500 focus:border-red-500"
-                      value={formFields.email} onChange={handleChange}
+                      value={formFields.email} 
+                      onChange={handleChange}
+                      disabled={isSubmitting}
                     />
                     {errors.email && <p className="text-xs italic text-red-500">{errors.email}</p>}
                   </div>
@@ -100,7 +152,14 @@ export default function ContactUsModal({ hide }, props) {
                 <div className="w-1/2 p-2">
                   <div className="relative">
                     <label htmlFor="province" className="text-sm leading-7 text-gray-600">{lang.province}</label>
-                    <select name="province" id="province" className="w-full px-3 py-1 text-base leading-8 text-gray-700 transition-colors duration-200 ease-in-out bg-white border-2 rounded-lg outline-none border-neutral-500 focus:border-red-500" value={formFields.province} onChange={handleChange}>
+                    <select 
+                      name="province" 
+                      id="province" 
+                      className="w-full px-3 py-1 text-base leading-8 text-gray-700 transition-colors duration-200 ease-in-out bg-white border-2 rounded-lg outline-none border-neutral-500 focus:border-red-500" 
+                      value={formFields.province} 
+                      onChange={handleChange}
+                      disabled={isSubmitting}
+                    >
                       <option value="" disabled>--Select your province--</option>
                       {Province.map((item, key) => (
                         <option value={item.name} key={key}>{item.name}</option>
@@ -112,32 +171,58 @@ export default function ContactUsModal({ hide }, props) {
 
                 <div className="w-1/2 p-2">
                   <div className="relative">
-                    <label htmlFor="services" className="text-sm leading-7 text-gray-600">{lang.services}</label>
-                    <select name="services" id="services" className="w-full px-3 py-1 text-base leading-8 text-gray-700 transition-colors duration-200 ease-in-out bg-white border-2 rounded-lg outline-none border-neutral-500 focus:border-red-500" value={formFields.services} onChange={handleChange}>
+                    <label htmlFor="service" className="text-sm leading-7 text-gray-600">{lang.services}</label>
+                    <select 
+                      name="service" 
+                      id="service" 
+                      className="w-full px-3 py-1 text-base leading-8 text-gray-700 transition-colors duration-200 ease-in-out bg-white border-2 rounded-lg outline-none border-neutral-500 focus:border-red-500" 
+                      value={formFields.service} 
+                      onChange={handleChange}
+                      disabled={isSubmitting}
+                    >
                       <option value="" disabled>--Please Choose an Option--</option>
                       {OurServices.map((item, key) => (
                         <option value={item.services} key={key}>{item.services}</option>
                       ))}
                     </select>
-                    {errors.services && <p className="text-xs italic text-red-500">{errors.services}</p>}
+                    {errors.service && <p className="text-xs italic text-red-500">{errors.service}</p>}
                   </div>
                 </div>
 
                 <div className="w-full p-2">
                   <div className="relative">
                     <label htmlFor="message" className="text-sm leading-7 text-gray-600">{lang.help}</label>
-                    <textarea placeholder='' id="message" name="message" className="w-full h-32 px-3 py-1 text-base leading-6 text-gray-700 transition-colors duration-200 ease-in-out bg-white border-2 rounded-lg outline-none border-neutral-500 focus:border-red-500" value={formFields.message} onChange={handleChange}></textarea>
+                    <textarea 
+                      placeholder='' 
+                      id="message" 
+                      name="message" 
+                      className="w-full h-32 px-3 py-1 text-base leading-6 text-gray-700 transition-colors duration-200 ease-in-out bg-white border-2 rounded-lg outline-none border-neutral-500 focus:border-red-500" 
+                      value={formFields.message} 
+                      onChange={handleChange}
+                      disabled={isSubmitting}
+                    ></textarea>
                     {errors.message && <p className="text-xs italic text-red-500">{errors.message}</p>}
                   </div>
                 </div>
 
                 <div className="w-full p-2">
-                  <button type="submit" className="flex mx-auto text-lg rounded submit focus:outline-none">Submit</button>
+                  <button 
+                    type="submit" 
+                    className="flex mx-auto text-lg rounded submit focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? 'Submitting...' : 'Submit'}
+                  </button>
                 </div>
               </form>
             </div>
             <div className="flex items-center justify-start p-4 border-t border-orange-200 border-solid rounded-b md:justify-end">
-              <button className="text-xs font-bold text-red-500 uppercase outline-none background-transparent focus:outline-none hover:text-red-500" type="button" onClick={hide}>
+              <button 
+                className="text-xs font-bold text-red-500 uppercase outline-none background-transparent focus:outline-none hover:text-red-500 disabled:opacity-50" 
+                type="button" 
+                onClick={hide}
+                disabled={isSubmitting}
+              >
                 Close
               </button>
             </div>
