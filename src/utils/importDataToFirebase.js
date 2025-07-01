@@ -108,17 +108,45 @@ export const importServicesToFirebase = async () => {
   try {
     // Create a services object with data from dataServices and content from servicesContent
     const services = {
-      items: dataServices.map(service => ({
-        id: service.id,
-        title: service.services,
-        desc: "",
-        path: ""
-      })),
       content: servicesContent,
+      wedding: { 
+        description: servicesContent.English.weddingdesc,
+        title: servicesContent.English.wedding,
+        subtitle: servicesContent.English.weddingsub
+      },
+      translation: { 
+        description: servicesContent.English.translatedesc,
+        title: servicesContent.English.translate
+      },
+      travel: { 
+        description: servicesContent.English.traveldesc,
+        title: servicesContent.English.travel,
+        subtitle: servicesContent.English.travelsub
+      },
+      others: { 
+        description: servicesContent.English.otherssub,
+        title: servicesContent.English.others
+      },
+      updatedAt: serverTimestamp()
+    };
+
+    // Import services to Firestore
+    await setDoc(doc(db, 'content', 'services'), services);
+    
+    // Create service items for the CMS
+    const serviceItems = {
+      items: dataServices.map(service => ({
+        id: service.id.toString(),
+        name: service.services,
+        description: "",
+        icon: "🔧"
+      })),
       updatedAt: serverTimestamp()
     };
     
-    await setDoc(doc(db, 'content', 'services'), services);
+    // Import service items to Firestore
+    await setDoc(doc(db, 'content', 'serviceItems'), serviceItems);
+    
     toast.success('Services data imported successfully!');
     return true;
   } catch (error) {

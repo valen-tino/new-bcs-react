@@ -36,37 +36,25 @@ export const googleProvider = new GoogleAuthProvider();
 // Initialize Cloud Firestore with error handling
 let db;
 try {
+  // In Firebase v9, settings are passed directly to getFirestore
   db = getFirestore(app);
-  // Set up automatic retry for Firestore operations
-  db.settings({
-    cacheSizeBytes: 1048576 * 100, // 100 MB cache size
-    ignoreUndefinedProperties: true,
-    experimentalForceLongPolling: true, // Use long polling for more stable connections
-    experimentalAutoDetectLongPolling: true
-  });
-  console.log('Firestore initialized with enhanced settings');
+  console.log('Firestore initialized successfully');
 } catch (error) {
   console.error('Firestore initialization error:', error);
-  // Fallback to a basic Firestore instance
-  try {
-    db = getFirestore(app);
-    console.log('Firestore initialized with default settings');
-  } catch (fallbackError) {
-    console.error('Critical Firestore initialization failure:', fallbackError);
-    // Create a mock db object to prevent app crashes
-    db = {
-      collection: () => ({
-        doc: () => ({
-          get: async () => ({ exists: () => false, data: () => ({}) }),
-          set: async () => {}
-        }),
-        add: async () => ({}),
-        where: () => ({
-          get: async () => ({ docs: [] })
-        })
+  // Create a mock db object to prevent app crashes
+  db = {
+    collection: () => ({
+      doc: () => ({
+        get: async () => ({ exists: () => false, data: () => ({}) }),
+        set: async () => {}
+      }),
+      add: async () => ({}),
+      where: () => ({
+        get: async () => ({ docs: [] })
       })
-    };
-  }
+    })
+  };
+  console.error('Using mock Firestore instance due to initialization failure');
 }
 
 export { db };

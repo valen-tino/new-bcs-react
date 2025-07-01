@@ -18,7 +18,8 @@ export function CMSProvider({ children }) {
       wedding: { description: '' },
       translation: { description: '' },
       travel: { description: '' },
-      others: { description: '' }
+      others: { description: '' },
+      items: []
     },
     about: {
       mainPhoto: '',
@@ -61,12 +62,19 @@ export function CMSProvider({ children }) {
         wedding: { description: '' },
         translation: { description: '' },
         travel: { description: '' },
-        others: { description: '' }
+        others: { description: '' },
+        items: []
       };
       try {
         const servicesDoc = await getDoc(doc(db, 'content', 'services'));
         if (servicesDoc.exists()) {
           services = servicesDoc.data();
+        }
+        
+        // Load service items
+        const serviceItemsDoc = await getDoc(doc(db, 'content', 'serviceItems'));
+        if (serviceItemsDoc.exists()) {
+          services.items = serviceItemsDoc.data().items || [];
         }
       } catch (error) {
         console.error('Error loading services data:', error);
@@ -186,6 +194,123 @@ export function CMSProvider({ children }) {
       console.error('Error updating service:', error);
       toast.error('Failed to update service.');
       return false;
+    }
+  };
+  
+  // Add a new service
+  const addService = async (serviceData) => {
+    try {
+      // Get the current services collection
+      const servicesDoc = await getDoc(doc(db, 'content', 'serviceItems'));
+      let services = [];
+      
+      if (servicesDoc.exists()) {
+        services = servicesDoc.data().items || [];
+      }
+      
+      // Generate a new ID
+      const newId = services.length > 0 ? Math.max(...services.map(s => parseInt(s.id))) + 1 : 1;
+      
+      // Create the new service
+      const newService = {
+        id: newId.toString(),
+        name: serviceData.name,
+        description: serviceData.description,
+        icon: serviceData.icon || '🔧'
+      };
+      
+      // Add to the array
+      const updatedServices = [...services, newService];
+      
+      // Save to Firestore
+      await setDoc(doc(db, 'content', 'serviceItems'), { items: updatedServices });
+      
+      // Update local state
+      setContent(prev => ({
+        ...prev,
+        services: {
+          ...prev.services,
+          items: updatedServices
+        }
+      }));
+      
+      return newService;
+    } catch (error) {
+      console.error('Error adding service:', error);
+      toast.error('Failed to add service.');
+      throw error;
+    }
+  };
+  
+  // Update an existing service
+  const updateService = async (id, serviceData) => {
+    try {
+      // Get the current services collection
+      const servicesDoc = await getDoc(doc(db, 'content', 'serviceItems'));
+      
+      if (!servicesDoc.exists()) {
+        throw new Error('Services collection not found');
+      }
+      
+      const services = servicesDoc.data().items || [];
+      
+      // Update the service
+      const updatedServices = services.map(service => 
+        service.id === id ? { ...service, ...serviceData } : service
+      );
+      
+      // Save to Firestore
+      await setDoc(doc(db, 'content', 'serviceItems'), { items: updatedServices });
+      
+      // Update local state
+      setContent(prev => ({
+        ...prev,
+        services: {
+          ...prev.services,
+          items: updatedServices
+        }
+      }));
+      
+      return true;
+    } catch (error) {
+      console.error('Error updating service:', error);
+      toast.error('Failed to update service.');
+      throw error;
+    }
+  };
+  
+  // Delete a service
+  const deleteService = async (id) => {
+    try {
+      // Get the current services collection
+      const servicesDoc = await getDoc(doc(db, 'content', 'serviceItems'));
+      
+      if (!servicesDoc.exists()) {
+        throw new Error('Services collection not found');
+      }
+      
+      const services = servicesDoc.data().items || [];
+      
+      // Filter out the service to delete
+      const updatedServices = services.filter(service => service.id !== id);
+      
+      // Save to Firestore
+      await setDoc(doc(db, 'content', 'serviceItems'), { items: updatedServices });
+      
+      // Update local state
+      setContent(prev => ({
+        ...prev,
+        services: {
+          ...prev.services,
+          items: updatedServices
+        }
+      }));
+      
+      return true;
+    } catch (error) {
+      console.error('Error deleting service:', error);
+      toast.error('Failed to delete service.');
+      throw error;
     }
   };
 
@@ -328,6 +453,9 @@ export function CMSProvider({ children }) {
     updateVisaAbroad,
     updateVisaBali,
     updateServices,
+    updateService,
+    addService,
+    deleteService,
     updateAbout,
     updateGallery,
     addTestimonial,
