@@ -13,6 +13,7 @@ import TestimonialsEditor from '../../components/cms/TestimonialsEditor';
 import ContactRequestsViewer from '../../components/cms/ContactRequestsManager';
 import AdminManager from '../../components/cms/AdminManager';
 import DashboardOverview from '../../components/cms/Overview';
+import UITextEditor from '../../components/cms/UITextEditor';
 
 function Dashboard() {
   const { currentUser, isAdmin, logout } = useAuth();
@@ -57,6 +58,8 @@ function Dashboard() {
         return <ContactRequestsViewer />;
       case 'admin-manager':
         return <AdminManager />;
+      case 'uitext':
+        return <UITextEditor />;
       default:
         return <DashboardOverview />;
     }

@@ -1,14 +1,20 @@
 import React from 'react'
 import { useState } from 'react'
-import  NotifModal from '../../components/NotifModal'
-import { NotifContent,NotifPNG,NyepiContent,NyepiPNG } from '../all/allpics'
+import NotifModal from '../../components/NotifModal'
+import { NotifContent, NotifPNG, NyepiContent, NyepiPNG } from '../all/allpics'
 import { content } from './content'
+import { useNotification } from '../../contexts/NotificationContext'
 
 export default function Notif(props){
 
 const [showInfo,setShowInfo] = useState(false)
 const handleOnClose = () => setShowInfo(false)
-const lang = props.language === "Indonesia" ? (content.Indonesia) : (content.English);
+const { activeNotification } = useNotification()
+
+// Use active notification if available, otherwise fall back to static content
+const lang = activeNotification 
+  ? (props.language === "Indonesia" ? activeNotification.Indonesia : activeNotification.English)
+  : (props.language === "Indonesia" ? content.Indonesia : content.English);
 
   return (
     <>
@@ -20,10 +26,11 @@ const lang = props.language === "Indonesia" ? (content.Indonesia) : (content.Eng
         <NotifModal 
         onClose={handleOnClose} 
         visible={showInfo} 
-
-        // Note : Change from NyepiContent & NyepiPNG to NotifContent & NotifPNG at January 24th 
-        pic={NotifContent}
-        png={NotifPNG}/>
+        title={lang.title}
+        sub={lang.sub}
+        desc={lang.desc}
+        pic={activeNotification && activeNotification.imageType === 'nyepi' ? NyepiContent : NotifContent}
+        png={activeNotification && activeNotification.imageType === 'nyepi' ? NyepiPNG : NotifPNG}/>
     </>
   )
 }

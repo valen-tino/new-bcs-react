@@ -2,6 +2,8 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { LanguageProvider } from './contexts/LanguageContext';
 import { AuthProvider } from './contexts/AuthContext';
 import { CMSProvider } from './contexts/CMSContext';
+import { NotificationProvider } from './contexts/NotificationContext';
+import { UITextProvider } from './contexts/UITextContext';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Navbar from './sections/nav/nav';
@@ -15,18 +17,24 @@ import ContactUsModalForm from './components/contactus_modal_form';
 import NotificationModal from './components/NotifModal';
 import Login from './pages/Login';
 import Dashboard from './pages/cms/Dashboard';
+import NotificationEditor from './pages/cms/NotificationEditor';
+import UITextEditor from './pages/cms/UITextEditor';
 import './App.css';
 
 function App() {
   return (
     <LanguageProvider>
       <AuthProvider>
-        <CMSProvider>
+        <NotificationProvider>
+          <UITextProvider>
+            <CMSProvider>
           <Router>
             <div className="App">
               <Routes>
                 <Route path="/login" element={<Login />} />
                 <Route path="/cms/*" element={<Dashboard />} />
+                <Route path="/cms/notifications" element={<NotificationEditor />} />
+                <Route path="/cms/uitext" element={<UITextEditor />} />
                 <Route path="/" element={
                   <>
                     <Navbar />
@@ -55,7 +63,9 @@ function App() {
               />
             </div>
           </Router>
-        </CMSProvider>
+            </CMSProvider>
+          </UITextProvider>
+        </NotificationProvider>
       </AuthProvider>
     </LanguageProvider>
   );

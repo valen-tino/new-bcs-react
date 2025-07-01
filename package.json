@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@google-cloud/firestore": "^7.1.0",
+    "@heroicons/react": "^2.2.0",
     "@tinymce/tinymce-react": "^6.2.1",
     "aos": "^2.3.4",
     "firebase": "^10.7.1",

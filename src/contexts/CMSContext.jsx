@@ -2,6 +2,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { db } from '../config/firebase';
 import { doc, getDoc, setDoc, collection, getDocs, addDoc, updateDoc, deleteDoc, query, orderBy, onSnapshot } from 'firebase/firestore';
 import { toast } from 'react-toastify';
+import { useNotification } from './NotificationContext';
 
 const CMSContext = createContext();
 
@@ -30,6 +31,7 @@ export function CMSProvider({ children }) {
   });
   const [loading, setLoading] = useState(true);
   const [unreadRequests, setUnreadRequests] = useState(0);
+  const notificationContext = useNotification();
 
   // Load all content from Firestore
   const loadContent = async () => {
@@ -309,6 +311,16 @@ export function CMSProvider({ children }) {
     loadContent();
   }, []);
 
+  // Notification methods from NotificationContext
+  const { 
+    getNotification, 
+    updateNotification, 
+    createNotification, 
+    deleteNotification,
+    activeNotification,
+    notifications
+  } = notificationContext;
+
   const value = {
     content,
     loading,
@@ -323,7 +335,14 @@ export function CMSProvider({ children }) {
     deleteTestimonial,
     markRequestAsRead,
     submitContactRequest,
-    loadContent
+    loadContent,
+    // Notification methods
+    getNotification,
+    updateNotification,
+    createNotification,
+    deleteNotification,
+    activeNotification,
+    notifications
   };
 
   return (

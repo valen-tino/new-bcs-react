@@ -14,6 +14,7 @@ export function AuthProvider({ children }) {
   const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [admins, setAdmins] = useState([]);
 
   // Allowed admin emails
   const primaryAdmins = ['vinsen.jehaut0870@gmail.com', 'valentinojehaut@gmail.com'];
@@ -110,11 +111,34 @@ export function AuthProvider({ children }) {
         return false;
       }
 
+      // Add to individual admin document
       await setDoc(doc(db, 'admins', email), {
         email: email,
         addedBy: currentUser.email,
         addedAt: new Date(),
         isActive: true
+      });
+
+      // Update the admins list document
+      const adminListRef = doc(db, 'admins', 'list');
+      const adminListDoc = await getDoc(adminListRef);
+      
+      let emailsList = [];
+      if (adminListDoc.exists() && adminListDoc.data().emails) {
+        emailsList = adminListDoc.data().emails;
+      }
+      
+      if (!emailsList.includes(email)) {
+        emailsList.push(email);
+        await setDoc(adminListRef, { emails: emailsList }, { merge: true });
+      }
+
+      // Update local state
+      setAdmins(prevAdmins => {
+        if (!prevAdmins.includes(email)) {
+          return [...prevAdmins, email];
+        }
+        return prevAdmins;
       });
 
       toast.success('Admin added successfully!');
@@ -133,11 +157,24 @@ export function AuthProvider({ children }) {
         return false;
       }
 
+      // Update individual admin document
       await setDoc(doc(db, 'admins', email), {
         isActive: false,
         removedBy: currentUser.email,
         removedAt: new Date()
       }, { merge: true });
+
+      // Update the admins list document
+      const adminListRef = doc(db, 'admins', 'list');
+      const adminListDoc = await getDoc(adminListRef);
+      
+      if (adminListDoc.exists() && adminListDoc.data().emails) {
+        const emailsList = adminListDoc.data().emails.filter(e => e !== email);
+        await setDoc(adminListRef, { emails: emailsList }, { merge: true });
+      }
+
+      // Update local state
+      setAdmins(prevAdmins => prevAdmins.filter(e => e !== email));
 
       toast.success('Admin removed successfully!');
       return true;
@@ -148,11 +185,27 @@ export function AuthProvider({ children }) {
     }
   };
 
+  // Fetch all admins from Firestore
+  const fetchAdmins = async () => {
+    try {
+      const adminDoc = await getDoc(doc(db, 'admins', 'list'));
+      if (adminDoc.exists() && adminDoc.data().emails) {
+        setAdmins([...primaryAdmins, ...adminDoc.data().emails]);
+      } else {
+        setAdmins([...primaryAdmins]);
+      }
+    } catch (error) {
+      console.error('Error fetching admins:', error);
+      setAdmins([...primaryAdmins]);
+    }
+  };
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setCurrentUser(user);
       if (user) {
         await checkAdminStatus(user);
+        await fetchAdmins();
       } else {
         setIsAdmin(false);
       }
@@ -169,7 +222,8 @@ export function AuthProvider({ children }) {
     logout,
     addAdmin,
     removeAdmin,
-    primaryAdmins
+    primaryAdmins,
+    admins
   };
 
   return (

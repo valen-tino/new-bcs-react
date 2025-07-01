@@ -3,10 +3,18 @@ import { useAuth } from '../../contexts/AuthContext';
 import { toast } from 'react-toastify';
 
 function AdminManager() {
-  const { user, admins, addAdmin, removeAdmin, primaryAdmins } = useAuth();
+  const { user, admins = [], addAdmin, removeAdmin, primaryAdmins } = useAuth();
   const [newAdminEmail, setNewAdminEmail] = useState('');
   const [loading, setLoading] = useState(false);
   const [emailError, setEmailError] = useState('');
+  const [localAdmins, setLocalAdmins] = useState([]);
+  
+  // Update local admins when the context admins change
+  useEffect(() => {
+    if (Array.isArray(admins)) {
+      setLocalAdmins(admins);
+    }
+  }, [admins]);
 
   const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -26,7 +34,7 @@ function AdminManager() {
       return;
     }
     
-    if (admins.includes(newAdminEmail.toLowerCase())) {
+    if (localAdmins.includes(newAdminEmail.toLowerCase())) {
       setEmailError('This email is already an admin');
       return;
     }
@@ -163,10 +171,10 @@ function AdminManager() {
       <div className="bg-white rounded-lg shadow">
         <div className="px-4 py-5 sm:p-6">
           <h3 className="mb-4 text-lg font-medium text-gray-900">
-            Current Admins ({admins.length})
+            Current Admins ({localAdmins.length})
           </h3>
           
-          {admins.length === 0 ? (
+          {localAdmins.length === 0 ? (
             <div className="py-8 text-center">
               <svg className="mx-auto w-12 h-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
@@ -176,7 +184,7 @@ function AdminManager() {
             </div>
           ) : (
             <div className="space-y-3">
-              {admins.map((email) => (
+              {localAdmins.map((email) => (
                 <div
                   key={email}
                   className="flex justify-between items-center p-4 rounded-lg border border-gray-200"
