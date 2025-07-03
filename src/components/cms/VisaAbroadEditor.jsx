@@ -61,11 +61,28 @@ function VisaAbroadEditor() {
         await addVisaAbroad(formData);
         toast.success('Country added successfully');
       } else {
-        await updateVisaAbroad(selectedCountry.id, formData);
+        // Get the current countries array
+        const updatedCountries = visaAbroad.map(country => {
+          if (country.id === selectedCountry.id) {
+            // Update the selected country with new data
+            return {
+              ...country,
+              country: formData.country,
+              flag: formData.flag,
+              description: formData.description,
+              requirements: formData.requirements || []
+            };
+          }
+          return country;
+        });
+        
+        // Update the entire array
+        await updateVisaAbroad(updatedCountries);
         toast.success('Country updated successfully');
       }
       handleCancel();
     } catch (error) {
+      console.error('Error saving country:', error);
       toast.error('Failed to save country');
     } finally {
       setLoading(false);
@@ -76,12 +93,18 @@ function VisaAbroadEditor() {
     if (window.confirm(`Are you sure you want to delete ${country.country}?`)) {
       setLoading(true);
       try {
-        await deleteVisaAbroad(country.id);
+        // Filter out the country to delete from the current array
+        const updatedCountries = visaAbroad.filter(c => c.id !== country.id);
+        
+        // Update the entire array
+        await updateVisaAbroad(updatedCountries);
+        
         toast.success('Country deleted successfully');
         if (selectedCountry?.id === country.id) {
           handleCancel();
         }
       } catch (error) {
+        console.error('Error deleting country:', error);
         toast.error('Failed to delete country');
       } finally {
         setLoading(false);

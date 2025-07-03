@@ -164,18 +164,198 @@ export function CMSProvider({ children }) {
       return false;
     }
   };
+  
+  // Add a new visa abroad country
+  const addVisaAbroad = async (countryData) => {
+    try {
+      // Get the current visa abroad data
+      const visaAbroadDoc = await getDoc(doc(db, 'content', 'visaAbroad'));
+      let countries = [];
+      
+      if (visaAbroadDoc.exists()) {
+        countries = visaAbroadDoc.data().items || [];
+      }
+      
+      // Generate a new ID
+      const newId = countries.length > 0 ? Math.max(...countries.map(c => parseInt(c.id || '0'))) + 1 : 1;
+      
+      // Create the new country
+      const newCountry = {
+        id: newId.toString(),
+        country: countryData.country,
+        flag: countryData.flag,
+        description: countryData.description,
+        requirements: countryData.requirements || []
+      };
+      
+      // Add to the array
+      const updatedCountries = [...countries, newCountry];
+      
+      // Save to Firestore
+      await setDoc(doc(db, 'content', 'visaAbroad'), { items: updatedCountries });
+      
+      // Update local state
+      setContent(prev => ({
+        ...prev,
+        visaAbroad: updatedCountries
+      }));
+      
+      return newCountry;
+    } catch (error) {
+      console.error('Error adding visa abroad country:', error);
+      toast.error('Failed to add country.');
+      throw error;
+    }
+  };
+  
+  // Delete a visa abroad country
+  const deleteVisaAbroad = async (id) => {
+    try {
+      // Get the current visa abroad data
+      const visaAbroadDoc = await getDoc(doc(db, 'content', 'visaAbroad'));
+      
+      if (!visaAbroadDoc.exists()) {
+        throw new Error('Visa abroad collection not found');
+      }
+      
+      const countries = visaAbroadDoc.data().items || [];
+      
+      // Filter out the country to delete
+      const updatedCountries = countries.filter(country => country.id !== id);
+      
+      // Save to Firestore
+      await setDoc(doc(db, 'content', 'visaAbroad'), { items: updatedCountries });
+      
+      // Update local state
+      setContent(prev => ({
+        ...prev,
+        visaAbroad: updatedCountries
+      }));
+      
+      return true;
+    } catch (error) {
+      console.error('Error deleting visa abroad country:', error);
+      toast.error('Failed to delete country.');
+      throw error;
+    }
+  };
 
   // Update visa bali content
-  const updateVisaBali = async (items) => {
+  const updateVisaBali = async (id, visaData) => {
     try {
-      await setDoc(doc(db, 'content', 'visaBali'), { items });
-      setContent(prev => ({ ...prev, visaBali: items }));
-      toast.success('Visa Bali content updated successfully!');
+      // Get the current visa bali data
+      const visaBaliDoc = await getDoc(doc(db, 'content', 'visaBali'));
+      
+      if (!visaBaliDoc.exists()) {
+        throw new Error('Visa bali collection not found');
+      }
+      
+      const visaTypes = visaBaliDoc.data().items || [];
+      
+      // Find the visa type to update
+      const updatedVisaTypes = visaTypes.map(visa => {
+        if (visa.id === id) {
+          return {
+            ...visa,
+            type: visaData.type,
+            duration: visaData.duration,
+            description: visaData.description,
+            requirements: visaData.requirements || []
+          };
+        }
+        return visa;
+      });
+      
+      // Save to Firestore
+      await setDoc(doc(db, 'content', 'visaBali'), { items: updatedVisaTypes });
+      
+      // Update local state
+      setContent(prev => ({
+        ...prev,
+        visaBali: updatedVisaTypes
+      }));
+      
+      toast.success('Visa Bali type updated successfully!');
       return true;
     } catch (error) {
       console.error('Error updating visa bali:', error);
-      toast.error('Failed to update visa bali content.');
+      toast.error('Failed to update visa bali type.');
       return false;
+    }
+  };
+  
+  // Add a new visa bali type
+  const addVisaBali = async (visaData) => {
+    try {
+      // Get the current visa bali data
+      const visaBaliDoc = await getDoc(doc(db, 'content', 'visaBali'));
+      let visaTypes = [];
+      
+      if (visaBaliDoc.exists()) {
+        visaTypes = visaBaliDoc.data().items || [];
+      }
+      
+      // Generate a new ID
+      const newId = visaTypes.length > 0 ? Math.max(...visaTypes.map(v => parseInt(v.id || '0'))) + 1 : 1;
+      
+      // Create the new visa type
+      const newVisaType = {
+        id: newId.toString(),
+        type: visaData.type,
+        duration: visaData.duration,
+        description: visaData.description,
+        requirements: visaData.requirements || []
+      };
+      
+      // Add to the array
+      const updatedVisaTypes = [...visaTypes, newVisaType];
+      
+      // Save to Firestore
+      await setDoc(doc(db, 'content', 'visaBali'), { items: updatedVisaTypes });
+      
+      // Update local state
+      setContent(prev => ({
+        ...prev,
+        visaBali: updatedVisaTypes
+      }));
+      
+      return newVisaType;
+    } catch (error) {
+      console.error('Error adding visa bali type:', error);
+      toast.error('Failed to add visa type.');
+      throw error;
+    }
+  };
+  
+  // Delete a visa bali type
+  const deleteVisaBali = async (id) => {
+    try {
+      // Get the current visa bali data
+      const visaBaliDoc = await getDoc(doc(db, 'content', 'visaBali'));
+      
+      if (!visaBaliDoc.exists()) {
+        throw new Error('Visa bali collection not found');
+      }
+      
+      const visaTypes = visaBaliDoc.data().items || [];
+      
+      // Filter out the visa type to delete
+      const updatedVisaTypes = visaTypes.filter(visa => visa.id !== id);
+      
+      // Save to Firestore
+      await setDoc(doc(db, 'content', 'visaBali'), { items: updatedVisaTypes });
+      
+      // Update local state
+      setContent(prev => ({
+        ...prev,
+        visaBali: updatedVisaTypes
+      }));
+      
+      return true;
+    } catch (error) {
+      console.error('Error deleting visa bali type:', error);
+      toast.error('Failed to delete visa type.');
+      throw error;
     }
   };
 
@@ -432,6 +612,135 @@ export function CMSProvider({ children }) {
     }
   };
 
+  // Add a new team member
+  const addTeamMember = async (memberData) => {
+    try {
+      // Get the current about data
+      const aboutDoc = await getDoc(doc(db, 'content', 'about'));
+      let aboutData = {
+        mainPhoto: '',
+        description: '',
+        team: []
+      };
+      
+      if (aboutDoc.exists()) {
+        aboutData = aboutDoc.data();
+      }
+      
+      // Generate a new ID
+      const teamMembers = aboutData.team || [];
+      const newId = teamMembers.length > 0 ? Math.max(...teamMembers.map(m => parseInt(m.id || '0'))) + 1 : 1;
+      
+      // Create the new team member
+      const newMember = {
+        id: newId.toString(),
+        name: memberData.name,
+        position: memberData.position,
+        image: memberData.image,
+        description: memberData.description
+      };
+      
+      // Add to the team array
+      const updatedTeam = [...teamMembers, newMember];
+      const updatedAbout = { ...aboutData, team: updatedTeam };
+      
+      // Save to Firestore
+      await setDoc(doc(db, 'content', 'about'), updatedAbout);
+      
+      // Update local state
+      setContent(prev => ({
+        ...prev,
+        about: updatedAbout
+      }));
+      
+      return newMember;
+    } catch (error) {
+      console.error('Error adding team member:', error);
+      toast.error('Failed to add team member.');
+      throw error;
+    }
+  };
+  
+  // Update a team member
+  const updateTeam = async (id, memberData) => {
+    try {
+      // Get the current about data
+      const aboutDoc = await getDoc(doc(db, 'content', 'about'));
+      
+      if (!aboutDoc.exists()) {
+        throw new Error('About data not found');
+      }
+      
+      const aboutData = aboutDoc.data();
+      const teamMembers = aboutData.team || [];
+      
+      // Find the team member to update
+      const updatedTeam = teamMembers.map(member => {
+        if (member.id === id) {
+          return {
+            ...member,
+            name: memberData.name,
+            position: memberData.position,
+            image: memberData.image,
+            description: memberData.description
+          };
+        }
+        return member;
+      });
+      
+      const updatedAbout = { ...aboutData, team: updatedTeam };
+      
+      // Save to Firestore
+      await setDoc(doc(db, 'content', 'about'), updatedAbout);
+      
+      // Update local state
+      setContent(prev => ({
+        ...prev,
+        about: updatedAbout
+      }));
+      
+      return true;
+    } catch (error) {
+      console.error('Error updating team member:', error);
+      toast.error('Failed to update team member.');
+      throw error;
+    }
+  };
+  
+  // Delete a team member
+  const deleteTeamMember = async (id) => {
+    try {
+      // Get the current about data
+      const aboutDoc = await getDoc(doc(db, 'content', 'about'));
+      
+      if (!aboutDoc.exists()) {
+        throw new Error('About data not found');
+      }
+      
+      const aboutData = aboutDoc.data();
+      const teamMembers = aboutData.team || [];
+      
+      // Filter out the team member to delete
+      const updatedTeam = teamMembers.filter(member => member.id !== id);
+      const updatedAbout = { ...aboutData, team: updatedTeam };
+      
+      // Save to Firestore
+      await setDoc(doc(db, 'content', 'about'), updatedAbout);
+      
+      // Update local state
+      setContent(prev => ({
+        ...prev,
+        about: updatedAbout
+      }));
+      
+      return true;
+    } catch (error) {
+      console.error('Error deleting team member:', error);
+      toast.error('Failed to delete team member.');
+      throw error;
+    }
+  };
+
   useEffect(() => {
     loadContent();
   }, []);
@@ -448,15 +757,31 @@ export function CMSProvider({ children }) {
 
   const value = {
     content,
+    // Individual content properties for easier access
+    services: content.services,
+    visaAbroad: content.visaAbroad,
+    visaBali: content.visaBali,
+    about: content.about,
+    team: content.about?.team || [],
+    gallery: content.gallery,
+    testimonials: content.testimonials,
+    contactRequests: content.contactRequests,
     loading,
     unreadRequests,
     updateVisaAbroad,
+    addVisaAbroad,
+    deleteVisaAbroad,
     updateVisaBali,
+    addVisaBali,
+    deleteVisaBali,
     updateServices,
     updateService,
     addService,
     deleteService,
     updateAbout,
+    addTeamMember,
+    updateTeam,
+    deleteTeamMember,
     updateGallery,
     addTestimonial,
     updateTestimonial,

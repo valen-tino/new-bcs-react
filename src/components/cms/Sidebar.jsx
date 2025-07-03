@@ -114,7 +114,7 @@ function SidebarContent({ menuItems, activeSection, setActiveSection }) {
     <>
       <div className="flex flex-shrink-0 items-center px-4 h-16 bg-orange-600">
         <img className="w-auto h-8" src={logoIcon} alt="BCS" />
-        <span className="ml-2 text-lg font-semibold text-white">BCS CMS</span>
+        <span className="ml-2 text-lg font-semibold text-white">Dashbard</span>
       </div>
       <div className="flex overflow-y-auto flex-col flex-1">
         <nav className="flex-1 px-2 py-4 space-y-1">
