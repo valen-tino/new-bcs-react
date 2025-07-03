@@ -13,7 +13,10 @@ function UITextEditor() {
     footer: { English: {}, Indonesia: {} },
     services: { English: {}, Indonesia: {} },
     about: { English: {}, Indonesia: {} },
+    team: { English: {}, Indonesia: {} },
     gallery: { English: {}, Indonesia: {} },
+    testimonial: { English: {}, Indonesia: {} },
+    notif: { English: {}, Indonesia: {} },
   });
 
   // Fetch UI text content from Firestore
@@ -23,7 +26,7 @@ function UITextEditor() {
       try {
         // This would be replaced with actual Firestore fetching
         // For now, we'll use a placeholder
-        const sections = ['header', 'nav', 'footer', 'services', 'about', 'gallery'];
+        const sections = ['header', 'nav', 'footer', 'services', 'about', 'team', 'gallery', 'testimonial', 'notif'];
         const content = {};
         
         for (const section of sections) {
@@ -94,12 +97,15 @@ function UITextEditor() {
     // This would be customized based on the fields for each section
     // For now, we'll use a generic approach
     const fields = {
-      header: ['title', 'subtitle', 'cta'],
-      nav: ['home', 'services', 'about', 'gallery', 'testimonials', 'contact'],
-      footer: ['title', 'address', 'phone', 'email', 'copyright'],
+      header: ['title', 'subtitle', 'cta', 'description'],
+      nav: ['home', 'services', 'about', 'gallery', 'testimonials', 'contact', 'language'],
+      footer: ['title', 'address', 'phone', 'email', 'copyright', 'socialMedia'],
       services: ['title', 'subtitle', 'wedding', 'translation', 'travel', 'others'],
-      about: ['title', 'subtitle'],
-      gallery: ['title', 'subtitle']
+      about: ['title', 'subtitle', 'description', 'mission', 'vision'],
+      team: ['title', 'subtitle', 'description'],
+      gallery: ['title', 'subtitle', 'description'],
+      testimonial: ['title', 'subtitle', 'description', 'cta'],
+      notif: ['title', 'message', 'buttonText', 'dismissText']
     };
 
     return (
@@ -125,7 +131,7 @@ function UITextEditor() {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500"></div>
+        <div className="w-12 h-12 rounded-full border-b-2 border-orange-500 animate-spin"></div>
       </div>
     );
   }

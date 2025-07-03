@@ -522,6 +522,58 @@ export function CMSProvider({ children }) {
     }
   };
 
+  // Add gallery image
+  const addGalleryImage = async (imageData) => {
+    try {
+      const galleryDoc = await getDoc(doc(db, 'content', 'gallery'));
+      let currentGallery = [];
+      
+      if (galleryDoc.exists()) {
+        currentGallery = galleryDoc.data().items || [];
+      }
+      
+      const newId = currentGallery.length > 0 ? Math.max(...currentGallery.map(img => parseInt(img.id) || 0)) + 1 : 1;
+      const newImage = {
+        id: newId.toString(),
+        src: imageData.src,
+        alt: imageData.alt
+      };
+      
+      const updatedGallery = [...currentGallery, newImage];
+      await setDoc(doc(db, 'content', 'gallery'), { items: updatedGallery });
+      setContent(prev => ({ ...prev, gallery: updatedGallery }));
+      toast.success('Image added to gallery successfully!');
+      return true;
+    } catch (error) {
+      console.error('Error adding gallery image:', error);
+      toast.error('Failed to add image to gallery.');
+      return false;
+    }
+  };
+
+  // Delete gallery image
+  const deleteGalleryImage = async (imageId) => {
+    try {
+      const galleryDoc = await getDoc(doc(db, 'content', 'gallery'));
+      
+      if (!galleryDoc.exists()) {
+        throw new Error('Gallery collection not found');
+      }
+      
+      const currentGallery = galleryDoc.data().items || [];
+      const updatedGallery = currentGallery.filter(image => image.id !== imageId);
+      
+      await setDoc(doc(db, 'content', 'gallery'), { items: updatedGallery });
+      setContent(prev => ({ ...prev, gallery: updatedGallery }));
+      toast.success('Image deleted from gallery successfully!');
+      return true;
+    } catch (error) {
+      console.error('Error deleting gallery image:', error);
+      toast.error('Failed to delete image from gallery.');
+      return false;
+    }
+  };
+
   // Add testimonial
   const addTestimonial = async (testimonial) => {
     try {
@@ -783,6 +835,8 @@ export function CMSProvider({ children }) {
     updateTeam,
     deleteTeamMember,
     updateGallery,
+    addGalleryImage,
+    deleteGalleryImage,
     addTestimonial,
     updateTestimonial,
     deleteTestimonial,
