@@ -577,12 +577,17 @@ export function CMSProvider({ children }) {
   // Add testimonial
   const addTestimonial = async (testimonial) => {
     try {
-      const docRef = await addDoc(collection(db, 'testimonials'), {
+      // Set default status to pending if not provided
+      const testimonialWithStatus = {
         ...testimonial,
+        status: testimonial.status || 'pending',
         createdAt: new Date(),
         updatedAt: new Date()
-      });
-      const newTestimonial = { id: docRef.id, ...testimonial, createdAt: new Date(), updatedAt: new Date() };
+      };
+      
+      const docRef = await addDoc(collection(db, 'testimonials'), testimonialWithStatus);
+      const newTestimonial = { id: docRef.id, ...testimonialWithStatus };
+      
       setContent(prev => ({ 
         ...prev, 
         testimonials: [newTestimonial, ...prev.testimonials] 
@@ -631,6 +636,52 @@ export function CMSProvider({ children }) {
     } catch (error) {
       console.error('Error deleting testimonial:', error);
       toast.error('Failed to delete testimonial.');
+      return false;
+    }
+  };
+  
+  // Publish testimonial - change status to 'published'
+  const publishTestimonial = async (id) => {
+    try {
+      await updateDoc(doc(db, 'testimonials', id), {
+        status: 'published',
+        publishedAt: new Date(),
+        updatedAt: new Date()
+      });
+      setContent(prev => ({
+        ...prev,
+        testimonials: prev.testimonials.map(t => 
+          t.id === id ? { ...t, status: 'published', publishedAt: new Date(), updatedAt: new Date() } : t
+        )
+      }));
+      toast.success('Testimonial published successfully!');
+      return true;
+    } catch (error) {
+      console.error('Error publishing testimonial:', error);
+      toast.error('Failed to publish testimonial.');
+      return false;
+    }
+  };
+  
+  // Archive testimonial - change status to 'archived'
+  const archiveTestimonial = async (id) => {
+    try {
+      await updateDoc(doc(db, 'testimonials', id), {
+        status: 'archived',
+        archivedAt: new Date(),
+        updatedAt: new Date()
+      });
+      setContent(prev => ({
+        ...prev,
+        testimonials: prev.testimonials.map(t => 
+          t.id === id ? { ...t, status: 'archived', archivedAt: new Date(), updatedAt: new Date() } : t
+        )
+      }));
+      toast.success('Testimonial archived successfully!');
+      return true;
+    } catch (error) {
+      console.error('Error archiving testimonial:', error);
+      toast.error('Failed to archive testimonial.');
       return false;
     }
   };
@@ -840,6 +891,8 @@ export function CMSProvider({ children }) {
     addTestimonial,
     updateTestimonial,
     deleteTestimonial,
+    publishTestimonial,
+    archiveTestimonial,
     markRequestAsRead,
     submitContactRequest,
     loadContent,
@@ -851,6 +904,8 @@ export function CMSProvider({ children }) {
     activeNotification,
     notifications
   };
+
+  // The value object is already defined above with all necessary properties
 
   return (
     <CMSContext.Provider value={value}>

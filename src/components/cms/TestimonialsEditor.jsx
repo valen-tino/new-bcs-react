@@ -1,14 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useCMS } from '../../contexts/CMSContext';
 import { toast } from 'react-toastify';
 import TestimonialLinkManager from './TestimonialLinkManager';
+import { useAuth } from '../../contexts/AuthContext';
 
 function TestimonialsEditor() {
-  const { testimonials, addTestimonial, updateTestimonial, deleteTestimonial } = useCMS();
+  const { testimonials, addTestimonial, updateTestimonial, deleteTestimonial, publishTestimonial, archiveTestimonial } = useCMS();
   const [selectedTestimonial, setSelectedTestimonial] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
   const [isAdding, setIsAdding] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState(0); // 0: Pending, 1: Published, 2: Archived
   
   const [formData, setFormData] = useState({
     name: '',
@@ -169,50 +171,215 @@ function TestimonialsEditor() {
       <TestimonialLinkManager />
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-        {/* Testimonials List */}
+        {/* Testimonials List with Tabs */}
         <div className="bg-white rounded-lg shadow">
           <div className="px-4 py-5 sm:p-6">
             <h3 className="mb-4 text-lg font-medium text-gray-900">Testimonials</h3>
-            <div className="space-y-4">
-              {testimonials?.map((testimonial) => (
-                <div key={testimonial.id} className="p-4 rounded-lg border border-gray-200 hover:bg-gray-50">
-                  <div className="flex justify-between items-start">
-                    <div className="flex-1">
-                      <div className="flex items-center mb-2 space-x-2">
-                        <h4 className="font-medium text-gray-900">{testimonial.name}</h4>
-                        {renderStars(testimonial.rating || 5)}
+            
+            <div>
+              {/* Custom Tab List */}
+              <div className="flex p-1 mb-4 space-x-1 bg-gray-100 rounded-xl">
+                <button
+                  onClick={() => setActiveTab(0)}
+                  className={`w-full py-2 text-sm font-medium rounded-lg transition-all ${activeTab === 0 ? 'bg-orange-600 text-white shadow' : 'text-gray-700 hover:bg-gray-200'}`}
+                >
+                  Pending
+                </button>
+                <button
+                  onClick={() => setActiveTab(1)}
+                  className={`w-full py-2 text-sm font-medium rounded-lg transition-all ${activeTab === 1 ? 'bg-green-600 text-white shadow' : 'text-gray-700 hover:bg-gray-200'}`}
+                >
+                  Published
+                </button>
+                <button
+                  onClick={() => setActiveTab(2)}
+                  className={`w-full py-2 text-sm font-medium rounded-lg transition-all ${activeTab === 2 ? 'bg-gray-600 text-white shadow' : 'text-gray-700 hover:bg-gray-200'}`}
+                >
+                  Archived
+                </button>
+              </div>
+              
+              {/* Custom Tab Panels */}
+              <div>
+                {/* Pending Testimonials */}
+                {activeTab === 0 && (
+                  <div className="space-y-4">
+                    {testimonials?.filter(t => !t.status || t.status === 'pending').map((testimonial) => (
+                      <div key={testimonial.id} className="p-4 rounded-lg border border-orange-200 hover:bg-orange-50">
+                        <div className="flex justify-between items-start">
+                          <div className="flex-1">
+                            <div className="flex items-center mb-2 space-x-2">
+                              <h4 className="font-medium text-gray-900">{testimonial.name}</h4>
+                              {renderStars(testimonial.rating || 5)}
+                              <span className="px-2 py-1 text-xs font-medium text-orange-800 bg-orange-100 rounded-full">Pending</span>
+                            </div>
+                            <p className="mb-2 text-sm text-gray-600">{testimonial.email}</p>
+                            <p className="text-sm text-gray-700 line-clamp-3">
+                              "{testimonial.description || testimonial.content || ''}"
+                            </p>
+                            {testimonial.submittedViaLink && (
+                              <p className="mt-2 text-xs text-gray-500">Submitted via testimonial link</p>
+                            )}
+                          </div>
+                          <div className="flex items-center ml-4 space-x-2">
+                            <button
+                              onClick={() => publishTestimonial(testimonial.id)}
+                              className="px-3 py-1 text-xs font-medium text-white bg-green-600 rounded-md hover:bg-green-700"
+                            >
+                              Publish
+                            </button>
+                            <button
+                              onClick={() => archiveTestimonial(testimonial.id)}
+                              className="px-3 py-1 text-xs font-medium text-white bg-gray-600 rounded-md hover:bg-gray-700"
+                            >
+                              Archive
+                            </button>
+                            <button
+                              onClick={() => handleEdit(testimonial)}
+                              className="text-sm font-medium text-orange-600 hover:text-orange-900"
+                            >
+                              Edit
+                            </button>
+                            <button
+                              onClick={() => handleDelete(testimonial)}
+                              className="text-sm font-medium text-red-600 hover:text-red-900"
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        </div>
                       </div>
-                      <p className="mb-2 text-sm text-gray-600">{testimonial.email}</p>
-                      <p className="text-sm text-gray-700 line-clamp-3">
-                        "{testimonial.description}"
-                      </p>
-                    </div>
-                    <div className="flex items-center ml-4 space-x-2">
-                      <button
-                        onClick={() => handleEdit(testimonial)}
-                        className="text-sm font-medium text-orange-600 hover:text-orange-900"
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => handleDelete(testimonial)}
-                        className="text-sm font-medium text-red-600 hover:text-red-900"
-                      >
-                        Delete
-                      </button>
-                    </div>
+                    ))}
+                    {(!testimonials?.filter(t => !t.status || t.status === 'pending').length) && (
+                      <div className="py-8 text-center">
+                        <svg className="mx-auto w-12 h-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                        </svg>
+                        <h3 className="mt-2 text-sm font-medium text-gray-900">No pending testimonials</h3>
+                        <p className="mt-1 text-sm text-gray-500">All testimonials have been reviewed.</p>
+                      </div>
+                    )}
                   </div>
-                </div>
-              ))}
-              {(!testimonials || testimonials.length === 0) && (
-                <div className="py-8 text-center">
-                  <svg className="mx-auto w-12 h-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                  </svg>
-                  <h3 className="mt-2 text-sm font-medium text-gray-900">No testimonials</h3>
-                  <p className="mt-1 text-sm text-gray-500">Get started by adding your first testimonial.</p>
-                </div>
-              )}
+                )}
+                
+                {/* Published Testimonials */}
+                {activeTab === 1 && (
+                  <div className="space-y-4">
+                    {testimonials?.filter(t => t.status === 'published').map((testimonial) => (
+                      <div key={testimonial.id} className="p-4 rounded-lg border border-green-200 hover:bg-green-50">
+                        <div className="flex justify-between items-start">
+                          <div className="flex-1">
+                            <div className="flex items-center mb-2 space-x-2">
+                              <h4 className="font-medium text-gray-900">{testimonial.name}</h4>
+                              {renderStars(testimonial.rating || 5)}
+                              <span className="px-2 py-1 text-xs font-medium text-green-800 bg-green-100 rounded-full">Published</span>
+                            </div>
+                            <p className="mb-2 text-sm text-gray-600">{testimonial.email}</p>
+                            <p className="text-sm text-gray-700 line-clamp-3">
+                              "{testimonial.description || testimonial.content || ''}"
+                            </p>
+                            {testimonial.publishedAt && (
+                              <p className="mt-2 text-xs text-gray-500">Published: {testimonial.publishedAt instanceof Date 
+                                ? testimonial.publishedAt.toLocaleDateString() 
+                                : testimonial.publishedAt.seconds 
+                                  ? new Date(testimonial.publishedAt.seconds * 1000).toLocaleDateString() 
+                                  : new Date().toLocaleDateString()}</p>
+                            )}
+                          </div>
+                          <div className="flex items-center ml-4 space-x-2">
+                            <button
+                              onClick={() => archiveTestimonial(testimonial.id)}
+                              className="px-3 py-1 text-xs font-medium text-white bg-gray-600 rounded-md hover:bg-gray-700"
+                            >
+                              Archive
+                            </button>
+                            <button
+                              onClick={() => handleEdit(testimonial)}
+                              className="text-sm font-medium text-orange-600 hover:text-orange-900"
+                            >
+                              Edit
+                            </button>
+                            <button
+                              onClick={() => handleDelete(testimonial)}
+                              className="text-sm font-medium text-red-600 hover:text-red-900"
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                    {(!testimonials?.filter(t => t.status === 'published').length) && (
+                      <div className="py-8 text-center">
+                        <svg className="mx-auto w-12 h-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                        </svg>
+                        <h3 className="mt-2 text-sm font-medium text-gray-900">No published testimonials</h3>
+                        <p className="mt-1 text-sm text-gray-500">Publish testimonials to display them on your website.</p>
+                      </div>
+                    )}
+                  </div>
+                )}
+                
+                {/* Archived Testimonials */}
+                {activeTab === 2 && (
+                  <div className="space-y-4">
+                    {testimonials?.filter(t => t.status === 'archived').map((testimonial) => (
+                      <div key={testimonial.id} className="p-4 rounded-lg border border-gray-200 hover:bg-gray-50">
+                        <div className="flex justify-between items-start">
+                          <div className="flex-1">
+                            <div className="flex items-center mb-2 space-x-2">
+                              <h4 className="font-medium text-gray-900">{testimonial.name}</h4>
+                              {renderStars(testimonial.rating || 5)}
+                              <span className="px-2 py-1 text-xs font-medium text-gray-800 bg-gray-100 rounded-full">Archived</span>
+                            </div>
+                            <p className="mb-2 text-sm text-gray-600">{testimonial.email}</p>
+                            <p className="text-sm text-gray-700 line-clamp-3">
+                              "{testimonial.description || testimonial.content || ''}"
+                            </p>
+                            {testimonial.archivedAt && (
+                              <p className="mt-2 text-xs text-gray-500">Archived: {testimonial.archivedAt instanceof Date 
+                                ? testimonial.archivedAt.toLocaleDateString() 
+                                : testimonial.archivedAt.seconds 
+                                  ? new Date(testimonial.archivedAt.seconds * 1000).toLocaleDateString() 
+                                  : new Date().toLocaleDateString()}</p>
+                            )}
+                          </div>
+                          <div className="flex items-center ml-4 space-x-2">
+                            <button
+                              onClick={() => publishTestimonial(testimonial.id)}
+                              className="px-3 py-1 text-xs font-medium text-white bg-green-600 rounded-md hover:bg-green-700"
+                            >
+                              Publish
+                            </button>
+                            <button
+                              onClick={() => handleEdit(testimonial)}
+                              className="text-sm font-medium text-orange-600 hover:text-orange-900"
+                            >
+                              Edit
+                            </button>
+                            <button
+                              onClick={() => handleDelete(testimonial)}
+                              className="text-sm font-medium text-red-600 hover:text-red-900"
+                            >
+                              Delete
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                    {(!testimonials?.filter(t => t.status === 'archived').length) && (
+                      <div className="py-8 text-center">
+                        <svg className="mx-auto w-12 h-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                        </svg>
+                        <h3 className="mt-2 text-sm font-medium text-gray-900">No archived testimonials</h3>
+                        <p className="mt-1 text-sm text-gray-500">Archived testimonials are not displayed on your website.</p>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>

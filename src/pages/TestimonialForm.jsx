@@ -95,7 +95,7 @@ function TestimonialForm() {
       await addDoc(collection(db, 'testimonials'), {
         ...formData,
         createdAt: new Date(),
-        approved: false, // Requires admin approval
+        status: 'pending', // New status field: pending, published, archived
         submittedViaLink: true,
         linkToken: token
       });
