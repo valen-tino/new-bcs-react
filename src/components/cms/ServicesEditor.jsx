@@ -102,7 +102,7 @@ function ServicesEditor() {
               Description
             </label>
             <Editor
-              apiKey="your-tinymce-api-key"
+              apiKey="qi0nenw5umgv10sw07bvpjtaftf20chbphdm63kytqo8xzvx"
               onInit={(evt, editor) => editorRef.current = editor}
               value={serviceData[activeTab]}
               onEditorChange={(content) => handleDescriptionChange(activeTab, content)}

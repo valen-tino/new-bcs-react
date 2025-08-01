@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useCMS } from '../../contexts/CMSContext';
 import { toast } from 'react-toastify';
+import TestimonialLinkManager from './TestimonialLinkManager';
 
 function TestimonialsEditor() {
   const { testimonials, addTestimonial, updateTestimonial, deleteTestimonial } = useCMS();
@@ -21,7 +22,7 @@ function TestimonialsEditor() {
     setFormData({
       name: testimonial.name,
       email: testimonial.email,
-      description: testimonial.description,
+      description: testimonial.description || testimonial.content || '',
       rating: testimonial.rating || 5
     });
     setIsEditing(true);
@@ -75,6 +76,8 @@ function TestimonialsEditor() {
       name: formData.name.trim(),
       email: formData.email.trim(),
       description: formData.description.trim(),
+      // Preserve the content field if it exists in the original testimonial
+      ...(selectedTestimonial?.content && { content: selectedTestimonial.content }),
       rating: formData.rating || 5,
       createdAt: new Date()
     };
@@ -161,6 +164,9 @@ function TestimonialsEditor() {
           Add Testimonial
         </button>
       </div>
+
+      {/* Testimonial Link Manager */}
+      <TestimonialLinkManager />
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         {/* Testimonials List */}
@@ -260,12 +266,12 @@ function TestimonialsEditor() {
                     placeholder="Enter the customer's testimonial..."
                   />
                   <p className="mt-1 text-sm text-gray-500">
-                    {formData.description.length}/500 characters
+                    {formData.description ? formData.description.length : 0}/500 characters
                   </p>
                 </div>
 
                 {/* Preview */}
-                {formData.name && formData.description && (
+                {formData.name && (
                   <div>
                     <label className="block mb-2 text-sm font-medium text-gray-700">Preview</label>
                     <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
@@ -275,7 +281,7 @@ function TestimonialsEditor() {
                       </div>
                       <p className="mb-2 text-sm text-gray-600">{formData.email}</p>
                       <p className="text-sm italic text-gray-700">
-                        "{formData.description}"
+                        "{formData.description || ''}"
                       </p>
                     </div>
                   </div>

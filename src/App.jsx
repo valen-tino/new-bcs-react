@@ -19,6 +19,7 @@ import Login from './pages/Login';
 import Dashboard from './pages/cms/Dashboard';
 import NotificationEditor from './pages/cms/NotificationEditor';
 import UITextEditor from './pages/cms/UITextEditor';
+import TestimonialForm from './pages/TestimonialForm';
 import './App.css';
 
 function App() {
@@ -35,6 +36,7 @@ function App() {
                 <Route path="/cms/*" element={<Dashboard />} />
                 <Route path="/cms/notifications" element={<NotificationEditor />} />
                 <Route path="/cms/uitext" element={<UITextEditor />} />
+                <Route path="/testimonial/:token" element={<TestimonialForm />} />
                 <Route path="/" element={
                   <>
                     <Navbar />
