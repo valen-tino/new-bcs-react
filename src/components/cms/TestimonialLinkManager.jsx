@@ -25,14 +25,25 @@ function TestimonialLinkManager() {
       const activeLinks = [];
       
       snapshot.forEach((doc) => {
-        const data = doc.data();
-        const expiryDate = data.expiresAt.toDate();
-        if (expiryDate > new Date()) {
-          activeLinks.push({
-            id: doc.id,
-            ...data,
-            expiresAt: expiryDate
-          });
+        try {
+          const data = doc.data();
+          // Safely convert Firestore timestamp to Date object
+          if (!data.expiresAt) {
+            console.warn('Missing expiresAt field for link:', doc.id);
+            return; // Skip this document
+          }
+          
+          const expiryDate = data.expiresAt.toDate();
+          if (expiryDate > new Date()) {
+            activeLinks.push({
+              id: doc.id,
+              ...data,
+              expiresAt: expiryDate
+            });
+          }
+        } catch (dateError) {
+          console.error('Error processing link document:', doc.id, dateError);
+          // Skip this document if there's an error
         }
       });
       
@@ -49,16 +60,31 @@ function TestimonialLinkManager() {
       
       const deletePromises = [];
       snapshot.forEach((docSnapshot) => {
-        const data = docSnapshot.data();
-        const expiryDate = data.expiresAt.toDate();
-        if (expiryDate <= new Date()) {
+        try {
+          const data = docSnapshot.data();
+          
+          // Skip documents with missing expiresAt field
+          if (!data.expiresAt) {
+            console.warn('Missing expiresAt field for link:', docSnapshot.id);
+            // Consider deleting invalid links without expiry date
+            deletePromises.push(deleteDoc(doc(db, 'testimonialLinks', docSnapshot.id)));
+            return;
+          }
+          
+          const expiryDate = data.expiresAt.toDate();
+          if (expiryDate <= new Date()) {
+            deletePromises.push(deleteDoc(doc(db, 'testimonialLinks', docSnapshot.id)));
+          }
+        } catch (dateError) {
+          console.error('Error processing link document for cleanup:', docSnapshot.id, dateError);
+          // Delete documents with invalid date format
           deletePromises.push(deleteDoc(doc(db, 'testimonialLinks', docSnapshot.id)));
         }
       });
       
       if (deletePromises.length > 0) {
         await Promise.all(deletePromises);
-        console.log(`Cleaned up ${deletePromises.length} expired links`);
+        console.log(`Cleaned up ${deletePromises.length} expired or invalid links`);
       }
     } catch (error) {
       console.error('Error cleaning up expired links:', error);
@@ -87,6 +113,8 @@ function TestimonialLinkManager() {
       const baseUrl = window.location.origin;
       const fullLink = `${baseUrl}/testimonial/${token}`;
       
+      // Ensure we're using the correct route path format
+      // The route in App.jsx is defined as "/testimonial/:token"
       setGeneratedLink(fullLink);
       toast.success('Testimonial link generated successfully!');
       
@@ -204,7 +232,7 @@ function TestimonialLinkManager() {
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium text-gray-900 truncate">
-                          {window.location.origin}/testimonial-form/{link.token}
+                          {window.location.origin}/testimonial/{link.token}
                         </p>
                         <div className="flex items-center mt-1 space-x-4">
                           <p className="text-xs text-gray-500">
@@ -222,7 +250,7 @@ function TestimonialLinkManager() {
                   </div>
                   <div className="flex items-center space-x-2">
                     <button
-                      onClick={() => copyToClipboard(`${window.location.origin}/testimonial-form/${link.token}`)}
+                      onClick={() => copyToClipboard(`${window.location.origin}/testimonial/${link.token}`)}
                       className="text-sm font-medium text-orange-600 hover:text-orange-900"
                     >
                       Copy

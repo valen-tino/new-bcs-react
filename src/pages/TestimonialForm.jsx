@@ -42,7 +42,18 @@ function TestimonialForm() {
       
       const linkDoc = snapshot.docs[0];
       const data = linkDoc.data();
-      const expiryDate = data.expiresAt.toDate();
+      
+      // Safely convert Firestore timestamp to Date object
+      let expiryDate;
+      try {
+        expiryDate = data.expiresAt ? data.expiresAt.toDate() : new Date(0); // Default to epoch if missing
+      } catch (dateError) {
+        console.error('Error converting expiresAt to date:', dateError);
+        // If date conversion fails, consider the link invalid
+        setLinkValid(false);
+        setLoading(false);
+        return;
+      }
       
       if (expiryDate <= new Date() || data.used) {
         // Link expired or already used, delete it
@@ -52,7 +63,7 @@ function TestimonialForm() {
         return;
       }
       
-      setLinkData({ id: linkDoc.id, ...data });
+      setLinkData({ id: linkDoc.id, ...data, expiresAt: expiryDate });
       setLinkValid(true);
       setLoading(false);
     } catch (error) {
