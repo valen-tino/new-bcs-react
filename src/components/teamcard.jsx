@@ -10,7 +10,8 @@ export default function teamCard (props) {
     const name = props.name
     const title = props.title
     const desc = props.desc
-    const path = "team/" + props.path
+    const rawPath = props.path || ''
+    const path = (rawPath.startsWith('http') || rawPath.includes('/')) ? rawPath : `team/${rawPath}`
   
     return (
     <>

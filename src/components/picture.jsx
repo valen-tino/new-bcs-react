@@ -7,7 +7,8 @@ export default function Picture (props) {
     AOS.init();
   }, []);
   const alt = props.alt
-  const path = "gallery/" + props.path
+  const rawPath = props.path || ''
+  const path = (rawPath.startsWith('http') || rawPath.includes('/')) ? rawPath : `gallery/${rawPath}`
   return (
     <div className="px-4 mb-8 md:w-1/4 font-Sora" data-aos="fade-up">
       <img className="w-full h-full transition duration-300 ease-in-out delay-150 shadow-lg rounded-xl hover:shadow-xl hover:-translate-y-0 hover:scale-110" src={path} alt={alt} />

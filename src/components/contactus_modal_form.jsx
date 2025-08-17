@@ -10,7 +10,7 @@ import { content } from '../data/dataContactForm';
 
 export default function ContactUsModal({ hide }) {
   const { language } = useLanguage();
-  const { addContactRequest } = useCMS();
+  const { submitContactRequest } = useCMS();
   const lang = language === "Indonesia" ? content.Indonesia : content.English;
 
   const [formFields, setFormFields] = useState({
@@ -45,7 +45,7 @@ export default function ContactUsModal({ hide }) {
     setIsSubmitting(true);
     
     try {
-      await addContactRequest({
+      await submitContactRequest({
         name: formFields.name,
         email: formFields.email,
         phone: formFields.phone,
@@ -86,6 +86,9 @@ export default function ContactUsModal({ hide }) {
   useEffect(() => {
     AOS.init();
   }, []);
+
+  const provinces = Array.isArray(Province) ? Province : [];
+  const serviceOptions = Array.isArray(OurServices) ? OurServices : [];
 
   return (
     <>
@@ -161,7 +164,7 @@ export default function ContactUsModal({ hide }) {
                       disabled={isSubmitting}
                     >
                       <option value="" disabled>--Select your province--</option>
-                      {Province.map((item, key) => (
+                      {provinces.map((item, key) => (
                         <option value={item.name} key={key}>{item.name}</option>
                       ))}
                     </select>
@@ -181,7 +184,7 @@ export default function ContactUsModal({ hide }) {
                       disabled={isSubmitting}
                     >
                       <option value="" disabled>--Please Choose an Option--</option>
-                      {OurServices.map((item, key) => (
+                      {serviceOptions.map((item, key) => (
                         <option value={item.services} key={key}>{item.services}</option>
                       ))}
                     </select>
