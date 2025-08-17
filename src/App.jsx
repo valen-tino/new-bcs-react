@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { LanguageProvider } from './contexts/LanguageContext';
+import { LanguageProvider, useLanguage } from './contexts/LanguageContext';
 import { AuthProvider } from './contexts/AuthContext';
 import { CMSProvider } from './contexts/CMSContext';
 import { NotificationProvider } from './contexts/NotificationContext';
@@ -20,7 +20,45 @@ import Dashboard from './pages/cms/Dashboard';
 import NotificationEditor from './pages/cms/NotificationEditor';
 import UITextEditor from './pages/cms/UITextEditor';
 import TestimonialForm from './pages/TestimonialForm';
+import { useState } from 'react';
 import './App.css';
+
+function HomeContent() {
+  const { language, changeLanguage } = useLanguage();
+  const [isContactFormOpen, setIsContactFormOpen] = useState(false);
+
+  const openContactForm = () => {
+    setIsContactFormOpen(true);
+  };
+
+  const closeContactForm = () => {
+    setIsContactFormOpen(false);
+  };
+
+  return (
+    <>
+      <Navbar 
+        language={language} 
+        handleSetLanguage={changeLanguage} 
+        contactForm={openContactForm}
+      />
+      <Header language={language} />
+      <Services 
+        language={language} 
+        contactForm={openContactForm}
+      />
+      <About language={language} />
+      <Gallery language={language} />
+      <Testimonial language={language} />
+      <Footer 
+        language={language} 
+        contactForm={openContactForm}
+      />
+      {isContactFormOpen && <ContactUsModalForm hide={closeContactForm} />}
+      <NotificationModal />
+    </>
+  );
+}
 
 function App() {
   return (
@@ -29,42 +67,30 @@ function App() {
         <NotificationProvider>
           <UITextProvider>
             <CMSProvider>
-          <Router>
-            <div className="App">
-              <Routes>
-                <Route path="/login" element={<Login />} />
-                <Route path="/cms/*" element={<Dashboard />} />
-                <Route path="/cms/notifications" element={<NotificationEditor />} />
-                <Route path="/cms/uitext" element={<UITextEditor />} />
-                <Route path="/testimonial/:token" element={<TestimonialForm />} />
-                <Route path="/" element={
-                  <>
-                    <Navbar />
-                    <Header />
-                    <Services />
-                    <About />
-                    <Gallery />
-                    <Testimonial />
-                    <Footer />
-                    <ContactUsModalForm />
-                    <NotificationModal />
-                  </>
-                } />
-              </Routes>
-              <ToastContainer
-                position="top-right"
-                autoClose={5000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-                theme="light"
-              />
-            </div>
-          </Router>
+              <Router>
+                <div className="App">
+                  <Routes>
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/cms/*" element={<Dashboard />} />
+                    <Route path="/cms/notifications" element={<NotificationEditor />} />
+                    <Route path="/cms/uitext" element={<UITextEditor />} />
+                    <Route path="/testimonial/:token" element={<TestimonialForm />} />
+                    <Route path="/" element={<HomeContent />} />
+                  </Routes>
+                  <ToastContainer
+                    position="top-right"
+                    autoClose={5000}
+                    hideProgressBar={false}
+                    newestOnTop={false}
+                    closeOnClick
+                    rtl={false}
+                    pauseOnFocusLoss
+                    draggable
+                    pauseOnHover
+                    theme="light"
+                  />
+                </div>
+              </Router>
             </CMSProvider>
           </UITextProvider>
         </NotificationProvider>

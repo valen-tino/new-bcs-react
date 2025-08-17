@@ -1,50 +1,35 @@
-import React, { useState, useEffect } from 'react'
+import React, { useMemo } from 'react'
 
 import Testicard from '../../components/testicard'
 import { Pattern } from '../all/allpics'
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import { Carousel } from 'react-responsive-carousel';
 import '../testimonial/testimonial.module.css';
-import { db } from '../../config/firebase';
-import { collection, query, where, getDocs, orderBy } from 'firebase/firestore';
+import { useCMS } from '../../contexts/CMSContext';
 
 function Testimonial(props){
-  const [testimonials, setTestimonials] = useState([]);
-  const [loading, setLoading] = useState(true);
+  // Use CMS data instead of querying Firestore directly
+  const { testimonials: cmsTestimonials, loading } = useCMS();
 
-  useEffect(() => {
-    // Fetch published testimonials from Firestore
-    const fetchTestimonials = async () => {
-      try {
-        const testimonialsQuery = query(
-          collection(db, 'testimonials'),
-          where('status', '==', 'published'),
-          orderBy('publishedAt', 'desc')
-        );
-        
-        const snapshot = await getDocs(testimonialsQuery);
-        const publishedTestimonials = [];
-        
-        snapshot.forEach((doc) => {
-          const data = doc.data();
-          publishedTestimonials.push({
-            id: doc.id,
-            clientName: data.name,
-            email: data.email || '',
-            desc: data.description || data.content || ''
-          });
-        });
-        
-        setTestimonials(publishedTestimonials);
-      } catch (error) {
-        console.error('Error fetching testimonials:', error);
-      } finally {
-        setLoading(false);
-      }
+  // Prepare only published testimonials sorted by publishedAt desc
+  const testimonials = useMemo(() => {
+    const getDateVal = (d) => {
+      if (!d) return 0;
+      if (d instanceof Date) return d.getTime();
+      if (typeof d === 'object' && d.seconds) return d.seconds * 1000;
+      const t = new Date(d).getTime();
+      return isNaN(t) ? 0 : t;
     };
-    
-    fetchTestimonials();
-  }, []);
+
+    return (cmsTestimonials || [])
+      .filter(t => t.status === 'published')
+      .sort((a, b) => getDateVal(b.publishedAt) - getDateVal(a.publishedAt))
+      .map(t => ({
+        clientName: t.name,
+        email: t.email || '',
+        desc: t.description || t.content || ''
+      }));
+  }, [cmsTestimonials]);
 
   let content = {
     English: {

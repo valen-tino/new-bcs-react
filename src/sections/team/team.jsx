@@ -5,13 +5,14 @@ import React, { useEffect } from 'react'
 
 import TeamCard from '../../components/teamcard'
 import { Pattern } from '../all/allpics'
-import { OurTeam } from '../all/alldata'
+import { useCMS } from '../../contexts/CMSContext'
 
 import { content } from './content';
 
 function Team (props){
 
   const lang = props.language === "Indonesia" ? (content.Indonesia) : (content.English);
+  const { team } = useCMS();
   
   useEffect(() => {
     AOS.init();
@@ -25,9 +26,12 @@ function Team (props){
                 <div className='flex flex-col justify-center w-full px-5 pt-16 pb-6 md:pt-20 md:pl-10 md:items-start'>
                     <h1 className='z-10 py-2 text-5xl leading-tight text-bold' data-aos="fade-up"><i className="fa-solid fa-people-group"></i> {lang.heading}</h1><br/>
                     <div className="z-10 flex flex-col gap-10 md:flex-row">
-                        {OurTeam.OurTeam.map((item,key) => {
+                        {team.map((item,key) => {
+                             const title = item.position || item.title || '';
+                             const desc = item.description || item.desc || '';
+                             const path = item.image || item.path || '';
                              return (
-                                <TeamCard key={key} name={item.name} title={item.title} desc={item.desc} path={item.path}/>
+                                <TeamCard key={key} name={item.name} title={title} desc={desc} path={path}/>
                              )
                          })}
                     </div>

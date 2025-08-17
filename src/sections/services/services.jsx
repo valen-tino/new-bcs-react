@@ -3,7 +3,7 @@ import AOS from 'aos';
 import 'aos/dist/aos.css';
 
 import { visa, bali, wedding, translate, travel, info} from '../all/allpics'
-import { VisaAbroad, VisaBali } from '../all/alldata';
+import { useCMS } from '../../contexts/CMSContext';
 import Modal from '../../components/modal'
 import Longwabutton from '../../components/longwabutton';
 import { Emailbutton } from '../../components/emailbutton';
@@ -16,6 +16,7 @@ function Services(props){
 
     const [modal, setModal] = useState(false)
     const [tempData, setTempData] = useState([])
+    const { visaAbroad, visaBali } = useCMS();
 
     const getData = (title, desc) => {
         let tempData = [title, desc];
@@ -45,7 +46,7 @@ function Services(props){
                             <h2 className='pl-2 text-sm text-bold' data-aos="fade-down">{lang.vaadesc}</h2>
                             <h3 className='pl-2 text-lg text-bold' data-aos="fade-down">{lang.vaasub}</h3>
                             <div className='flex flex-wrap gap-2 pr-4'>
-                                {VisaAbroad.VisaAbroad.map((item, key) => {
+                                {visaAbroad.map((item, key) => {
                                     return (
                                         <button 
                                             className='px-4 py-1 modal-open' 
@@ -80,7 +81,7 @@ function Services(props){
                             <h1 className='z-10 py-2 pl-2 text-5xl leading-tight text-bold' data-aos="fade-down">{lang.vab}</h1>
                             <h2 className='pl-2 pr-2 text-sm text-bold' data-aos="fade-down">{lang.vabdesc}</h2>
                             <div className='flex flex-wrap gap-2 py-2 pr-4'>
-                                {VisaBali.VisaBali.map((item, key) => {
+                                {visaBali.map((item, key) => {
                                     return (
                                         <button 
                                             className='px-4 py-1 modal-open' 

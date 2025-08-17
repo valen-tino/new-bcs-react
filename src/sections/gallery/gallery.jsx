@@ -3,13 +3,14 @@ import 'aos/dist/aos.css'
 
 import React, { useEffect } from 'react'
 import Picture from '../../components/picture'
-import { Images } from '../all/alldata'
+import { useCMS } from '../../contexts/CMSContext'
 
 import { content } from './content'
 
 function Gallery(props){
   
   const lang = props.language === "Indonesia" ? (content.Indonesia) : (content.English);
+  const { gallery } = useCMS();
   
   useEffect(() => {
     AOS.init();
@@ -24,9 +25,10 @@ function Gallery(props){
             </div>
         </div>
         <div className="flex flex-wrap px-6 pb-6 mx-auto md:pl-10">
-              {Images.Images.map((item,key) => {
+              {gallery.map((item,key) => {
+                const src = item.src || item.path || '';
                 return (
-                  <Picture key={key} path={item.path} alt={item.alt}/>
+                  <Picture key={key} path={src} alt={item.alt}/>
                 )
               })}
         </div>
