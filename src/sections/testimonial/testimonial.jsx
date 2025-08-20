@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react'
+import { Link } from 'react-router-dom';
 
-import Testicard from '../../components/testicard'
+import SimpleTestimonialCard from '../../components/SimpleTestimonialCard'
 import { Pattern } from '../all/allpics'
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import { Carousel } from 'react-responsive-carousel';
@@ -11,7 +12,7 @@ function Testimonial(props){
   // Use CMS data instead of querying Firestore directly
   const { testimonials: cmsTestimonials, loading, uiText } = useCMS();
 
-  // Prepare only published testimonials sorted by publishedAt desc
+  // Prepare only published testimonials sorted by publishedAt desc, limited to 5 for homepage
   const testimonials = useMemo(() => {
     const getDateVal = (d) => {
       if (!d) return 0;
@@ -24,10 +25,12 @@ function Testimonial(props){
     return (cmsTestimonials || [])
       .filter(t => t.status === 'published')
       .sort((a, b) => getDateVal(b.publishedAt) - getDateVal(a.publishedAt))
+      .slice(0, 5) // Limit to 5 testimonials on homepage
       .map(t => ({
         clientName: t.name,
         email: t.email || '',
-        desc: t.description || t.content || ''
+        desc: t.description || t.content || '',
+        rating: t.rating || 5
       }));
   }, [cmsTestimonials]);
 
@@ -53,30 +56,40 @@ function Testimonial(props){
           </div>
         </div>
         
-        <div className='flex justify-center items-center' data-aos="fade-up">  
+        <div className='flex flex-col items-center' data-aos="fade-up">  
           {loading ? (
             <div className="flex justify-center items-center py-10">
               <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-orange-500"></div>
             </div>
           ) : testimonials.length > 0 ? (
-            <Carousel 
-              showArrows={true} 
-              infiniteLoop={true} 
-              showIndicators={false} 
-              showThumbs={false} 
-              showStatus={false} 
-              autoPlay={true} 
-              interval={3500}
-            >
-              {testimonials.map((item, key) => (
-                <Testicard 
-                  key={key} 
-                  clientName={item.clientName} 
-                  email={item.email} 
-                  desc={item.desc}
-                />
-              ))}
-            </Carousel>
+            <>
+              <Carousel 
+                showArrows={true} 
+                infiniteLoop={true} 
+                showIndicators={false} 
+                showThumbs={false} 
+                showStatus={false} 
+                autoPlay={true} 
+                interval={3500}
+                className="mb-8"
+              >
+                {testimonials.map((item, key) => (
+                  <SimpleTestimonialCard 
+                    key={key} 
+                    clientName={item.clientName} 
+                    email={item.email} 
+                    desc={item.desc}
+                    rating={item.rating}
+                  />
+                ))}
+              </Carousel>
+              <Link 
+                to="/testimonials" 
+                className="px-6 py-3 bg-orange-600 text-white font-medium rounded-lg hover:bg-orange-700 transition-colors"
+              >
+                See More Testimonials
+              </Link>
+            </>
           ) : (
             <div className="text-center py-10">
               <p className="text-gray-600">{lang.noTestimonials}</p>

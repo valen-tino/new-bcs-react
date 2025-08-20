@@ -20,6 +20,8 @@ import Dashboard from './pages/cms/Dashboard';
 import NotificationEditor from './pages/cms/NotificationEditor';
 import UITextEditor from './pages/cms/UITextEditor';
 import TestimonialForm from './pages/TestimonialForm';
+import Testimonials from './pages/Testimonials';
+import GalleryPage from './pages/Gallery';
 import { useState } from 'react';
 import './App.css';
 
@@ -75,6 +77,8 @@ function App() {
                     <Route path="/cms/notifications" element={<NotificationEditor />} />
                     <Route path="/cms/uitext" element={<UITextEditor />} />
                     <Route path="/testimonial/:token" element={<TestimonialForm />} />
+                    <Route path="/testimonials" element={<Testimonials />} />
+                    <Route path="/gallery" element={<GalleryPage />} />
                     <Route path="/" element={<HomeContent />} />
                   </Routes>
                   <ToastContainer
