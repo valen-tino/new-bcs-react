@@ -33,7 +33,7 @@ function About(props){
                 
                 <div className='flex flex-col justify-center w-full px-5 pt-16 pb-6 text-gray-800 md:pt-20 md:pl-10 md:items-start'>
                     <h1 className='z-10 py-2 text-5xl leading-tight text-bold' data-aos="fade-down"><i className="fa-solid fa-circle-info"></i> {lang.heading}</h1><br/>
-                    <p data-aos="fade-down" className='text-justify'>{lang.desc}</p>
+                    <div data-aos="fade-down" className='text-justify' dangerouslySetInnerHTML={{ __html: lang.desc }}></div>
                 </div>
 
                 

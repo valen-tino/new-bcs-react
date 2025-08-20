@@ -13,8 +13,8 @@ export default function Modal ({title,desc,hide}) {
             <div className="relative w-auto max-w-3xl mx-auto my-6 mt-36">
               <div className="relative flex flex-col w-full bg-orange-100 border-0 rounded-lg shadow-lg outline-none focus:outline-none " data-aos="fade-down">
                 <div className="relative flex-auto p-4">
-                  <h3 className="text-3xl font-semibold">{title}</h3><br/>
-                  <p className="text-xs leading-relaxed text-gray-800">{desc}</p>
+                  <div className="text-3xl font-semibold" >{title}</div><br/>
+                  <div className="text-xs leading-relaxed text-gray-800" dangerouslySetInnerHTML={{ __html: desc }}></div>
                 </div>
                 <div className="flex items-center justify-start p-4 border-t border-orange-200 border-solid rounded-b md:justify-end">
                   <button className="text-xs font-bold text-red-500 uppercase outline-none background-transparent focus:outline-none hover:text-red-500" type="button" onClick={hide}>

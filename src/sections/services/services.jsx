@@ -18,11 +18,12 @@ function Services(props){
     // Normalize CMS items to the shape { title, desc } expected by the UI
     const normalizeVisaAbroadItems = (items = []) => {
         return items.map((i) => {
-            const title = i.title || `${i.flag ? i.flag + ' ' : ''}${i.country || ''}`.trim();
+            const title = i.title || `${i.country || ''}`;
+            const flag = i.flag || '';
             let desc = i.desc || i.description || '';
             if (Array.isArray(i.requirements) && i.requirements.length > 0) {
                 const reqText = i.requirements.map((r, idx) => `${idx + 1}. ${r}`).join('\n');
-                desc = desc ? `${desc}\n\nRequirements:\n${reqText}` : `Requirements:\n${reqText}`;
+                desc = desc ? `${desc}\nRequirements:\n${reqText}` : `Requirements:\n${reqText}`;
             }
             return { ...i, title, desc };
         });
@@ -30,8 +31,8 @@ function Services(props){
 
     const normalizeVisaBaliItems = (items = []) => {
         return items.map((i) => {
-            const durationPart = i.duration ? ` (${i.duration})` : '';
-            const title = i.title || `${i.type || ''}${durationPart}`.trim();
+            // const durationPart = i.duration ? ` (${i.duration})` : '';
+            const title = i.title || `${i.type || ''}`.trim();
             let desc = i.desc || i.description || '';
             if (Array.isArray(i.requirements) && i.requirements.length > 0) {
                 const reqText = i.requirements.map((r, idx) => `${idx + 1}. ${r}`).join('\n');
@@ -136,16 +137,19 @@ function Services(props){
                             <h2 className='pl-2 text-sm text-bold' data-aos="fade-down">{lang.vaadesc}</h2>
                             <h3 className='pl-2 text-lg text-bold' data-aos="fade-down">{lang.vaasub}</h3>
                             <div className='flex flex-wrap gap-2 pr-4'>
-                                {visaAbroad.map((item, key) => {
-                                    return (
-                                        <button 
-                                            className='px-4 py-2 bg-orange-500 text-white rounded-lg shadow-md hover:bg-orange-600 transition-colors duration-200 modal-open' 
-                                            data-aos="fade-up" 
-                                            key={key} 
-                                            onClick={() => getData(item.title, item.desc)}
-                                        >{item.title}</button>
-                                    )
-                                })}
+                                {visaAbroad.map((item, key) => (
+                                    <button
+                                        key={key}
+                                        className="flex items-center gap-2 px-4 py-2 bg-orange-500 text-white rounded-lg shadow-md hover:bg-orange-600 transition-colors duration-200 modal-open"
+                                        data-aos="fade-up"
+                                        onClick={() => getData(item.title, item.desc)}
+                                    >
+                                        {item.flag && (
+                                        <img src={item.flag} alt={item.title} className="w-6 h-4 object-cover" />
+                                        )}
+                                        {item.title}
+                                    </button>
+                                    ))}
                             </div>
 
                         </div>
