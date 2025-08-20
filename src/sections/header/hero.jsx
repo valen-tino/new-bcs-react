@@ -4,15 +4,21 @@ import 'aos/dist/aos.css';
 import React, { useEffect } from 'react'
 import { heroImage } from '../all/allpics'
 import Longwabutton from '../../components/longwabutton';
-
-import { content } from './content';
+import { useCMS } from '../../contexts/CMSContext';
 
 function Hero(props){
+  const { uiText } = useCMS();
+  
   useEffect(() => {
     AOS.init();
   }, []);
 
-const lang = props.language === "Indonesia" ? (content.Indonesia) : (content.English);
+  const lang = uiText?.hero ? 
+    (props.language === "Indonesia" ? uiText.hero.Indonesia : uiText.hero.English) : 
+    (props.language === "Indonesia" ? 
+      { heading: "Cari Visa Keluar Negeri?", subheading: "Dapatkan konsultasi visa dengan kami sekarang!", wa: "Hubungi hari ini!", lm: "Layanan Kami" } : 
+      { heading: "Make a Visa Abroad?", subheading: "Get consultation with us now!", wa: "Contact Us Today!", lm: "Learn More" }
+    );
 
   return (
     <>

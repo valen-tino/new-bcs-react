@@ -4,13 +4,14 @@ import { useCMS } from '../contexts/CMSContext';
 import { toast } from 'react-toastify';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
+// removed static imports for Province and OurServices
 import Province from '../data/dataProvinces';
 import OurServices from '../data/dataServices';
 import { content } from '../data/dataContactForm';
 
 export default function ContactUsModal({ hide }) {
   const { language } = useLanguage();
-  const { submitContactRequest } = useCMS();
+  const { submitContactRequest, provinces: cmsProvinces, serviceOptions: cmsServiceOptions, services } = useCMS();
   const lang = language === "Indonesia" ? content.Indonesia : content.English;
 
   const [formFields, setFormFields] = useState({
@@ -87,8 +88,17 @@ export default function ContactUsModal({ hide }) {
     AOS.init();
   }, []);
 
-  const provinces = Array.isArray(Province) ? Province : [];
-  const serviceOptions = Array.isArray(OurServices) ? OurServices : [];
+  // Prefer CMS-provided lists; gracefully fall back to static data if needed
+  const provinces = Array.isArray(cmsProvinces) && cmsProvinces.length > 0
+    ? cmsProvinces
+    : (Array.isArray(Province) ? Province : []);
+
+  const cmsServiceItems = Array.isArray(cmsServiceOptions) && cmsServiceOptions.length > 0
+    ? cmsServiceOptions.map(item => ({ id: item.id || item.value || item.name, services: item.services || item.name }))
+    : (Array.isArray(services?.items)
+        ? services.items.map(item => ({ id: item.id, services: item.name }))
+        : (Array.isArray(OurServices) ? OurServices : [])
+      );
 
   return (
     <>
@@ -184,7 +194,7 @@ export default function ContactUsModal({ hide }) {
                       disabled={isSubmitting}
                     >
                       <option value="" disabled>--Please Choose an Option--</option>
-                      {serviceOptions.map((item, key) => (
+                      {cmsServiceItems.map((item, key) => (
                         <option value={item.services} key={key}>{item.services}</option>
                       ))}
                     </select>

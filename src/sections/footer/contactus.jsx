@@ -7,16 +7,32 @@ import Longwabutton from '../../components/longwabutton';
 import { Emailbutton } from '../../components/emailbutton';
 import Link from '../../components/link';
 
-import { content } from './content';
+import { useCMS } from '../../contexts/CMSContext';
 import NotifModal from '../../components/NotifModal';
 
 function ContactUs (props){
+  const { uiText } = useCMS();
   useEffect(() => {
     AOS.init();
   }, []);
   const [showInfo,setShowInfo] = useState(false)
   const handleOnClose = () => setShowInfo(false)
-  const lang = props.language === "Indonesia" ? (content.Indonesia) : (content.English);
+  const lang = uiText?.footer?.[props.language] || {
+    desc: "Ready to start your journey with us?",
+    email: "Email Us",
+    wa: "WhatsApp Us",
+    desc2: "Bali Celebrant Services is your trusted partner for all your wedding and legal documentation needs in Bali. With years of experience and a deep understanding of local regulations, we ensure your special day is seamless and stress-free.",
+    legal: "Legal Information",
+    legaldetails: "All services provided by Bali Celebrant Services comply with Indonesian law and regulations. Please consult with our legal team for specific requirements.",
+    sub: "Legal compliance assured",
+    firstlink: "Home",
+    secondlink: "Services",
+    thirdlink: "About",
+    fourthlink: "Gallery",
+    fifthlink: "Testimonials",
+    akte: "Company Registration",
+    copy: "Copyright"
+  };
   
   return (
     <>

@@ -9,7 +9,7 @@ import { useCMS } from '../../contexts/CMSContext';
 
 function Testimonial(props){
   // Use CMS data instead of querying Firestore directly
-  const { testimonials: cmsTestimonials, loading } = useCMS();
+  const { testimonials: cmsTestimonials, loading, uiText } = useCMS();
 
   // Prepare only published testimonials sorted by publishedAt desc
   const testimonials = useMemo(() => {
@@ -31,18 +31,15 @@ function Testimonial(props){
       }));
   }, [cmsTestimonials]);
 
-  let content = {
-    English: {
-      heading:"Guest Testimonies",
-      noTestimonials: "No testimonials available yet."
-    },  
-    Indonesia:{
-      heading:"Testimoni / Kesaksian",
+  const lang = uiText?.testimonial ? 
+    (props.language === "Indonesia" ? uiText.testimonial.Indonesia : uiText.testimonial.English) : 
+    (props.language === "Indonesia" ? {
+      heading: "Testimoni / Kesaksian",
       noTestimonials: "Belum ada testimoni tersedia."
-    }
-  };
-  
-  const lang = props.language === "Indonesia" ? (content.Indonesia) : (content.English);
+    } : {
+      heading: "Guest Testimonies",
+      noTestimonials: "No testimonials available yet."
+    });
   
   return (
     <section id="testi">

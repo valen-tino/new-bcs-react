@@ -7,12 +7,12 @@ import TeamCard from '../../components/teamcard'
 import { Pattern } from '../all/allpics'
 import { useCMS } from '../../contexts/CMSContext'
 
-import { content } from './content';
-
 function Team (props){
 
-  const lang = props.language === "Indonesia" ? (content.Indonesia) : (content.English);
-  const { team } = useCMS();
+  const { team, uiText } = useCMS();
+  const lang = uiText?.team?.[props.language] || {
+    heading: "Our Team"
+  };
   
   useEffect(() => {
     AOS.init();

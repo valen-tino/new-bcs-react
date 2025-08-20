@@ -5,12 +5,16 @@ import React, { useEffect } from 'react'
 import Picture from '../../components/picture'
 import { useCMS } from '../../contexts/CMSContext'
 
-import { content } from './content'
-
 function Gallery(props){
+  const { gallery, uiText } = useCMS();
   
-  const lang = props.language === "Indonesia" ? (content.Indonesia) : (content.English);
-  const { gallery } = useCMS();
+  const lang = uiText?.gallery ? 
+    (props.language === "Indonesia" ? uiText.gallery.Indonesia : uiText.gallery.English) : 
+    (props.language === "Indonesia" ? {
+      heading: "Galeri"
+    } : {
+      heading: "Gallery"
+    });
   
   useEffect(() => {
     AOS.init();

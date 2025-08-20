@@ -2,19 +2,25 @@ import React from 'react'
 import { useState } from 'react'
 import NotifModal from '../../components/NotifModal'
 import { NotifContent, NotifPNG, NyepiContent, NyepiPNG } from '../all/allpics'
-import { content } from './content'
+import { useCMS } from '../../contexts/CMSContext'
 import { useNotification } from '../../contexts/NotificationContext'
 
 export default function Notif(props){
-
+const { uiText } = useCMS();
 const [showInfo,setShowInfo] = useState(false)
 const handleOnClose = () => setShowInfo(false)
 const { activeNotification } = useNotification()
 
-// Use active notification if available, otherwise fall back to static content
+// Use active notification if available, otherwise fall back to CMS uiText
 const lang = activeNotification 
   ? (props.language === "Indonesia" ? activeNotification.Indonesia : activeNotification.English)
-  : (props.language === "Indonesia" ? content.Indonesia : content.English);
+  : uiText?.notif?.[props.language] || {
+    update: "Important Update",
+    ck: "Click here",
+    title: "Notification",
+    sub: "Important Notice",
+    desc: "Please check our latest updates and announcements."
+  };
 
   return (
     <>

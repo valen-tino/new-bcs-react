@@ -5,10 +5,11 @@ import React, {useState, useEffect} from 'react'
 import { logoIcon} from '../all/allpics'
 import useScrollPosition from '../../hooks/useScrollPosition'
 import { Emailbutton } from '../../components/emailbutton';
-import { content } from './content';
+import { useCMS } from '../../contexts/CMSContext';
 import { Link } from "react-scroll";
 
 function Navbar(props) {
+  const { uiText } = useCMS();
   useEffect(() => {
     AOS.init();
   }, []);
@@ -21,7 +22,15 @@ function Navbar(props) {
     return classes.filter(Boolean).join(' ')
   }
 
-  const lang = props.language === "Indonesia" ? (content.Indonesia) : (content.English);
+  const lang = uiText?.nav?.[props.language] || {
+    home: "Home",
+    services: "Services",
+    about: "About",
+    gallery: "Gallery",
+    testi: "Testimonials",
+    contactus: "Contact",
+    email: "Email Us"
+  };
 
 
     return (

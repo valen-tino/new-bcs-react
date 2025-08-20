@@ -4,6 +4,7 @@ import { toast } from 'react-toastify';
 import MultilingualEditor from './MultilingualEditor';
 
 function UITextEditor() {
+  const { content, updateUIText } = useCMS();
   const [activeSection, setActiveSection] = useState('header');
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -24,18 +25,16 @@ function UITextEditor() {
     const fetchUITextContent = async () => {
       setLoading(true);
       try {
-        // This would be replaced with actual Firestore fetching
-        // For now, we'll use a placeholder
         const sections = ['header', 'nav', 'footer', 'services', 'about', 'team', 'gallery', 'testimonial', 'notif'];
-        const content = {};
+        const newContent = {};
         
         for (const section of sections) {
-          // Fetch each section's content from Firestore
-          const sectionContent = await fetchSectionContent(section);
-          content[section] = sectionContent || { English: {}, Indonesia: {} };
+          // Get content from CMS context uiText
+          const sectionContent = content.uiText?.[section] || { English: {}, Indonesia: {} };
+          newContent[section] = sectionContent;
         }
         
-        setUITextContent(content);
+        setUITextContent(newContent);
       } catch (error) {
         console.error('Error fetching UI text content:', error);
         toast.error('Failed to load UI text content');
@@ -45,14 +44,9 @@ function UITextEditor() {
     };
     
     fetchUITextContent();
-  }, []);
+  }, [content.uiText]);
 
-  // Placeholder function to fetch section content
-  const fetchSectionContent = async (section) => {
-    // This would be replaced with actual Firestore fetching
-    // For now, we'll return placeholder data
-    return { English: {}, Indonesia: {} };
-  };
+
 
   const handleSectionChange = (section) => {
     setActiveSection(section);
@@ -71,9 +65,8 @@ function UITextEditor() {
   const handleSave = async () => {
     setSaving(true);
     try {
-      // Save the content to Firestore
-      // This would be implemented with actual Firestore saving
-      await saveUITextContent(activeSection, uiTextContent[activeSection]);
+      // Use the updateUIText function from CMS context
+      await updateUIText(activeSection, uiTextContent[activeSection]);
       toast.success(`${activeSection.charAt(0).toUpperCase() + activeSection.slice(1)} content saved successfully`);
     } catch (error) {
       console.error('Error saving UI text content:', error);
@@ -81,13 +74,6 @@ function UITextEditor() {
     } finally {
       setSaving(false);
     }
-  };
-
-  // Placeholder function to save section content
-  const saveUITextContent = async (section, content) => {
-    // This would be replaced with actual Firestore saving
-    console.log(`Saving ${section} content:`, content);
-    return true;
   };
 
   const renderFields = () => {

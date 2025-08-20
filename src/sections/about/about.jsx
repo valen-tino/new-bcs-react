@@ -3,12 +3,20 @@ import 'aos/dist/aos.css';
 
 import React, { useEffect } from 'react'
 import { Vinsen } from '../all/allpics'
-
-import { content } from './content';
+import { useCMS } from '../../contexts/CMSContext';
 
 function About(props){
+  const { about: aboutData } = useCMS();
   
-  const lang = props.language === "Indonesia" ? (content.Indonesia) : (content.English);
+  const lang = aboutData ? 
+    (props.language === "Indonesia" ? 
+      { heading: aboutData.heading?.Indonesia || "Tentang Kami", desc: aboutData.description?.Indonesia || aboutData.description || "" } : 
+      { heading: aboutData.heading?.English || "About Us", desc: aboutData.description?.English || aboutData.description || "" }
+    ) : 
+    (props.language === "Indonesia" ? 
+      { heading: "Tentang Kami", desc: "Loading..." } : 
+      { heading: "About Us", desc: "Loading..." }
+    );
   
   useEffect(() => {
     AOS.init();

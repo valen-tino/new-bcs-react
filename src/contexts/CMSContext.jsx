@@ -28,7 +28,9 @@ export function CMSProvider({ children }) {
     },
     gallery: [],
     testimonials: [],
-    contactRequests: []
+    contactRequests: [],
+    provinces: [],
+    serviceOptions: []
   });
   const [loading, setLoading] = useState(true);
   const [unreadRequests, setUnreadRequests] = useState(0);
@@ -112,6 +114,65 @@ export function CMSProvider({ children }) {
       } catch (error) {
         console.error('Error loading testimonials data:', error);
       }
+
+      // Load provinces
+      let provinces = [];
+      try {
+        const provincesDoc = await getDoc(doc(db, 'content', 'provinces'));
+        provinces = provincesDoc.exists() ? provincesDoc.data().items || [] : [];
+      } catch (error) {
+        console.error('Error loading provinces data:', error);
+      }
+
+      // Load service options
+      let serviceOptions = [];
+      try {
+        const serviceOptionsDoc = await getDoc(doc(db, 'content', 'serviceOptions'));
+        serviceOptions = serviceOptionsDoc.exists() ? serviceOptionsDoc.data().items || [] : [];
+      } catch (error) {
+        console.error('Error loading service options data:', error);
+      }
+
+      // Load UI text
+      let uiText = {};
+      try {
+        const uiTextDoc = await getDoc(doc(db, 'content', 'uiText'));
+        if (uiTextDoc.exists()) {
+          uiText = uiTextDoc.data();
+        }
+      } catch (error) {
+        console.error('Error loading UI text data:', error);
+      }
+
+    // Load team members
+    const loadTeam = async () => {
+      try {
+        const teamSnapshot = await getDocs(collection(db, 'team'));
+        const teamData = teamSnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+        setContent(prev => ({ ...prev, team: teamData }));
+      } catch (error) {
+        console.error('Error loading team:', error);
+        toast.error('Failed to load team members');
+      }
+    };
+
+    // Load UI text
+    const loadUIText = async () => {
+      try {
+        const uiTextDoc = await getDoc(doc(db, 'content', 'uiText'));
+        let uiText = {};
+        if (uiTextDoc.exists()) {
+          uiText = uiTextDoc.data();
+        }
+        setContent(prev => ({ ...prev, uiText }));
+      } catch (error) {
+        console.error('Error loading UI text:', error);
+        toast.error('Failed to load UI text');
+      }
+    };
       
       setContent({
         visaAbroad,
@@ -120,7 +181,10 @@ export function CMSProvider({ children }) {
         about,
         gallery,
         testimonials,
-        contactRequests: []
+        contactRequests: [],
+        provinces,
+        serviceOptions,
+        uiText
       });
       
     } catch (error) {
@@ -715,6 +779,61 @@ export function CMSProvider({ children }) {
     }
   };
 
+  // Provinces and service options updaters
+  const updateProvinces = async (items) => {
+    try {
+      await setDoc(doc(db, 'content', 'provinces'), { items });
+      setContent(prev => ({ ...prev, provinces: items }));
+      toast.success('Provinces updated successfully!');
+      return true;
+    } catch (error) {
+      console.error('Error updating provinces:', error);
+      toast.error('Failed to update provinces.');
+      return false;
+    }
+  };
+
+  const updateServiceOptions = async (items) => {
+    try {
+      await setDoc(doc(db, 'content', 'serviceOptions'), { items });
+      setContent(prev => ({ ...prev, serviceOptions: items }));
+      toast.success('Service options updated successfully!');
+      return true;
+    } catch (error) {
+      console.error('Error updating service options:', error);
+      toast.error('Failed to update service options.');
+      return false;
+    }
+  };
+
+  // Update UI text content
+  const updateUIText = async (section, content) => {
+    try {
+      const uiTextRef = doc(db, 'content', 'uiText');
+      const uiTextDoc = await getDoc(uiTextRef);
+      
+      let currentContent = {};
+      if (uiTextDoc.exists()) {
+        currentContent = uiTextDoc.data();
+      }
+      
+      // Merge the new content with existing content
+      const updatedContent = {
+        ...currentContent,
+        [section]: content
+      };
+      
+      await setDoc(uiTextRef, updatedContent);
+      setContent(prev => ({ ...prev, uiText: updatedContent }));
+      toast.success(`${section} content updated successfully!`);
+      return true;
+    } catch (error) {
+      console.error('Error updating UI text:', error);
+      toast.error('Failed to update UI text content.');
+      return false;
+    }
+  };
+
   // Add a new team member
   const addTeamMember = async (memberData) => {
     try {
@@ -869,6 +988,9 @@ export function CMSProvider({ children }) {
     gallery: content.gallery,
     testimonials: content.testimonials,
     contactRequests: content.contactRequests,
+    provinces: content.provinces,
+    serviceOptions: content.serviceOptions,
+    uiText: content.uiText || {},
     loading,
     unreadRequests,
     updateVisaAbroad,
@@ -895,6 +1017,9 @@ export function CMSProvider({ children }) {
     archiveTestimonial,
     markRequestAsRead,
     submitContactRequest,
+    updateProvinces,
+    updateServiceOptions,
+    updateUIText,
     loadContent,
     // Notification methods
     getNotification,

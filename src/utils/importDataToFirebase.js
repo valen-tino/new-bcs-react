@@ -9,6 +9,7 @@ import dataGallery from '../data/dataGallery';
 import dataTeam from '../data/dataTeam';
 import dataTestimonial from '../data/dataTestimonial';
 import dataServices from '../data/dataServices';
+import dataProvinces from '../data/dataProvinces';
 
 // Import content from section files
 import { content as notifContent } from '../sections/notif/content';
@@ -33,6 +34,8 @@ export const importAllData = async () => {
       importVisaAbroadToFirebase(),
       importVisaBaliToFirebase(),
       importServicesToFirebase(),
+      importServiceOptionsToFirebase(),
+      importProvincesToFirebase(),
       importTeamToFirebase(),
       importGalleryToFirebase(),
       importTestimonialsToFirebase(),
@@ -152,6 +155,47 @@ export const importServicesToFirebase = async () => {
   } catch (error) {
     console.error('Error importing Services data:', error);
     toast.error('Failed to import Services data.');
+    return false;
+  }
+};
+
+/**
+ * Import Service Options list for Contact Form to Firebase
+ * @returns {Promise<boolean>} Success status
+ */
+export const importServiceOptionsToFirebase = async () => {
+  try {
+    const items = dataServices.map(service => ({
+      id: service.id.toString(),
+      services: service.services
+    }));
+
+    await setDoc(doc(db, 'content', 'serviceOptions'), { items, updatedAt: serverTimestamp() });
+    toast.success('Service options imported successfully!');
+    return true;
+  } catch (error) {
+    console.error('Error importing Service options:', error);
+    toast.error('Failed to import Service options.');
+    return false;
+  }
+};
+
+/**
+ * Import Provinces list to Firebase
+ * @returns {Promise<boolean>} Success status
+ */
+export const importProvincesToFirebase = async () => {
+  try {
+    const items = Array.isArray(dataProvinces)
+      ? dataProvinces.map(p => ({ id: p.id.toString(), name: p.name }))
+      : [];
+
+    await setDoc(doc(db, 'content', 'provinces'), { items, updatedAt: serverTimestamp() });
+    toast.success('Provinces imported successfully!');
+    return true;
+  } catch (error) {
+    console.error('Error importing Provinces:', error);
+    toast.error('Failed to import Provinces.');
     return false;
   }
 };
