@@ -41,7 +41,7 @@ function Dashboard() {
   const renderContent = () => {
     switch (activeSection) {
       case 'overview':
-        return <DashboardOverview />;
+        return <DashboardOverview setActiveSection={setActiveSection} />;
       case 'visa-abroad':
         return <VisaAbroadEditor />;
       case 'visa-bali':
@@ -61,7 +61,7 @@ function Dashboard() {
       case 'uitext':
         return <UITextEditor />;
       default:
-        return <DashboardOverview />;
+        return <DashboardOverview setActiveSection={setActiveSection} />;
     }
   };
 
