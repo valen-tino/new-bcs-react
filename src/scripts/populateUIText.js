@@ -51,7 +51,7 @@ export const populateUITextContent = async () => {
         }
       },
 
-      // Services section (from services/content.jsx)
+      // Services section (from services/content.jsx) - Descriptions moved to Services CMS
       services: {
         English: {
           vaa: "Visa Assistance Abroad",
@@ -61,16 +61,13 @@ export const populateUITextContent = async () => {
           vabdesc: "We also offer visa assistance services in Bali, Indonesia. Our services range from helping you apply for a visa to providing the necessary documents for your application. We also assist with any enquiries around the process of obtaining a visa.",
           wedding: "Wedding Ceremony Organizer",
           weddingsub: "For Bali Only.",
-          weddingdesc: "A Wedding is a very important event in Indonesia, especially in Bali. Getting married in Bali for Indonesian and Expat couples.<br><br>To get legally married in Bali, please kindly Contact Us. We will guide you from A to Z until you have a successful outcome. To be legally married in Indonesia requires a religious ceremony.<br>Our Company can organize religious ceremony as follows :<br>- As Moslem<br>- As Christians<br>- As Hindu<br>- As Buddhist",
           weddingbtn: "Our Gallery",
           translate: "Translation Documents",
-          translatedesc: "BCS will also provide the services of Translation any documents into any languages with a certified translator Sworn in Indonesia.<br><br>Provided by Sworn Translation Services in Indonesia for Bahasa Indonesia, English, Chinese, Japanese, Korean, German, Arabic, Thai, Vietnamese, Russian, Spanish, French, Dutch, Italian, etc.",
           travel: "Travel Insurance",
-          traveldesc: "Learn more about our product and get some travel tips while you are preparing for your next vacation.<br><br>To reserve and book your travel insurance online, kindly please contact us",
           others: "Other Services",
-          otherssub: "We provide document management",
           email: "Request Form",
           wa: "Lets Talk"
+          // Removed: weddingdesc, translatedesc, traveldesc, otherssub (moved to Services CMS)
         },
         Indonesia: {
           vaa: "Visa Liburan, Visa Bisnis Keluar Negeri",
@@ -80,28 +77,25 @@ export const populateUITextContent = async () => {
           vabdesc: "Kami juga mengurusi dan melayani pengurusan semua jenis visa dan dokumen bagi Expatriat/Warga Negara Asing / Turis yang datang dan tingat di Indonesia.<br>Lebih dari 15 tahun kami telah berpengalaman mengurusi jasa pengurusan kelengkapan dokumen melalui kantor Imigrasi dan kantor Pemerintahan yang terkait lainnya.",
           wedding: "Upacara Pernikahan",
           weddingsub: "Khusus untuk Acara Nikah Bali",
-          weddingdesc: "Pernikahan atau perkawinan adalah hal yang sangat penting dan Sakral (suci), Pernikahan campur atau tidak campur bisa dilaksanakan proses pernikahan di Bali, bisa dilaksanakan Pernikahan di tempat Ibadah atau dilaksanakan di Hotel/Villa atau tempat yang bisa ditentukan oleh pengantin/pasangan calon Pernikahan.<br><br>Kantor kami akan membantu dan memperlancar proses administrasi perkawinan yang resmi dan sah baik menurut Agama maupun sesuai Undang-undang / hukum Negara.<br>Kami, BCS akan membantu proses pernikahan sebagai berikut:<br>- Agama Islam<br>- Agama Kristen Katolik / Protestant<br>- Agama Hindu<br>- Agama Budha<br>- Agama Konghucu",
           weddingbtn: "Our Gallery",
           translate: "Terjemahkan Dokumen",
-          translatedesc: "BCS juga akan menyediakan jasa Penerjemahan dokumen apapun ke dalam bahasa apapun dengan penerjemah tersumpah bersertifikat di Indonesia.<br><br>Disediakan oleh Layanan Terjemahan Tersumpah di Indonesia untuk Bahasa Indonesia, Inggris, Mandarin, Jepang, Korea, Jerman, Arab, Thailand, Vietnam, Rusia, Spanyol, Prancis, Belanda, Italia, dll.",
           travel: "Asuransi Perjalanan",
-          traveldesc: "Pelajari lebih lanjut tentang produk kami dan dapatkan beberapa tips perjalanan saat Anda mempersiapkan liburan berikutnya.<br><br>Untuk memesan dan memesan asuransi perjalanan Anda secara online, silakan hubungi kami",
           others: "Layanan Lainnya",
-          otherssub: "Kami melayani pengurusan dokumen",
           email: "Request Form",
           wa: "Hubungi Kami"
+          // Removed: weddingdesc, translatedesc, traveldesc, otherssub (moved to Services CMS)
         }
       },
 
-      // About section (from about/content.jsx)
+      // About section (from about/content.jsx) - Description moved to About CMS
       about: {
         English: {
-          heading: "About Us",
-          desc: "BCS ( CV. Bali Connection Service) was established in 2005 until now. Our company has many years of experience assisting with visa processing abroad and within the country for both Domestic Tourists and Expatriates / Foreign Residents in Indonesia.<br><br>We have more than 20 years of experience helping with all types of travel documents, including visas abroad and permits in Bali / Indonesia. Especially visa assistance abroad, as we know that the Embassy refuses many Visa applicants access because their documents are incomplete.<br><br>That's why We, BCS, specialize in all aspects of visa requirements. We can guide you step by step into your visa application until you get a successful outcome—the Indonesian Immigration Office.<br><br>Our friendly staff will assist you and provide a proper and complete consultation, especially in;<br>Holiday Visa,<br>Business Visa,<br>Retirement Visa,<br>Spouse Visa in Australia,<br>Visa Extension,<br>Social Visa,<br>Etc.<br>We, BCS, will guarantee that 99% of visas will be approved.<br><br>WE SERVE YOU SINCERELY BECAUSE YOUR SATISFACTION IS OUR GOAL."
+          heading: "About Us"
+          // Removed: desc (moved to About CMS)
         },
         Indonesia: {
-          heading: "Tentang Kami",
-          desc: "BCS ( CV. Bali Connection Service), didirikan sejak tahun 2005 sampai saat ini. Perusahaan kami tentunya telah memiliki pengalaman bertahun-tahun dalam membantu pengurusan visa keluar negeri dan dalam Negeri baik untuk Wisatawan Domestik maupun dan Warga Ekspatriat/ Warga Asing di Indonesia.<br><br>Dengan memiliki pengalaman lebih dari 20 tahun itulah, kami sungguh mengetahui dokumen dokumen yang diperlukan untuk pengurusan visa keluar Negeri, dengan Jaminan 99 % semua visa aplikasi disetujui oleh pihak Kedutaan.Teristimewa pengurusan Visa aplikasi keluar negeri. Seperti yang kita ketahui bahwa banyak pemohon Visa yang ditolak visanya oleh Kedutaan dikarenakan alasan dokumen visa aplikasi tidak lengkap.<br><br>Oleh karena itu Kantor kami, BCS akan memberikan konsultasi dan saran yang benar untuk melengkapi semua persyaratan dokumen aplikasi sebelum diajukan ke Kedutaan / Konsulat terkait. Disamping itu, kami juga membantu untuk pengurusan visa kunjungan ke Indonesia, terutama Bali seperti:<br>Perpanjangan VOA,<br>Visa B211,<br>Visa Social Budaya,<br>Kitas Pensiun/Kerja/Family,<br>PMA,<br>Dan Lain-lain.<br><br>KAMI MELAYANI ANDA DENGAN SETULUS HATI KARENA KEPUASAN ANDA ADALAH TUJUAN KAMI."
+          heading: "Tentang Kami"
+          // Removed: desc (moved to About CMS)
         }
       },
 
@@ -252,11 +246,17 @@ export const populateUITextContent = async () => {
     });
 
     console.log('✅ UI Text content populated successfully!');
-    console.log(`📝 Populated ${Object.keys(uiTextContent).length} sections:`);
+    console.log(`📝 Populated ${Object.keys(uiTextContent).length} sections (cleaned - service descriptions and about description moved to respective CMS sections):`);
     Object.keys(uiTextContent).forEach(section => {
       const englishFields = Object.keys(uiTextContent[section].English || {}).length;
       const indonesianFields = Object.keys(uiTextContent[section].Indonesia || {}).length;
       console.log(`   - ${section}: ${englishFields} English fields, ${indonesianFields} Indonesian fields`);
+      if (section === 'services') {
+        console.log(`     Note: Service descriptions moved to Services CMS`);
+      }
+      if (section === 'about') {
+        console.log(`     Note: About description moved to About CMS`);
+      }
     });
     
     return true;

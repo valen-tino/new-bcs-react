@@ -4,6 +4,8 @@ import { toast } from 'react-toastify';
 import MultilingualEditor from './MultilingualEditor';
 import UITextPopulator from './UITextPopulator';
 import ServiceDescriptionMigrator from './ServiceDescriptionMigrator';
+import AboutDescriptionMigrator from './AboutDescriptionMigrator';
+import UITextCleanup from './UITextCleanup';
 
 function UITextEditor() {
   const { content, updateUIText, loadContent } = useCMS();
@@ -115,11 +117,12 @@ function UITextEditor() {
     }
 
     // Field definitions based on actual component usage
+    // Note: Service descriptions and About description have been migrated to their respective CMS sections
     const fields = {
       hero: ['heading', 'subheading', 'wa', 'lm'],
       nav: ['home', 'services', 'about', 'team', 'gallery', 'testi', 'contactus', 'email'],
-      services: ['vaa', 'vaadesc', 'vaasub', 'vab', 'vabdesc', 'wedding', 'weddingsub', 'weddingbtn', 'translate', 'travel', 'others', 'otherssub', 'email', 'wa'],
-      about: ['heading', 'desc'],
+      services: ['vaa', 'vaadesc', 'vaasub', 'vab', 'vabdesc', 'wedding', 'weddingsub', 'weddingbtn', 'translate', 'travel', 'others', 'email', 'wa'], // Removed: weddingdesc, translatedesc, traveldesc, otherssub
+      about: ['heading'], // Removed: desc (now in About CMS)
       team: ['heading'],
       gallery: ['heading'],
       testimonial: ['heading', 'seeall'],
@@ -162,6 +165,47 @@ function UITextEditor() {
             />
           </div>
         ))}
+        
+        {/* Information about migrated content */}
+        {activeSection === 'services' && (
+          <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+            <div className="flex">
+              <div className="flex-shrink-0">
+                <svg className="h-5 w-5 text-blue-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <div className="ml-3">
+                <h4 className="text-sm font-medium text-blue-800">
+                  📝 Service Descriptions Moved
+                </h4>
+                <div className="mt-2 text-sm text-blue-700">
+                  <p>Service descriptions (Wedding, Translation, Travel, Others) have been moved to the <strong>Services CMS section</strong> for better bilingual management.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+        
+        {activeSection === 'about' && (
+          <div className="mt-6 p-4 bg-green-50 border border-green-200 rounded-lg">
+            <div className="flex">
+              <div className="flex-shrink-0">
+                <svg className="h-5 w-5 text-green-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <div className="ml-3">
+                <h4 className="text-sm font-medium text-green-800">
+                  📄 About Description Moved
+                </h4>
+                <div className="mt-2 text-sm text-green-700">
+                  <p>About Us description has been moved to the <strong>About Us CMS section</strong> for better bilingual management. Only the heading remains here for navigation purposes.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     );
   };
@@ -197,6 +241,12 @@ function UITextEditor() {
       
       {/* Service Description Migrator */}
       <ServiceDescriptionMigrator />
+      
+      {/* About Description Migrator */}
+      <AboutDescriptionMigrator />
+      
+      {/* UI Text Cleanup */}
+      <UITextCleanup />
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-4">
         {/* Section Navigation */}

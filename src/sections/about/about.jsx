@@ -8,12 +8,28 @@ import { useCMS } from '../../contexts/CMSContext';
 function About(props){
   const { about: aboutData, uiText } = useCMS();
   
-  const lang = uiText?.about ? 
-    (props.language === "Indonesia" ? uiText.about.Indonesia : uiText.about.English) : 
-    (props.language === "Indonesia" ? 
-      { heading: "Tentang Kami", desc: aboutData?.description || "Loading..." } : 
-      { heading: "About Us", desc: aboutData?.description || "Loading..." }
-    );
+  // Helper function to get CMS content with language support
+  const getCMSContent = (field, fallback, language = 'English') => {
+    const aboutCMS = aboutData?.[field];
+    if (aboutCMS) {
+      // Check if content is bilingual object
+      if (typeof aboutCMS === 'object' && aboutCMS[language]) {
+        return aboutCMS[language];
+      }
+      // Fallback to string content (for backward compatibility)
+      if (typeof aboutCMS === 'string') {
+        return aboutCMS;
+      }
+    }
+    return fallback;
+  };
+  
+  const lang = {
+    heading: uiText?.about ? 
+      (props.language === "Indonesia" ? uiText.about.Indonesia?.heading : uiText.about.English?.heading) : 
+      getCMSContent('heading', props.language === "Indonesia" ? "Tentang Kami" : "About Us", props.language === "Indonesia" ? 'Indonesian' : 'English'),
+    desc: getCMSContent('description', "Loading...", props.language === "Indonesia" ? 'Indonesian' : 'English')
+  };
   
   useEffect(() => {
     AOS.init();

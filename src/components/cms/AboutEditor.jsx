@@ -2,10 +2,12 @@ import React, { useState, useRef } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
 import { useCMS } from '../../contexts/CMSContext';
 import { toast } from 'react-toastify';
+import AboutDescriptionMigrator from './AboutDescriptionMigrator';
 
 function AboutEditor() {
   const { about, team, updateAbout, updateTeam, addTeamMember, deleteTeamMember } = useCMS();
   const [activeTab, setActiveTab] = useState('about');
+  const [activeLanguage, setActiveLanguage] = useState('English');
   const [selectedMember, setSelectedMember] = useState(null);
   const [isEditingMember, setIsEditingMember] = useState(false);
   const [isAddingMember, setIsAddingMember] = useState(false);
@@ -14,7 +16,14 @@ function AboutEditor() {
   
   const [aboutData, setAboutData] = useState({
     image: about?.image || '',
-    description: about?.description || ''
+    heading: {
+      English: about?.heading?.English || 'About Us',
+      Indonesian: about?.heading?.Indonesian || 'Tentang Kami'
+    },
+    description: {
+      English: about?.description?.English || about?.description || '',
+      Indonesian: about?.description?.Indonesian || ''
+    }
   });
 
   const [memberData, setMemberData] = useState({
@@ -34,6 +43,26 @@ function AboutEditor() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleDescriptionChange = (content) => {
+    setAboutData(prev => ({
+      ...prev,
+      description: {
+        ...prev.description,
+        [activeLanguage]: content
+      }
+    }));
+  };
+
+  const handleHeadingChange = (value) => {
+    setAboutData(prev => ({
+      ...prev,
+      heading: {
+        ...prev.heading,
+        [activeLanguage]: value
+      }
+    }));
   };
 
   const handleEditMember = (member) => {
@@ -112,9 +141,12 @@ function AboutEditor() {
       <div>
         <h2 className="text-2xl font-bold text-gray-900">About Us</h2>
         <p className="mt-1 text-sm text-gray-600">
-          Manage the About Us section including main content and team members.
+          Manage the About Us section including bilingual content and team members.
         </p>
       </div>
+
+      {/* Migration Notice */}
+      <AboutDescriptionMigrator />
 
       {/* Tabs */}
       <div className="border-b border-gray-200">
@@ -146,9 +178,38 @@ function AboutEditor() {
       {activeTab === 'about' && (
         <div className="bg-white rounded-lg shadow">
           <div className="px-4 py-5 sm:p-6">
-            <h3 className="mb-4 text-lg font-medium text-gray-900">About Us Content</h3>
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-lg font-medium text-gray-900">About Us Content</h3>
+              
+              {/* Language Toggle */}
+              <div className="flex items-center space-x-2">
+                <span className="text-sm text-gray-700">Language:</span>
+                <div className="flex bg-gray-100 rounded-md p-1">
+                  <button
+                    onClick={() => setActiveLanguage('English')}
+                    className={`px-3 py-1 text-sm font-medium rounded-md transition-colors ${
+                      activeLanguage === 'English'
+                        ? 'bg-white text-orange-600 shadow-sm'
+                        : 'text-gray-600 hover:text-gray-900'
+                    }`}
+                  >
+                    🇺🇸 English
+                  </button>
+                  <button
+                    onClick={() => setActiveLanguage('Indonesian')}
+                    className={`px-3 py-1 text-sm font-medium rounded-md transition-colors ${
+                      activeLanguage === 'Indonesian'
+                        ? 'bg-white text-orange-600 shadow-sm'
+                        : 'text-gray-600 hover:text-gray-900'
+                    }`}
+                  >
+                    🇮🇩 Indonesian
+                  </button>
+                </div>
+              </div>
+            </div>
             
-            <div className="space-y-4">
+            <div className="space-y-6">
               <div>
                 <label className="block text-sm font-medium text-gray-700">Main Image URL</label>
                 <input
@@ -166,12 +227,27 @@ function AboutEditor() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700">Description</label>
+                <label className="block text-sm font-medium text-gray-700">
+                  Section Heading ({activeLanguage})
+                </label>
+                <input
+                  type="text"
+                  value={aboutData.heading[activeLanguage]}
+                  onChange={(e) => handleHeadingChange(e.target.value)}
+                  className="block mt-1 w-full rounded-md border-gray-300 shadow-sm focus:ring-orange-500 focus:border-orange-500 sm:text-sm"
+                  placeholder={`Enter heading in ${activeLanguage}`}
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Description ({activeLanguage})
+                </label>
                 <Editor
                   apiKey="qi0nenw5umgv10sw07bvpjtaftf20chbphdm63kytqo8xzvx"
                   onInit={(evt, editor) => editorRef.current = editor}
-                  value={aboutData.description}
-                  onEditorChange={(content) => setAboutData({ ...aboutData, description: content })}
+                  value={aboutData.description[activeLanguage]}
+                  onEditorChange={handleDescriptionChange}
                   init={{
                     height: 400,
                     menubar: false,
@@ -189,7 +265,25 @@ function AboutEditor() {
                 />
               </div>
 
-              <div className="flex justify-end pt-4">
+              {/* Preview other language */}
+              {activeLanguage === 'English' && aboutData.description.Indonesian && (
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                  <h4 className="text-sm font-medium text-blue-800 mb-2">🇮🇩 Indonesian Preview:</h4>
+                  <div className="text-sm text-blue-700 prose prose-sm max-w-none" dangerouslySetInnerHTML={{ __html: aboutData.description.Indonesian }}></div>
+                </div>
+              )}
+              
+              {activeLanguage === 'Indonesian' && aboutData.description.English && (
+                <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                  <h4 className="text-sm font-medium text-green-800 mb-2">🇺🇸 English Preview:</h4>
+                  <div className="text-sm text-green-700 prose prose-sm max-w-none" dangerouslySetInnerHTML={{ __html: aboutData.description.English }}></div>
+                </div>
+              )}
+
+              <div className="flex justify-between items-center pt-4">
+                <div className="text-sm text-gray-500">
+                  Currently editing: <span className="font-medium">{activeLanguage}</span>
+                </div>
                 <button
                   onClick={handleSaveAbout}
                   disabled={loading}
