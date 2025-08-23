@@ -6,6 +6,7 @@ import UITextPopulator from './UITextPopulator';
 import ServiceDescriptionMigrator from './ServiceDescriptionMigrator';
 import AboutDescriptionMigrator from './AboutDescriptionMigrator';
 import UITextCleanup from './UITextCleanup';
+import AnnouncementsUITextPopulator from './AnnouncementsUITextPopulator';
 
 function UITextEditor() {
   const { content, updateUIText, loadContent } = useCMS();
@@ -25,6 +26,7 @@ function UITextEditor() {
     testimonialsPage: { English: {}, Indonesia: {} },
     notif: { English: {}, Indonesia: {} },
     contactForm: { English: {}, Indonesia: {} },
+    announcements: { English: {}, Indonesia: {} },
   });
 
   // Fetch UI text content from Firestore
@@ -32,7 +34,7 @@ function UITextEditor() {
     const fetchUITextContent = async () => {
       setLoading(true);
       try {
-        const sections = ['hero', 'nav', 'services', 'about', 'team', 'gallery', 'testimonial', 'footer', 'galleryPage', 'testimonialsPage', 'notif', 'contactForm'];
+        const sections = ['hero', 'nav', 'services', 'about', 'team', 'gallery', 'testimonial', 'footer', 'galleryPage', 'testimonialsPage', 'notif', 'contactForm', 'announcements'];
         const newContent = {};
         
         for (const section of sections) {
@@ -130,7 +132,8 @@ function UITextEditor() {
       galleryPage: ['heading', 'noImages', 'backToHome'],
       testimonialsPage: ['heading', 'description', 'backToHome', 'noTestimonials'],
       notif: ['update', 'ck', 'title', 'sub', 'desc'],
-      contactForm: ['title', 'name', 'phone', 'email', 'province', 'services', 'help']
+      contactForm: ['title', 'name', 'phone', 'email', 'province', 'services', 'help'],
+      announcements: ['pageTitle', 'pageDescription', 'allAnnouncements', 'active', 'scheduled', 'noAnnouncements', 'readMore', 'backToHome', 'backToAnnouncements', 'published', 'scheduledFor', 'lastUpdated', 'featured', 'loading']
     };
 
     const sectionFields = fields[activeSection] || [];
@@ -206,6 +209,26 @@ function UITextEditor() {
             </div>
           </div>
         )}
+        
+        {activeSection === 'announcements' && (
+          <div className="mt-6 p-4 bg-orange-50 border border-orange-200 rounded-lg">
+            <div className="flex">
+              <div className="flex-shrink-0">
+                <svg className="h-5 w-5 text-orange-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <div className="ml-3">
+                <h4 className="text-sm font-medium text-orange-800">
+                  📢 Announcements UI Text
+                </h4>
+                <div className="mt-2 text-sm text-orange-700">
+                  <p>These texts control the display of announcements pages, including page titles, navigation buttons, status labels, and loading messages. Actual announcement content is managed separately in the <strong>Announcements CMS section</strong>.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     );
   };
@@ -241,6 +264,7 @@ function UITextEditor() {
       {/* <ServiceDescriptionMigrator /> */}
       {/* <AboutDescriptionMigrator /> */}
       {/* <UITextCleanup /> */}
+      <AnnouncementsUITextPopulator onPopulated={handleRefresh} />
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-4">
         {/* Section Navigation */}

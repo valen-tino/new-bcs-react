@@ -15,6 +15,7 @@ import AdminManager from '../../components/cms/AdminManager';
 import DashboardOverview from '../../components/cms/Overview';
 import UITextEditor from '../../components/cms/UITextEditor';
 import ServiceOptionsManager from '../../components/cms/ServiceOptionsManager';
+import AnnouncementsManager from '../../components/cms/AnnouncementsManager';
 
 function Dashboard() {
   const { currentUser, isAdmin, logout } = useAuth();
@@ -59,6 +60,8 @@ function Dashboard() {
         return <ContactRequestsViewer />;
       case 'service-options':
         return <ServiceOptionsManager />;
+      case 'announcements':
+        return <AnnouncementsManager />;
       case 'admin-manager':
         return <AdminManager />;
       case 'uitext':

@@ -4,6 +4,7 @@ import { AuthProvider } from './contexts/AuthContext';
 import { CMSProvider } from './contexts/CMSContext';
 import { NotificationProvider } from './contexts/NotificationContext';
 import { UITextProvider } from './contexts/UITextContext';
+import { AnnouncementProvider } from './contexts/AnnouncementContext';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Navbar from './sections/nav/nav';
@@ -17,6 +18,7 @@ import Footer from './sections/footer/contactus';
 import ContactUsModalForm from './components/contactus_modal_form';
 import NotificationModal from './components/NotifModal';
 import SEOComponent from './components/SEOComponent';
+import AnnouncementBar from './components/AnnouncementBar';
 import Login from './pages/Login';
 import Dashboard from './pages/cms/Dashboard';
 import NotificationEditor from './pages/cms/NotificationEditor';
@@ -24,6 +26,8 @@ import UITextEditor from './pages/cms/UITextEditor';
 import TestimonialForm from './pages/TestimonialForm';
 import Testimonials from './pages/Testimonials';
 import GalleryPage from './pages/Gallery';
+import AnnouncementsPage from './pages/Announcements';
+import AnnouncementDetail from './pages/AnnouncementDetail';
 import { useState } from 'react';
 import './App.css';
 
@@ -42,6 +46,7 @@ function HomeContent() {
   return (
     <>
       <SEOComponent />
+      <AnnouncementBar />
       <Navbar 
         language={language} 
         handleSetLanguage={changeLanguage} 
@@ -73,6 +78,7 @@ function App() {
         <NotificationProvider>
           <UITextProvider>
             <CMSProvider>
+              <AnnouncementProvider>
               <Router>
                 <div className="App">
                   <Routes>
@@ -83,6 +89,8 @@ function App() {
                     <Route path="/testimonial/:token" element={<TestimonialForm />} />
                     <Route path="/testimonials" element={<Testimonials />} />
                     <Route path="/gallery" element={<GalleryPage />} />
+                    <Route path="/announcements" element={<AnnouncementsPage />} />
+                    <Route path="/announcements/:id" element={<AnnouncementDetail />} />
                     <Route path="/" element={<HomeContent />} />
                   </Routes>
                   <ToastContainer
@@ -99,6 +107,7 @@ function App() {
                   />
                 </div>
               </Router>
+              </AnnouncementProvider>
             </CMSProvider>
           </UITextProvider>
         </NotificationProvider>

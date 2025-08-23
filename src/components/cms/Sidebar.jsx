@@ -11,7 +11,8 @@ import {
   UserGroupIcon,
   BellAlertIcon,
   LanguageIcon,
-  Cog6ToothIcon
+  Cog6ToothIcon,
+  SpeakerWaveIcon
 } from '@heroicons/react/24/outline';
 
 function Sidebar({ activeSection, setActiveSection, sidebarOpen, setSidebarOpen }) {
@@ -73,6 +74,11 @@ function Sidebar({ activeSection, setActiveSection, sidebarOpen, setSidebarOpen 
       id: 'service-options',
       name: 'Service Options',
       icon: <Cog6ToothIcon className="h-5 w-5" />
+    },
+    {
+      id: 'announcements',
+      name: 'Announcements',
+      icon: <SpeakerWaveIcon className="h-5 w-5" />
     },
     {
       id: 'admin-manager',

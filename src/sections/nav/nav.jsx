@@ -123,6 +123,7 @@ function Navbar(props) {
               {/* <li className='nav-list'><NavItem sectionId="team">{lang.team}</NavItem></li>
               <li className='nav-list'><NavItem sectionId="gallery">{lang.gallery}</NavItem></li> */}
               <li className='nav-list'><NavItem sectionId="testi">{lang.testi}</NavItem></li>
+              <li className='nav-list'><RouterLink to="/announcements" className="cursor-pointer">Announcements</RouterLink></li>
               <li className='nav-list'><NavItem sectionId="contactus">{lang.contactus}</NavItem></li>
             </ul>
           </div>
@@ -151,6 +152,7 @@ function Navbar(props) {
           {/* <li className='nav-list'><NavItem sectionId="team" isMobile={true}>{lang.team}</NavItem></li>
           <li className='nav-list'><NavItem sectionId="gallery" isMobile={true}>{lang.gallery}</NavItem></li> */}
           <li className='nav-list'><NavItem sectionId="testi" isMobile={true}>{lang.testi}</NavItem></li>
+          <li className='nav-list'><RouterLink to="/announcements" className="cursor-pointer" onClick={() => setNav(false)}>Announcements</RouterLink></li>
           <li className='nav-list'><NavItem sectionId="contactus" isMobile={true}>{lang.contactus}</NavItem></li>
           <div className='flex flex-col pb-2 my-4 text-center gap-y-3'>
             <Emailbutton input={lang.email} contactForm={props.contactForm}/>
