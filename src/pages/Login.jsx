@@ -76,11 +76,7 @@ function Login() {
             
             <div className="text-center">
               <p className="text-xs text-gray-400">
-                Authorized emails:
-              </p>
-              <p className="mt-1 text-xs text-gray-500">
-                vinsen.jehaut0870@gmail.com<br/>
-                valentinojehaut@gmail.com
+                Restricted access for authorized administrators only.
               </p>
             </div>
           </div>

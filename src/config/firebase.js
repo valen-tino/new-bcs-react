@@ -5,16 +5,28 @@ import { getFirestore, connectFirestoreEmulator } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
 import { getAnalytics } from "firebase/analytics";
 
-// Load environment variables with fallbacks
-const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "AIzaSyB2G_bsUmqdiyWudYlSE3sYhkCUK_Qjuqs",
-  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "bcs-cms-5ab14.firebaseapp.com",
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "bcs-cms-5ab14",
-  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "bcs-cms-5ab14.firebasestorage.app",
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "937702124741",
-  appId: import.meta.env.VITE_FIREBASE_APP_ID || "1:937702124741:web:b5a1a2c3bd8b8c81bed4ac",
-  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID || "G-C06GE7EH13"
+// Load environment variables - all required for security
+const requiredEnvVars = {
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID
 };
+
+// Validate that all required environment variables are present
+const missingVars = Object.entries(requiredEnvVars)
+  .filter(([key, value]) => !value)
+  .map(([key]) => `VITE_FIREBASE_${key.toUpperCase()}`);
+
+if (missingVars.length > 0) {
+  console.error('Missing required Firebase environment variables:', missingVars);
+  throw new Error(`Missing Firebase configuration. Please set the following environment variables: ${missingVars.join(', ')}`);
+}
+
+const firebaseConfig = requiredEnvVars;
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
