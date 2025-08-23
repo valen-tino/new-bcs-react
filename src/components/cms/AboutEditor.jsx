@@ -145,8 +145,8 @@ function AboutEditor() {
         </p>
       </div>
 
-      {/* Migration Notice */}
-      <AboutDescriptionMigrator />
+      {/* Migration Notice - hidden since migration is complete */}
+      {/* <AboutDescriptionMigrator /> */}
 
       {/* Tabs */}
       <div className="border-b border-gray-200">

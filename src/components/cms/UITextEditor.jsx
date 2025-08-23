@@ -236,17 +236,11 @@ function UITextEditor() {
         </button>
       </div>
 
-      {/* UI Text Populator */}
-      <UITextPopulator />
-      
-      {/* Service Description Migrator */}
-      <ServiceDescriptionMigrator />
-      
-      {/* About Description Migrator */}
-      <AboutDescriptionMigrator />
-      
-      {/* UI Text Cleanup */}
-      <UITextCleanup />
+      {/* Migration and setup tools - hidden since setup is complete */}
+      {/* <UITextPopulator /> */}
+      {/* <ServiceDescriptionMigrator /> */}
+      {/* <AboutDescriptionMigrator /> */}
+      {/* <UITextCleanup /> */}
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-4">
         {/* Section Navigation */}
