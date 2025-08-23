@@ -14,6 +14,7 @@ import ContactRequestsViewer from '../../components/cms/ContactRequestsManager';
 import AdminManager from '../../components/cms/AdminManager';
 import DashboardOverview from '../../components/cms/Overview';
 import UITextEditor from '../../components/cms/UITextEditor';
+import ServiceOptionsManager from '../../components/cms/ServiceOptionsManager';
 
 function Dashboard() {
   const { currentUser, isAdmin, logout } = useAuth();
@@ -56,6 +57,8 @@ function Dashboard() {
         return <TestimonialsEditor />;
       case 'contact-requests':
         return <ContactRequestsViewer />;
+      case 'service-options':
+        return <ServiceOptionsManager />;
       case 'admin-manager':
         return <AdminManager />;
       case 'uitext':

@@ -10,7 +10,8 @@ import {
   EnvelopeIcon,
   UserGroupIcon,
   BellAlertIcon,
-  LanguageIcon
+  LanguageIcon,
+  Cog6ToothIcon
 } from '@heroicons/react/24/outline';
 
 function Sidebar({ activeSection, setActiveSection, sidebarOpen, setSidebarOpen }) {
@@ -67,6 +68,11 @@ function Sidebar({ activeSection, setActiveSection, sidebarOpen, setSidebarOpen 
       name: 'Contact Requests',
       icon: <EnvelopeIcon className="h-5 w-5" />,
       badge: unreadRequests > 0 ? unreadRequests : null
+    },
+    {
+      id: 'service-options',
+      name: 'Service Options',
+      icon: <Cog6ToothIcon className="h-5 w-5" />
     },
     {
       id: 'admin-manager',

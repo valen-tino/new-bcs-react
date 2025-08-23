@@ -103,7 +103,18 @@ function Overview({ setActiveSection }) {
   ];
 
   const recentRequests = contactRequests
-    ?.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+    ?.sort((a, b) => {
+      const getDate = (dateValue) => {
+        if (dateValue && typeof dateValue === 'object' && dateValue.seconds) {
+          return new Date(dateValue.seconds * 1000);
+        } else if (dateValue && typeof dateValue.toDate === 'function') {
+          return dateValue.toDate();
+        } else {
+          return new Date(dateValue);
+        }
+      };
+      return getDate(b.createdAt) - getDate(a.createdAt);
+    })
     ?.slice(0, 5) || [];
 
   return (
@@ -178,7 +189,18 @@ function Overview({ setActiveSection }) {
                       </p>
                     </div>
                     <div className="ml-4 text-xs text-gray-500">
-                      {new Date(request.createdAt).toLocaleDateString()}
+                      {(() => {
+                        let date;
+                        if (request.createdAt && typeof request.createdAt === 'object' && request.createdAt.seconds) {
+                          date = new Date(request.createdAt.seconds * 1000);
+                        } else if (request.createdAt && typeof request.createdAt.toDate === 'function') {
+                          date = request.createdAt.toDate();
+                        } else {
+                          date = new Date(request.createdAt);
+                        }
+                        return isNaN(date.getTime()) ? 'Invalid Date' : date.toLocaleDateString();
+                      })()
+                      }
                     </div>
                   </div>
                 </div>

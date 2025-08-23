@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { db } from '../config/firebase';
-import { doc, getDoc, setDoc, collection, getDocs, addDoc, updateDoc, deleteDoc, query, orderBy, onSnapshot } from 'firebase/firestore';
+import { doc, getDoc, setDoc, collection, getDocs, addDoc, updateDoc, deleteDoc, query, orderBy, onSnapshot, serverTimestamp } from 'firebase/firestore';
 import { toast } from 'react-toastify';
 import { useNotification } from './NotificationContext';
 
@@ -769,12 +769,23 @@ export function CMSProvider({ children }) {
     try {
       await addDoc(collection(db, 'contactRequests'), {
         ...requestData,
-        createdAt: new Date(),
+        createdAt: serverTimestamp(),
         isRead: false
       });
       return true;
     } catch (error) {
       console.error('Error submitting contact request:', error);
+      return false;
+    }
+  };
+
+  // Delete contact request
+  const deleteContactRequest = async (id) => {
+    try {
+      await deleteDoc(doc(db, 'contactRequests', id));
+      return true;
+    } catch (error) {
+      console.error('Error deleting contact request:', error);
       return false;
     }
   };
@@ -1017,6 +1028,7 @@ export function CMSProvider({ children }) {
     archiveTestimonial,
     markRequestAsRead,
     submitContactRequest,
+    deleteContactRequest,
     updateProvinces,
     updateServiceOptions,
     updateUIText,

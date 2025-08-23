@@ -93,17 +93,41 @@ export default function ContactUsModal({ hide }) {
     AOS.init();
   }, []);
 
-  // Prefer CMS-provided lists; gracefully fall back to static data if needed
+  // Prefer CMS-provided provinces; gracefully fall back to static data if needed
   const provinces = Array.isArray(cmsProvinces) && cmsProvinces.length > 0
     ? cmsProvinces
     : (Array.isArray(Province) ? Province : []);
 
-  const cmsServiceItems = Array.isArray(cmsServiceOptions) && cmsServiceOptions.length > 0
-    ? cmsServiceOptions.map(item => ({ id: item.id || item.value || item.name, services: item.services || item.name }))
-    : (Array.isArray(services?.items)
-        ? services.items.map(item => ({ id: item.id, services: item.name }))
-        : (Array.isArray(OurServices) ? OurServices : [])
-      );
+  // Enhanced service options with multiple fallback sources
+  const getServiceOptions = () => {
+    // Priority 1: CMS Service Options (specifically for contact form)
+    if (Array.isArray(cmsServiceOptions) && cmsServiceOptions.length > 0) {
+      return cmsServiceOptions.map(item => ({
+        id: item.id || item.value || item.name,
+        services: item.services || item.name
+      }));
+    }
+    
+    // Priority 2: Services items from main Services CMS
+    if (Array.isArray(services?.items) && services.items.length > 0) {
+      return services.items.map(item => ({
+        id: item.id,
+        services: item.name || item.services
+      }));
+    }
+    
+    // Priority 3: Static fallback services (always available)
+    return Array.isArray(OurServices) ? OurServices : [
+      { id: '1', services: 'Visa Assistance Abroad' },
+      { id: '2', services: 'Visa Assistance in Bali' },
+      { id: '3', services: 'Wedding Ceremony Organizer' },
+      { id: '4', services: 'Translation Documents' },
+      { id: '5', services: 'Travel Insurance' },
+      { id: '6', services: 'Other Services' }
+    ];
+  };
+
+  const cmsServiceItems = getServiceOptions();
 
   return (
     <>

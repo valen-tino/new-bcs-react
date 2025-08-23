@@ -57,8 +57,26 @@ function ContactRequestsManager() {
     }
   };
 
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
+  const formatDate = (dateValue) => {
+    let date;
+    
+    // Handle Firebase Timestamp objects
+    if (dateValue && typeof dateValue === 'object' && dateValue.seconds) {
+      // Firebase Timestamp object has .seconds and .nanoseconds properties
+      date = new Date(dateValue.seconds * 1000);
+    } else if (dateValue && typeof dateValue.toDate === 'function') {
+      // Firebase Timestamp object with toDate method
+      date = dateValue.toDate();
+    } else {
+      // Handle regular Date objects, ISO strings, or timestamps
+      date = new Date(dateValue);
+    }
+    
+    // Check if the date is valid
+    if (isNaN(date.getTime())) {
+      return 'Invalid Date';
+    }
+    
     return date.toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
