@@ -38,6 +38,7 @@ export function CMSProvider({ children }) {
 
   // Load all content from Firestore
   const loadContent = async () => {
+    console.log('📋 loadContent called - current contactRequests length:', content.contactRequests?.length || 0);
     try {
       setLoading(true);
       
@@ -174,17 +175,20 @@ export function CMSProvider({ children }) {
       }
     };
       
-      setContent({
-        visaAbroad,
-        visaBali,
-        services,
-        about,
-        gallery,
-        testimonials,
-        contactRequests: [],
-        provinces,
-        serviceOptions,
-        uiText
+      setContent(prev => {
+        console.log('💾 loadContent completed - preserving contactRequests:', prev.contactRequests?.length || 0);
+        return {
+          visaAbroad,
+          visaBali,
+          services,
+          about,
+          gallery,
+          testimonials,
+          contactRequests: prev.contactRequests, // Keep existing contactRequests from real-time listener
+          provinces,
+          serviceOptions,
+          uiText
+        };
       });
       
     } catch (error) {
@@ -197,22 +201,68 @@ export function CMSProvider({ children }) {
 
   // Listen to contact requests in real-time
   useEffect(() => {
+    console.log('📞 Setting up contact requests listener...');
+    
     const unsubscribe = onSnapshot(
       query(collection(db, 'contactRequests'), orderBy('createdAt', 'desc')),
       (snapshot) => {
-        const requests = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        setContent(prev => ({ ...prev, contactRequests: requests }));
-        
-        // Count unread requests
-        const unread = requests.filter(req => !req.isRead).length;
-        setUnreadRequests(unread);
+        try {
+          console.log('📥 Contact requests snapshot received:', snapshot.size, 'documents');
+          
+          const requests = snapshot.docs.map(doc => {
+            const data = doc.data();
+            const request = { id: doc.id, ...data };
+            
+            // Validate required fields
+            if (!request.name || !request.email || !request.message) {
+              console.warn('⚠️ Contact request missing required fields:', request.id, {
+                hasName: !!request.name,
+                hasEmail: !!request.email,
+                hasMessage: !!request.message
+              });
+            }
+            
+            // Ensure isRead field exists with default value
+            if (typeof request.isRead === 'undefined') {
+              request.isRead = false;
+            }
+            
+            return request;
+          });
+          
+          console.log('📋 Processed contact requests:', requests.length);
+          
+          // Update state
+          setContent(prev => {
+            const newContent = { ...prev, contactRequests: requests };
+            console.log('🔄 CMSContext - Updating contactRequests state:', {
+              previousLength: prev.contactRequests?.length || 0,
+              newLength: requests.length,
+              newData: requests.map(r => ({ id: r.id, name: r.name, isRead: r.isRead }))
+            });
+            return newContent;
+          });
+          
+          // Count unread requests
+          const unread = requests.filter(req => !req.isRead).length;
+          console.log('🔔 Unread requests count:', unread);
+          setUnreadRequests(unread);
+          
+        } catch (error) {
+          console.error('❌ Error processing contact requests snapshot:', error);
+          toast.error('Error loading contact requests');
+        }
       },
       (error) => {
-        console.error('Error listening to contact requests:', error);
+        console.error('❌ Error listening to contact requests:', error);
+        toast.error('Failed to load contact requests. Please refresh the page.');
       }
     );
 
-    return unsubscribe;
+    return () => {
+      console.log('🔌 Cleaning up contact requests listener...');
+      unsubscribe();
+    };
   }, []);
 
   // Update visa abroad content

@@ -168,13 +168,13 @@ function Overview({ setActiveSection }) {
             <div className="space-y-4">
               {recentRequests.map((request) => (
                 <div key={request.id} className={`border rounded-lg p-4 ${
-                  !request.read ? 'bg-blue-50 border-blue-200' : 'bg-gray-50 border-gray-200'
+                  !request.isRead ? 'bg-blue-50 border-blue-200' : 'bg-gray-50 border-gray-200'
                 }`}>
                   <div className="flex justify-between items-start">
                     <div className="flex-1">
                       <div className="flex items-center space-x-2">
                         <h4 className="text-sm font-medium text-gray-900">{request.name}</h4>
-                        {!request.read && (
+                        {!request.isRead && (
                           <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">
                             New
                           </span>
