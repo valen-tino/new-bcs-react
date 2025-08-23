@@ -25,7 +25,7 @@ function Team (props){
   
   return (
     <div>
-      <section id='about'>
+      <section id='team'>
         <div className='relative flex flex-col justify-between w-full font-Sora rounded-3xl' id='hero'>
         <img className='absolute z-0 invisible md:bottom-0 md:right-0 md:visible' src={Pattern} alt="deco-only" data-aos="fade-up" />
             <div className='grid bg-orange-200 md:grid-cols-2'>
