@@ -6,16 +6,13 @@ import { Vinsen } from '../all/allpics'
 import { useCMS } from '../../contexts/CMSContext';
 
 function About(props){
-  const { about: aboutData } = useCMS();
+  const { about: aboutData, uiText } = useCMS();
   
-  const lang = aboutData ? 
+  const lang = uiText?.about ? 
+    (props.language === "Indonesia" ? uiText.about.Indonesia : uiText.about.English) : 
     (props.language === "Indonesia" ? 
-      { heading: aboutData.heading?.Indonesia || "Tentang Kami", desc: aboutData.description?.Indonesia || aboutData.description || "" } : 
-      { heading: aboutData.heading?.English || "About Us", desc: aboutData.description?.English || aboutData.description || "" }
-    ) : 
-    (props.language === "Indonesia" ? 
-      { heading: "Tentang Kami", desc: "Loading..." } : 
-      { heading: "About Us", desc: "Loading..." }
+      { heading: "Tentang Kami", desc: aboutData?.description || "Loading..." } : 
+      { heading: "About Us", desc: aboutData?.description || "Loading..." }
     );
   
   useEffect(() => {

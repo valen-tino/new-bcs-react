@@ -7,12 +7,17 @@ import 'aos/dist/aos.css';
 // removed static imports for Province and OurServices
 import Province from '../data/dataProvinces';
 import OurServices from '../data/dataServices';
-import { content } from '../data/dataContactForm';
 
 export default function ContactUsModal({ hide }) {
   const { language } = useLanguage();
-  const { submitContactRequest, provinces: cmsProvinces, serviceOptions: cmsServiceOptions, services } = useCMS();
-  const lang = language === "Indonesia" ? content.Indonesia : content.English;
+  const { submitContactRequest, provinces: cmsProvinces, serviceOptions: cmsServiceOptions, services, uiText } = useCMS();
+  
+  const lang = uiText?.contactForm ?
+    (language === "Indonesia" ? uiText.contactForm.Indonesia : uiText.contactForm.English) :
+    (language === "Indonesia" ?
+      { title: "Hubungi Kami Untuk Informasi Lebih Lanjut", name: "Nama", phone: "Nomor Telepon", email: "Alamat Email", province: "Pilih Provinsi", services: "Pilih Layanan", help: "Tuliskan pesan disini..." } :
+      { title: "Contact Us For More Information", name: "Name", phone: "Phone Number", email: "Email Address", province: "Select Province", services: "Select Services", help: "Write a message..." }
+    );
 
   const [formFields, setFormFields] = useState({
     name: '',

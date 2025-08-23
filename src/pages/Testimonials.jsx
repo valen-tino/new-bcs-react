@@ -8,7 +8,7 @@ import Footer from '../sections/footer/contactus';
 import ContactUsModalForm from '../components/contactus_modal_form';
 
 function Testimonials() {
-  const { testimonials: cmsTestimonials, loading } = useCMS();
+  const { testimonials: cmsTestimonials, loading, uiText } = useCMS();
   const { language, changeLanguage } = useLanguage();
   const [isContactFormOpen, setIsContactFormOpen] = useState(false);
 
@@ -34,6 +34,14 @@ function Testimonials() {
       .filter(t => t.status === 'published')
       .sort((a, b) => getDateVal(b.publishedAt) - getDateVal(a.publishedAt));
   }, [cmsTestimonials]);
+
+  // Get dynamic language content
+  const lang = uiText?.testimonialsPage ?
+    (language === "Indonesia" ? uiText.testimonialsPage.Indonesia : uiText.testimonialsPage.English) :
+    (language === "Indonesia" ?
+      { heading: "Testimoni Tamu", description: "Baca apa yang dikatakan klien kami tentang pengalaman mereka dengan layanan kami.", backToHome: "Kembali ke Beranda", noTestimonials: "Belum ada testimoni yang tersedia." } :
+      { heading: "Guest Testimonies", description: "Read what our valued clients have to say about their experiences with our services.", backToHome: "Back to Home", noTestimonials: "No testimonials available yet." }
+    );
 
   // Calculate aggregate rating for Google schema
   const aggregateRating = useMemo(() => {
@@ -65,7 +73,7 @@ function Testimonials() {
           <div className="flex relative justify-between w-full rounded-3xl font-Sora">
             <div className="flex justify-center items-center px-5 pt-16 pb-2 w-full md:pt-20 md:pl-10 md:items-start">
               <h1 className="z-10 items-start text-5xl leading-tight text-center text-bold">
-                Guest Testimonies
+                {lang.heading}
               </h1>
             </div>
           </div>
@@ -92,13 +100,13 @@ function Testimonials() {
                 </div>
               )}
               <p className="text-lg text-gray-600 mb-6">
-                Read what our valued clients have to say about their experiences with our services.
+                {lang.description}
               </p>
               <Link 
                 to="/" 
                 className="inline-block px-6 py-3 bg-orange-600 text-white font-medium rounded-lg hover:bg-orange-700 transition-colors"
               >
-                Back to Home
+                {lang.backToHome}
               </Link>
             </div>
 
@@ -121,7 +129,7 @@ function Testimonials() {
               </div>
             ) : (
               <div className="text-center py-20">
-                <p className="text-gray-600 text-lg">No testimonials available yet.</p>
+                <p className="text-gray-600 text-lg">{lang.noTestimonials}</p>
               </div>
             )}
           </div>

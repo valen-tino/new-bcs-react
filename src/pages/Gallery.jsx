@@ -9,7 +9,7 @@ import { useState } from 'react';
 import GalleryPicture from './../components/GalleryPicture';
 
 function Gallery() {
-  const { gallery, loading } = useCMS();
+  const { gallery, loading, uiText } = useCMS();
   const { language, changeLanguage } = useLanguage();
   const [isContactFormOpen, setIsContactFormOpen] = useState(false);
 
@@ -21,9 +21,12 @@ function Gallery() {
     setIsContactFormOpen(false);
   };
 
-  const lang = language === "Indonesia" 
-    ? { heading: "Galeri", noImages: "Belum ada gambar tersedia." }
-    : { heading: "Gallery", noImages: "No images available yet." };
+  const lang = uiText?.galleryPage ? 
+    (language === "Indonesia" ? uiText.galleryPage.Indonesia : uiText.galleryPage.English) : 
+    (language === "Indonesia" 
+      ? { heading: "Galeri", noImages: "Belum ada gambar tersedia.", backToHome: "Kembali ke Beranda" }
+      : { heading: "Gallery", noImages: "No images available yet.", backToHome: "Back to Home" }
+    );
 
   return (
     <div className="App">
@@ -44,7 +47,7 @@ function Gallery() {
                 to="/" 
                 className="inline-block px-6 py-3 mt-5 font-medium text-white bg-orange-600 rounded-lg transition-colors hover:bg-orange-700"
               >
-                Back to Home
+                {lang.backToHome}
               </Link>
             </div>
             

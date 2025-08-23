@@ -2,22 +2,26 @@ import React, { useState, useEffect } from 'react';
 import { useCMS } from '../../contexts/CMSContext';
 import { toast } from 'react-toastify';
 import MultilingualEditor from './MultilingualEditor';
+import UITextPopulator from './UITextPopulator';
 
 function UITextEditor() {
-  const { content, updateUIText } = useCMS();
-  const [activeSection, setActiveSection] = useState('header');
+  const { content, updateUIText, loadContent } = useCMS();
+  const [activeSection, setActiveSection] = useState('hero');
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [uiTextContent, setUITextContent] = useState({
-    header: { English: {}, Indonesia: {} },
+    hero: { English: {}, Indonesia: {} },
     nav: { English: {}, Indonesia: {} },
-    footer: { English: {}, Indonesia: {} },
     services: { English: {}, Indonesia: {} },
     about: { English: {}, Indonesia: {} },
     team: { English: {}, Indonesia: {} },
     gallery: { English: {}, Indonesia: {} },
     testimonial: { English: {}, Indonesia: {} },
+    footer: { English: {}, Indonesia: {} },
+    galleryPage: { English: {}, Indonesia: {} },
+    testimonialsPage: { English: {}, Indonesia: {} },
     notif: { English: {}, Indonesia: {} },
+    contactForm: { English: {}, Indonesia: {} },
   });
 
   // Fetch UI text content from Firestore
@@ -25,7 +29,7 @@ function UITextEditor() {
     const fetchUITextContent = async () => {
       setLoading(true);
       try {
-        const sections = ['header', 'nav', 'footer', 'services', 'about', 'team', 'gallery', 'testimonial', 'notif'];
+        const sections = ['hero', 'nav', 'services', 'about', 'team', 'gallery', 'testimonial', 'footer', 'galleryPage', 'testimonialsPage', 'notif', 'contactForm'];
         const newContent = {};
         
         for (const section of sections) {
@@ -52,12 +56,19 @@ function UITextEditor() {
     setActiveSection(section);
   };
 
-  const handleContentChange = (field, content) => {
+  const handleContentChange = (field, fieldContent) => {
     setUITextContent(prev => ({
       ...prev,
       [activeSection]: {
         ...prev[activeSection],
-        [field]: content
+        English: {
+          ...prev[activeSection]?.English,
+          [field]: fieldContent.English
+        },
+        Indonesia: {
+          ...prev[activeSection]?.Indonesia,
+          [field]: fieldContent.Indonesia
+        }
       }
     }));
   };
@@ -67,6 +78,8 @@ function UITextEditor() {
     try {
       // Use the updateUIText function from CMS context
       await updateUIText(activeSection, uiTextContent[activeSection]);
+      // Reload content to ensure UI is updated
+      await loadContent();
       toast.success(`${activeSection.charAt(0).toUpperCase() + activeSection.slice(1)} content saved successfully`);
     } catch (error) {
       console.error('Error saving UI text content:', error);
@@ -76,33 +89,71 @@ function UITextEditor() {
     }
   };
 
+  const handleRefresh = async () => {
+    setLoading(true);
+    try {
+      await loadContent();
+      toast.success('Content refreshed successfully!');
+    } catch (error) {
+      console.error('Error refreshing content:', error);
+      toast.error('Failed to refresh content');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const renderFields = () => {
     const sectionContent = uiTextContent[activeSection];
-    if (!sectionContent) return null;
+    if (!sectionContent) {
+      return (
+        <div className="p-4 bg-yellow-50 rounded-md">
+          <p className="text-yellow-800">No content found for {activeSection} section.</p>
+          <p className="text-sm text-yellow-600 mt-2">Try populating the UI Text Editor first.</p>
+        </div>
+      );
+    }
 
-    // This would be customized based on the fields for each section
-    // For now, we'll use a generic approach
+    // Field definitions based on actual component usage
     const fields = {
-      header: ['title', 'subtitle', 'cta', 'description'],
-      nav: ['home', 'services', 'about', 'gallery', 'testimonials', 'contact', 'language'],
-      footer: ['title', 'address', 'phone', 'email', 'copyright', 'socialMedia'],
-      services: ['title', 'subtitle', 'wedding', 'translation', 'travel', 'others'],
-      about: ['title', 'subtitle', 'description', 'mission', 'vision'],
-      team: ['title', 'subtitle', 'description'],
-      gallery: ['title', 'subtitle', 'description'],
-      testimonial: ['title', 'subtitle', 'description', 'cta'],
-      notif: ['title', 'message', 'buttonText', 'dismissText']
+      hero: ['heading', 'subheading', 'wa', 'lm'],
+      nav: ['home', 'services', 'about', 'team', 'gallery', 'testi', 'contactus', 'email'],
+      services: ['vaa', 'vaadesc', 'vaasub', 'vab', 'vabdesc', 'wedding', 'weddingsub', 'weddingdesc', 'weddingbtn', 'translate', 'translatedesc', 'travel', 'traveldesc', 'others', 'otherssub', 'email', 'wa'],
+      about: ['heading', 'desc'],
+      team: ['heading'],
+      gallery: ['heading'],
+      testimonial: ['heading', 'seeall'],
+      footer: ['desc', 'email', 'wa', 'desc2', 'legal', 'legaldetails', 'sub', 'firstlink', 'secondlink', 'thirdlink', 'fourthlink', 'fifthlink', 'akte', 'copy'],
+      galleryPage: ['heading', 'noImages', 'backToHome'],
+      testimonialsPage: ['heading', 'description', 'backToHome', 'noTestimonials'],
+      notif: ['update', 'ck', 'title', 'sub', 'desc'],
+      contactForm: ['title', 'name', 'phone', 'email', 'province', 'services', 'help']
     };
+
+    const sectionFields = fields[activeSection] || [];
+    
+    if (sectionFields.length === 0) {
+      return (
+        <div className="p-4 bg-red-50 rounded-md">
+          <p className="text-red-800">No fields defined for {activeSection} section.</p>
+        </div>
+      );
+    }
 
     return (
       <div className="space-y-6">
-        {fields[activeSection].map(field => (
+        {/* Debug info */}
+        <div className="p-3 bg-gray-50 rounded-md text-xs">
+          <p className="font-medium text-gray-700">Section: {activeSection}</p>
+          <p className="text-gray-600">Fields: {sectionFields.length} | English: {Object.keys(sectionContent.English || {}).length} | Indonesian: {Object.keys(sectionContent.Indonesia || {}).length}</p>
+        </div>
+        
+        {sectionFields.map(field => (
           <div key={field} className="mb-4">
             <MultilingualEditor
               fieldName={field.charAt(0).toUpperCase() + field.slice(1)}
               content={{
-                English: sectionContent.English[field] || '',
-                Indonesia: sectionContent.Indonesia[field] || ''
+                English: sectionContent.English?.[field] || '',
+                Indonesia: sectionContent.Indonesia?.[field] || ''
               }}
               onChange={(content) => handleContentChange(field, content)}
               isSimple={true}
@@ -131,7 +182,17 @@ function UITextEditor() {
             Manage multilingual text content for different sections of the website.
           </p>
         </div>
+        <button
+          onClick={handleRefresh}
+          disabled={loading}
+          className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 disabled:opacity-50"
+        >
+          {loading ? 'Refreshing...' : '🔄 Refresh'}
+        </button>
       </div>
+
+      {/* UI Text Populator */}
+      <UITextPopulator />
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-4">
         {/* Section Navigation */}

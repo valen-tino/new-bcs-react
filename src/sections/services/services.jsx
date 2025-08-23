@@ -66,61 +66,27 @@ function Services(props){
         return servicesData?.[serviceType]?.description || fallback;
     };
 
-    const lang = servicesData && uiText?.services ? 
-        (props.language === "Indonesia" ? servicesData.Indonesia : servicesData.English) : 
-        (props.language === "Indonesia" ? {
+    const lang = uiText?.services ? 
+        (props.language === "Indonesia" ? uiText.services.Indonesia : uiText.services.English) : 
+        {
             vaa: "Visa Assistance Abroad",
-            vaadesc: "We provide visa assistance for various countries including Schengen, UK, USA, Australia, Japan, Korea, and more. Our experienced team will guide you through the entire process.",
+            vaadesc: "We provide visa assistance for various countries including Schengen, UK, USA, Australia, Japan, Korea, and more.",
             vaasub: "Select a country to see requirements",
             vab: "Visa Assistance in Bali",
-            vabdesc: "We also offer visa assistance services in Bali, Indonesia. Our services range from helping you apply for a visa to providing the necessary documents for your application.",
+            vabdesc: "We also offer visa assistance services in Bali, Indonesia.",
             wedding: "Wedding Ceremony Organizer",
             weddingsub: "Make your special day unforgettable",
-            weddingdesc: getCMSDescription('wedding', "We provide comprehensive wedding ceremony organization services in Bali, including legal documentation, venue selection, and coordination with local authorities."),
-            weddingsub2: "Contact us for more details",
+            weddingdesc: getCMSDescription('wedding', "We provide comprehensive wedding ceremony organization services in Bali."),
             weddingbtn: "View Gallery",
             translate: "Translation Documents",
-            translatedesc: getCMSDescription('translation', "BCS will provide translation services for any documents into any languages with certified translators."),
-            translatedesc2: "Provided by Sworn Translation Services in Indonesia for various languages including English, Chinese, Japanese, Korean, German, Arabic, and more.",
-            suchas: "such as:",
+            translatedesc: getCMSDescription('translation', "Professional translation services for all document types."),
             travel: "Travel Insurance",
-            traveldesc: getCMSDescription('travel', "Protect your journey with comprehensive travel insurance coverage."),
-            travelsub: "Travel with peace of mind",
-            traveldesc2: "We partner with",
-            ck: "Chubb Insurance",
-            traveldesc3: "to provide you with reliable travel insurance coverage.",
+            traveldesc: getCMSDescription('travel', "Comprehensive travel insurance coverage."),
             others: "Other Services",
             otherssub: getCMSDescription('others', "We also provide additional services"),
-            contactus: "Contact Us",
             email: "Email Us",
             wa: "WhatsApp Us"
-        } : {
-            vaa: "Visa Assistance Abroad",
-            vaadesc: "We provide visa assistance for various countries including Schengen, UK, USA, Australia, Japan, Korea, and more. Our experienced team will guide you through the entire process.",
-            vaasub: "Select a country to see requirements",
-            vab: "Visa Assistance in Bali",
-            vabdesc: "We also offer visa assistance services in Bali, Indonesia. Our services range from helping you apply for a visa to providing the necessary documents for your application.",
-            wedding: "Wedding Ceremony Organizer",
-            weddingsub: "Make your special day unforgettable",
-            weddingdesc: getCMSDescription('wedding', "We provide comprehensive wedding ceremony organization services in Bali, including legal documentation, venue selection, and coordination with local authorities."),
-            weddingsub2: "Contact us for more details",
-            weddingbtn: "View Gallery",
-            translate: "Translation Documents",
-            translatedesc: getCMSDescription('translation', "BCS will provide translation services for any documents into any languages with certified translators."),
-            translatedesc2: "Provided by Sworn Translation Services in Indonesia for various languages including English, Chinese, Japanese, Korean, German, Arabic, and more.",
-            suchas: "such as:",
-            travel: "Travel Insurance",
-            traveldesc: getCMSDescription('travel', "Protect your journey with comprehensive travel insurance coverage."),
-            travelsub: "Travel with peace of mind",
-            traveldesc2: "We partner with",
-            ck: "Chubb Insurance",
-            traveldesc3: "to provide you with reliable travel insurance coverage.",
-            others: "Other Services",
-            otherssub: getCMSDescription('others', "We also provide additional services"),
-            contactus: "Contact Us",
-            email: "Email Us",
-            wa: "WhatsApp Us"
-        })
+        };
 
     return (
         <>

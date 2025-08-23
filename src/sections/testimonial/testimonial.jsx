@@ -38,9 +38,11 @@ function Testimonial(props){
     (props.language === "Indonesia" ? uiText.testimonial.Indonesia : uiText.testimonial.English) : 
     (props.language === "Indonesia" ? {
       heading: "Testimoni / Kesaksian",
+      seeall: "Lihat Semua Testimoni",
       noTestimonials: "Belum ada testimoni tersedia."
     } : {
       heading: "Guest Testimonies",
+      seeall: "See More Testimonials",
       noTestimonials: "No testimonials available yet."
     });
   
@@ -87,7 +89,7 @@ function Testimonial(props){
                 to="/testimonials" 
                 className="px-6 py-3 bg-orange-600 text-white font-medium rounded-lg hover:bg-orange-700 transition-colors"
               >
-                See More Testimonials
+                {lang.seeall}
               </Link>
             </>
           ) : (
