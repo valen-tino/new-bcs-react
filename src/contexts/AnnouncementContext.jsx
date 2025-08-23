@@ -17,6 +17,7 @@ import {
   limit 
 } from 'firebase/firestore';
 import { toast } from 'react-toastify';
+import { generateAnnouncementSlug, generateUniqueSlug, extractTextForSlug } from '../utils/slugUtils';
 
 const AnnouncementContext = createContext();
 
@@ -100,8 +101,14 @@ export function AnnouncementProvider({ children }) {
   // Create new announcement
   const createAnnouncement = async (announcementData) => {
     try {
+      // Generate slug from title
+      const baseSlug = generateAnnouncementSlug(announcementData);
+      const existingSlugs = announcements.map(a => a.slug).filter(Boolean);
+      const uniqueSlug = generateUniqueSlug(baseSlug, existingSlugs);
+      
       const docRef = await addDoc(collection(db, 'announcements'), {
         ...announcementData,
+        slug: uniqueSlug,
         createdAt: serverTimestamp(),
         updatedAt: serverTimestamp()
       });
@@ -120,6 +127,18 @@ export function AnnouncementProvider({ children }) {
   const updateAnnouncement = async (id, updates) => {
     try {
       const docRef = doc(db, 'announcements', id);
+      
+      // If title is being updated, regenerate slug
+      if (updates.title) {
+        const baseSlug = generateAnnouncementSlug(updates);
+        const existingSlugs = announcements
+          .filter(a => a.id !== id)
+          .map(a => a.slug)
+          .filter(Boolean);
+        const uniqueSlug = generateUniqueSlug(baseSlug, existingSlugs);
+        updates.slug = uniqueSlug;
+      }
+      
       await updateDoc(docRef, {
         ...updates,
         updatedAt: serverTimestamp()
@@ -203,6 +222,32 @@ export function AnnouncementProvider({ children }) {
     }
   };
 
+  // Get announcement by slug
+  const getAnnouncementBySlug = async (slug) => {
+    try {
+      const announcementsQuery = query(
+        collection(db, 'announcements'),
+        where('slug', '==', slug),
+        limit(1)
+      );
+      
+      const snapshot = await getDocs(announcementsQuery);
+      
+      if (!snapshot.empty) {
+        const doc = snapshot.docs[0];
+        return {
+          id: doc.id,
+          ...doc.data()
+        };
+      }
+      
+      return null;
+    } catch (error) {
+      console.error('Error getting announcement by slug:', error);
+      return null;
+    }
+  };
+
   // Setup real-time listener for announcements
   useEffect(() => {
     const unsubscribe = onSnapshot(
@@ -247,6 +292,7 @@ export function AnnouncementProvider({ children }) {
     toggleAnnouncementStatus,
     setAsMainAnnouncement,
     getAnnouncementById,
+    getAnnouncementBySlug,
     getActiveAnnouncement,
     loadAnnouncements
   };

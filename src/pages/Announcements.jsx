@@ -246,7 +246,7 @@ function AnnouncementsPage() {
                     
                     {/* Read More Button */}
                     <Link
-                      to={`/announcements/${announcement.id}`}
+                      to={`/announcements/${announcement.slug || announcement.id}`}
                       className="inline-flex items-center text-orange-600 hover:text-orange-800 font-medium transition-colors duration-200"
                     >
                       {getText('readMore', 'Read Full Announcement')}

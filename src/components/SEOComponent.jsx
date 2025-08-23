@@ -46,6 +46,13 @@ const SEOComponent = ({
           ? 'Baca testimoni nyata dari klien BCS Visa yang telah menggunakan layanan visa kami. Rating tinggi dan kepuasan pelanggan terjamin.'
           : 'Read real testimonials from BCS Visa clients who have used our visa services. High ratings and guaranteed customer satisfaction.',
         keywords: 'bcs testimonials, visa service reviews, customer feedback, bali visa service ratings'
+      },
+      '/announcements': {
+        title: isIndonesian ? 'Pengumuman BCS Visa - Berita dan Update Terbaru' : 'BCS Visa Announcements - Latest News and Updates',
+        description: isIndonesian
+          ? 'Tetap update dengan pengumuman dan berita terbaru dari BCS Visa. Dapatkan informasi penting tentang layanan dan pengembangan perusahaan kami.'
+          : 'Stay updated with the latest announcements and news from BCS Visa. Get important updates about our services and company developments.',
+        keywords: 'bcs announcements, visa news, bcs updates, visa service news, bali visa announcements'
       }
     };
     
@@ -57,6 +64,12 @@ const SEOComponent = ({
   const finalDescription = description || defaultSEO.description;
   const finalKeywords = keywords || defaultSEO.keywords;
   const finalCanonical = canonical || `https://bcsvisa.com${location.pathname}`;
+  
+  // Auto-detect CMS/admin routes and set noindex
+  const isCMSRoute = location.pathname.startsWith('/cms') || 
+                     location.pathname.startsWith('/login') || 
+                     location.pathname.startsWith('/testimonial/');
+  const shouldNoIndex = noIndex || isCMSRoute;
 
   useEffect(() => {
     // Update document title
@@ -66,7 +79,7 @@ const SEOComponent = ({
     updateMetaTag('description', finalDescription);
     updateMetaTag('keywords', finalKeywords);
     updateMetaTag('author', 'BCS Visa - Bali Connection Service');
-    updateMetaTag('robots', noIndex ? 'noindex,nofollow' : 'index,follow');
+    updateMetaTag('robots', shouldNoIndex ? 'noindex,nofollow' : 'index,follow');
     
     // Language and locale
     const locale = language === 'Indonesia' ? 'id_ID' : 'en_US';
@@ -113,7 +126,7 @@ const SEOComponent = ({
       updateStructuredData(articleStructuredData, 'article-schema');
     }
     
-  }, [finalTitle, finalDescription, finalKeywords, finalCanonical, ogImage, ogType, structuredData, noIndex, location.pathname, language]);
+  }, [finalTitle, finalDescription, finalKeywords, finalCanonical, ogImage, ogType, structuredData, shouldNoIndex, location.pathname, language]);
 
   const updateMetaTag = (name, content) => {
     let element = document.querySelector(`meta[name="${name}"]`);
@@ -246,6 +259,70 @@ const SEOComponent = ({
       },
       datePublished: data.datePublished,
       dateModified: data.dateModified || data.datePublished
+    };
+  };
+
+  const generateAnnouncementStructuredData = (announcement) => {
+    const extractText = (content) => {
+      if (!content) return '';
+      if (typeof content === 'string') return content;
+      if (typeof content === 'object') {
+        return content.English || content.Indonesia || '';
+      }
+      return String(content);
+    };
+
+    const formatDate = (dateValue) => {
+      if (!dateValue) return new Date().toISOString();
+      
+      let date;
+      if (dateValue && typeof dateValue === 'object' && dateValue.seconds) {
+        date = new Date(dateValue.seconds * 1000);
+      } else {
+        date = new Date(dateValue);
+      }
+      
+      return isNaN(date.getTime()) ? new Date().toISOString() : date.toISOString();
+    };
+
+    return {
+      '@context': 'https://schema.org',
+      '@type': 'NewsArticle',
+      headline: extractText(announcement.title) || 'BCS Announcement',
+      description: extractText(announcement.shortDescription) || 'Latest announcement from BCS Visa',
+      url: `https://bcsvisa.com/announcements/${announcement.slug || announcement.id}`,
+      datePublished: formatDate(announcement.createdAt),
+      dateModified: formatDate(announcement.updatedAt || announcement.createdAt),
+      author: {
+        '@type': 'Organization',
+        name: 'BCS Visa - Bali Connection Service',
+        url: 'https://bcsvisa.com'
+      },
+      publisher: {
+        '@type': 'Organization',
+        name: 'BCS Visa - Bali Connection Service',
+        logo: {
+          '@type': 'ImageObject',
+          url: 'https://bcsvisa.com/assets/logo.svg',
+          width: '400',
+          height: '400'
+        },
+        url: 'https://bcsvisa.com'
+      },
+      ...(announcement.bannerImage && {
+        image: {
+          '@type': 'ImageObject',
+          url: announcement.bannerImage,
+          width: '1200',
+          height: '630'
+        }
+      }),
+      mainEntityOfPage: {
+        '@type': 'WebPage',
+        '@id': `https://bcsvisa.com/announcements/${announcement.slug || announcement.id}`
+      },
+      articleSection: 'Announcements',
+      keywords: 'BCS announcement, visa news, bali visa service'
     };
   };
 

@@ -1,8 +1,20 @@
 User-agent: *
 Allow: /
+Allow: /gallery
+Allow: /testimonials
+Allow: /announcements
+Allow: /announcements/*
+
+# Block all CMS and admin routes
 Disallow: /cms/
+Disallow: /cms/*
 Disallow: /login
 Disallow: /testimonial/
+Disallow: /testimonial/*
+
+# Allow robots.txt and sitemap
+Allow: /robots.txt
+Allow: /sitemap.xml
 
 # Sitemaps
 Sitemap: https://bcsvisa.com/sitemap.xml

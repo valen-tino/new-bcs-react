@@ -102,7 +102,7 @@ function AnnouncementBar() {
           {/* Action Button */}
           <div className="flex-shrink-0">
             <Link
-              to={`/announcements/${activeAnnouncement.id}`}
+              to={`/announcements/${activeAnnouncement.slug || activeAnnouncement.id}`}
               className="inline-flex items-center px-4 py-2 border border-orange-300 rounded-md text-sm font-medium text-orange-100 bg-orange-600 hover:bg-orange-700 hover:text-white transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500"
             >
               <span className="hidden sm:inline">Read More</span>

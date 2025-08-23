@@ -32,6 +32,16 @@
     <xhtml:link rel="alternate" hreflang="id" href="https://bcsvisa.com/testimonials?lang=id"/>
   </url>
   
+  <!-- Announcements Page -->
+  <url>
+    <loc>https://bcsvisa.com/announcements</loc>
+    <lastmod>2024-01-01</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="en" href="https://bcsvisa.com/announcements?lang=en"/>
+    <xhtml:link rel="alternate" hreflang="id" href="https://bcsvisa.com/announcements?lang=id"/>
+  </url>
+  
   <!-- Services Pages (Virtual URLs for SEO) -->
   <url>
     <loc>https://bcsvisa.com/#services</loc>

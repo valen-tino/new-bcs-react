@@ -10,9 +10,9 @@ import SEOComponent from '../components/SEOComponent';
 import AnnouncementBar from '../components/AnnouncementBar';
 
 function AnnouncementDetail() {
-  const { id } = useParams();
+  const { id } = useParams(); // This will be either slug or ID
   const navigate = useNavigate();
-  const { getAnnouncementById } = useAnnouncements();
+  const { getAnnouncementById, getAnnouncementBySlug } = useAnnouncements();
   const { language, changeLanguage } = useLanguage();
   const { uiText } = useCMS();
   const [announcement, setAnnouncement] = useState(null);
@@ -48,20 +48,35 @@ function AnnouncementDetail() {
   useEffect(() => {
     const loadAnnouncement = async () => {
       setLoading(true);
-      const announcementData = await getAnnouncementById(id);
+      
+      // First try to get by slug (SEO-friendly URLs)
+      let announcementData = await getAnnouncementBySlug(id);
+      
+      // If not found by slug, try by ID (backward compatibility)
+      if (!announcementData) {
+        announcementData = await getAnnouncementById(id);
+      }
+      
       if (announcementData) {
         setAnnouncement(announcementData);
+        
+        // If we found by ID but it has a slug, redirect to slug URL for SEO
+        if (announcementData.slug && id !== announcementData.slug) {
+          navigate(`/announcements/${announcementData.slug}`, { replace: true });
+          return;
+        }
       } else {
         // Announcement not found, redirect to announcements page
         navigate('/announcements');
       }
+      
       setLoading(false);
     };
 
     if (id) {
       loadAnnouncement();
     }
-  }, [id, getAnnouncementById, navigate]);
+  }, [id, getAnnouncementById, getAnnouncementBySlug, navigate]);
 
   const formatDate = (dateValue) => {
     if (!dateValue) return '';
@@ -138,9 +153,49 @@ function AnnouncementDetail() {
     title: `${getTextContent(announcement.title) || 'Announcement'} - BCS Announcements`,
     description: getTextContent(announcement.shortDescription) || 
                 'Read the latest announcement from BCS.',
-    keywords: "BCS announcement, news, update",
-    url: `${window.location.origin}/announcements/${id}`,
-    image: announcement.bannerImage || `${window.location.origin}/images/bcs-announcement.jpg`
+    keywords: "BCS announcement, news, update, visa services, bali",
+    url: `${window.location.origin}/announcements/${announcement.slug || id}`,
+    image: announcement.bannerImage || `${window.location.origin}/images/bcs-announcement.jpg`,
+    ogType: 'article',
+    structuredData: {
+      '@context': 'https://schema.org',
+      '@type': 'NewsArticle',
+      headline: getTextContent(announcement.title) || 'BCS Announcement',
+      description: getTextContent(announcement.shortDescription) || 'Latest announcement from BCS Visa',
+      url: `https://bcsvisa.com/announcements/${announcement.slug || id}`,
+      datePublished: announcement.createdAt ? new Date(announcement.createdAt.seconds * 1000).toISOString() : new Date().toISOString(),
+      dateModified: announcement.updatedAt ? new Date(announcement.updatedAt.seconds * 1000).toISOString() : new Date().toISOString(),
+      author: {
+        '@type': 'Organization',
+        name: 'BCS Visa - Bali Connection Service',
+        url: 'https://bcsvisa.com'
+      },
+      publisher: {
+        '@type': 'Organization',
+        name: 'BCS Visa - Bali Connection Service',
+        logo: {
+          '@type': 'ImageObject',
+          url: 'https://bcsvisa.com/assets/logo.svg',
+          width: '400',
+          height: '400'
+        },
+        url: 'https://bcsvisa.com'
+      },
+      ...(announcement.bannerImage && {
+        image: {
+          '@type': 'ImageObject',
+          url: announcement.bannerImage,
+          width: '1200',
+          height: '630'
+        }
+      }),
+      mainEntityOfPage: {
+        '@type': 'WebPage',
+        '@id': `https://bcsvisa.com/announcements/${announcement.slug || id}`
+      },
+      articleSection: 'Announcements',
+      keywords: 'BCS announcement, visa news, bali visa service'
+    }
   };
 
   return (
