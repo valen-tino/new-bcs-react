@@ -16,6 +16,7 @@ import Testimonial from './sections/testimonial/testimonial';
 import Footer from './sections/footer/contactus';
 import ContactUsModalForm from './components/contactus_modal_form';
 import NotificationModal from './components/NotifModal';
+import SEOComponent from './components/SEOComponent';
 import Login from './pages/Login';
 import Dashboard from './pages/cms/Dashboard';
 import NotificationEditor from './pages/cms/NotificationEditor';
@@ -40,6 +41,7 @@ function HomeContent() {
 
   return (
     <>
+      <SEOComponent />
       <Navbar 
         language={language} 
         handleSetLanguage={changeLanguage} 

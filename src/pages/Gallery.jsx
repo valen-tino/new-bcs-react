@@ -7,6 +7,7 @@ import ContactUsModalForm from './../components/contactus_modal_form';
 import { useLanguage } from './../contexts/LanguageContext';
 import { useState } from 'react';
 import GalleryPicture from './../components/GalleryPicture';
+import SEOComponent from './../components/SEOComponent';
 
 function Gallery() {
   const { gallery, loading, uiText } = useCMS();
@@ -30,6 +31,18 @@ function Gallery() {
 
   return (
     <div className="App">
+      <SEOComponent 
+        title={language === "Indonesia" ? 
+          "Galeri BCS Visa - Momen Pernikahan & Layanan Kami" : 
+          "BCS Visa Gallery - Wedding Moments & Our Services"
+        }
+        description={language === "Indonesia" ?
+          "Lihat galeri foto pernikahan dan layanan BCS Visa. Dokumentasi upacara pernikahan di Bali dan berbagai layanan visa kami." :
+          "View our gallery of wedding ceremonies and visa services. Documentation of Bali wedding ceremonies and our various visa services."
+        }
+        keywords="bcs gallery, bali wedding photos, visa services gallery, wedding ceremony bali"
+        ogImage={gallery.length > 0 ? gallery[0].src : undefined}
+      />
       <Navbar 
         language={language} 
         handleSetLanguage={changeLanguage} 

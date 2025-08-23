@@ -46,10 +46,6 @@ function Services(props){
     const [tempData, setTempData] = useState([])
     const { visaAbroad: cmsVisaAbroad, visaBali: cmsVisaBali, services: servicesData, uiText } = useCMS();
     
-    // Debug: Log the services data structure
-    console.log('🔍 Services Data from CMS:', servicesData);
-    console.log('🔍 UI Text Services:', uiText?.services);
-    
     // Use CMS data if available and valid (has non-empty titles), otherwise use fallback static data
     const normalizedAbroad = normalizeVisaAbroadItems(cmsVisaAbroad || []);
     const filteredAbroad = normalizedAbroad.filter(i => typeof i.title === 'string' && i.title.trim().length > 0);
@@ -68,28 +64,17 @@ function Services(props){
     // Helper function to get CMS description with language support
     const getCMSDescription = (serviceType, fallback, language = 'English') => {
         const serviceData = servicesData?.[serviceType];
-        console.log(`🔍 Getting CMS description for ${serviceType}:`, {
-            serviceData,
-            language,
-            fallback,
-            hasDescription: !!serviceData?.description,
-            descriptionType: typeof serviceData?.description,
-            descriptionKeys: serviceData?.description ? Object.keys(serviceData.description) : 'none'
-        });
         
         if (serviceData?.description) {
             // Check if description is bilingual object
             if (typeof serviceData.description === 'object' && serviceData.description[language]) {
-                console.log(`✅ Found ${language} description for ${serviceType}:`, serviceData.description[language]);
                 return serviceData.description[language];
             }
             // Fallback to string description (for backward compatibility)
             if (typeof serviceData.description === 'string') {
-                console.log(`📝 Using string description for ${serviceType}:`, serviceData.description);
                 return serviceData.description;
             }
         }
-        console.log(`⚠️ Using fallback for ${serviceType}:`, fallback);
         return fallback;
     };
 

@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+Disallow: /cms/
+Disallow: /login
+Disallow: /testimonial/
+
+# Sitemaps
+Sitemap: https://bcsvisa.com/sitemap.xml
+
+# Crawl-delay
+Crawl-delay: 1

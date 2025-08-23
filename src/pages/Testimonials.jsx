@@ -6,6 +6,7 @@ import { useLanguage } from '../contexts/LanguageContext';
 import Navbar from '../sections/nav/nav';
 import Footer from '../sections/footer/contactus';
 import ContactUsModalForm from '../components/contactus_modal_form';
+import SEOComponent from '../components/SEOComponent';
 
 function Testimonials() {
   const { testimonials: cmsTestimonials, loading, uiText } = useCMS();
@@ -55,6 +56,42 @@ function Testimonials() {
 
   return (
     <div className="App">
+      <SEOComponent 
+        title={language === "Indonesia" ? 
+          "Testimoni Klien BCS Visa - Pengalaman Nyata Pelanggan" : 
+          "BCS Visa Client Testimonials - Real Customer Experiences"
+        }
+        description={language === "Indonesia" ?
+          "Baca testimoni nyata dari klien BCS Visa yang telah menggunakan layanan visa kami. Rating tinggi dan kepuasan pelanggan terjamin." :
+          "Read real testimonials from BCS Visa clients who have used our visa services. High ratings and guaranteed customer satisfaction."
+        }
+        keywords="bcs testimonials, visa service reviews, customer feedback, bali visa service ratings"
+        structuredData={{
+          '@context': 'https://schema.org',
+          '@type': 'Organization',
+          name: 'BCS Visa',
+          aggregateRating: {
+            '@type': 'AggregateRating',
+            ratingValue: aggregateRating.ratingValue,
+            reviewCount: aggregateRating.reviewCount,
+            bestRating: 5,
+            worstRating: 1
+          },
+          review: testimonials.map(t => ({
+            '@type': 'Review',
+            author: {
+              '@type': 'Person',
+              name: t.name
+            },
+            reviewRating: {
+              '@type': 'Rating',
+              ratingValue: t.rating || 5,
+              bestRating: 5
+            },
+            reviewBody: t.description || t.content
+          }))
+        }}
+      />
       <Navbar 
         language={language} 
         handleSetLanguage={changeLanguage} 
