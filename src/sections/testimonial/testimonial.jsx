@@ -68,12 +68,49 @@ function Testimonial(props){
               <Carousel 
                 showArrows={true} 
                 infiniteLoop={true} 
-                showIndicators={false} 
+                showIndicators={true} 
                 showThumbs={false} 
                 showStatus={false} 
                 autoPlay={true} 
-                interval={3500}
-                className="mb-8"
+                interval={5000}
+                className="mb-8 testimonial-carousel max-w-4xl w-full"
+                renderArrowPrev={(onClickHandler, hasPrev) =>
+                  hasPrev && (
+                    <button
+                      type="button"
+                      onClick={onClickHandler}
+                      className="absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-white/90 hover:bg-white text-orange-600 rounded-full p-4 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-110"
+                    >
+                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
+                      </svg>
+                    </button>
+                  )
+                }
+                renderArrowNext={(onClickHandler, hasNext) =>
+                  hasNext && (
+                    <button
+                      type="button"
+                      onClick={onClickHandler}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-white/90 hover:bg-white text-orange-600 rounded-full p-4 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-110"
+                    >
+                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </button>
+                  )
+                }
+                renderIndicator={(onClickHandler, isSelected, index) => (
+                  <li
+                    className={`inline-block mx-2 cursor-pointer transition-all duration-300 ${
+                      isSelected 
+                        ? 'w-10 bg-orange-600 shadow-lg' 
+                        : 'w-3 bg-orange-300 hover:bg-orange-400 hover:w-6'
+                    } h-3 rounded-full`}
+                    onClick={onClickHandler}
+                    key={index}
+                  />
+                )}
               >
                 {testimonials.map((item, key) => (
                   <SimpleTestimonialCard 
@@ -87,7 +124,7 @@ function Testimonial(props){
               </Carousel>
               <Link 
                 to="/testimonials" 
-                className="px-6 py-3 bg-orange-600 text-white font-medium rounded-lg hover:bg-orange-700 transition-colors"
+                className="px-8 py-4 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-semibold rounded-xl hover:from-orange-600 hover:to-orange-700 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl"
               >
                 {lang.seeall}
               </Link>

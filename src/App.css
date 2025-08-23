@@ -1,3 +1,50 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Custom Carousel Styles */
+.gallery-carousel .carousel-item {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.gallery-carousel .carousel .control-dots {
+  bottom: -40px;
+  margin: 0;
+}
+
+.testimonial-carousel .carousel .control-dots {
+  bottom: -50px;
+  margin: 0;
+}
+
+.testimonial-carousel .carousel-item {
+  padding: 0 20px;
+}
+
+/* Smooth carousel transitions */
+.carousel .slide {
+  transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Hide default arrows */
+.carousel .control-arrow {
+  display: none !important;
+}
+
+/* Custom dot indicators positioning */
+.carousel .control-dots .dot {
+  margin: 0 6px;
+  transition: all 0.3s ease;
+}
+
+/* Smooth image loading */
+img {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* Enhanced hover effects */
+.group:hover img {
+  transform: scale(1.1);
+  transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
