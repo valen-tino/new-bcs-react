@@ -61,9 +61,20 @@ function Services(props){
         return setModal(true)
     }
 
-    // Helper function to get CMS description or fallback
-    const getCMSDescription = (serviceType, fallback) => {
-        return servicesData?.[serviceType]?.description || fallback;
+    // Helper function to get CMS description with language support
+    const getCMSDescription = (serviceType, fallback, language = 'English') => {
+        const serviceData = servicesData?.[serviceType];
+        if (serviceData?.description) {
+            // Check if description is bilingual object
+            if (typeof serviceData.description === 'object' && serviceData.description[language]) {
+                return serviceData.description[language];
+            }
+            // Fallback to string description (for backward compatibility)
+            if (typeof serviceData.description === 'string') {
+                return serviceData.description;
+            }
+        }
+        return fallback;
     };
 
     const lang = uiText?.services ? 
@@ -76,14 +87,14 @@ function Services(props){
             vabdesc: "We also offer visa assistance services in Bali, Indonesia.",
             wedding: "Wedding Ceremony Organizer",
             weddingsub: "Make your special day unforgettable",
-            weddingdesc: getCMSDescription('wedding', "We provide comprehensive wedding ceremony organization services in Bali."),
+            weddingdesc: getCMSDescription('wedding', "We provide comprehensive wedding ceremony organization services in Bali.", props.language === "Indonesia" ? "Indonesian" : "English"),
             weddingbtn: "View Gallery",
             translate: "Translation Documents",
-            translatedesc: getCMSDescription('translation', "Professional translation services for all document types."),
+            translatedesc: getCMSDescription('translation', "Professional translation services for all document types.", props.language === "Indonesia" ? "Indonesian" : "English"),
             travel: "Travel Insurance",
-            traveldesc: getCMSDescription('travel', "Comprehensive travel insurance coverage."),
+            traveldesc: getCMSDescription('travel', "Comprehensive travel insurance coverage.", props.language === "Indonesia" ? "Indonesian" : "English"),
             others: "Other Services",
-            otherssub: getCMSDescription('others', "We also provide additional services"),
+            otherssub: getCMSDescription('others', "We also provide additional services", props.language === "Indonesia" ? "Indonesian" : "English"),
             email: "Email Us",
             wa: "WhatsApp Us"
         };

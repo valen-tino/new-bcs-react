@@ -3,6 +3,7 @@ import { useCMS } from '../../contexts/CMSContext';
 import { toast } from 'react-toastify';
 import MultilingualEditor from './MultilingualEditor';
 import UITextPopulator from './UITextPopulator';
+import ServiceDescriptionMigrator from './ServiceDescriptionMigrator';
 
 function UITextEditor() {
   const { content, updateUIText, loadContent } = useCMS();
@@ -117,7 +118,7 @@ function UITextEditor() {
     const fields = {
       hero: ['heading', 'subheading', 'wa', 'lm'],
       nav: ['home', 'services', 'about', 'team', 'gallery', 'testi', 'contactus', 'email'],
-      services: ['vaa', 'vaadesc', 'vaasub', 'vab', 'vabdesc', 'wedding', 'weddingsub', 'weddingdesc', 'weddingbtn', 'translate', 'translatedesc', 'travel', 'traveldesc', 'others', 'otherssub', 'email', 'wa'],
+      services: ['vaa', 'vaadesc', 'vaasub', 'vab', 'vabdesc', 'wedding', 'weddingsub', 'weddingbtn', 'translate', 'travel', 'others', 'otherssub', 'email', 'wa'],
       about: ['heading', 'desc'],
       team: ['heading'],
       gallery: ['heading'],
@@ -193,6 +194,9 @@ function UITextEditor() {
 
       {/* UI Text Populator */}
       <UITextPopulator />
+      
+      {/* Service Description Migrator */}
+      <ServiceDescriptionMigrator />
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-4">
         {/* Section Navigation */}
