@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useCMS } from '../../contexts/CMSContext';
 
-function Header({ currentUser, logout, setSidebarOpen }) {
+function Header({ currentUser, logout, setSidebarOpen, setActiveSection }) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const navigate = useNavigate();
+  const { unreadRequests } = useCMS();
 
   const handleLogout = async () => {
     await logout();
@@ -29,6 +31,29 @@ function Header({ currentUser, logout, setSidebarOpen }) {
           </div>
           
           <div className="flex items-center space-x-4">
+            {/* Notification Badge */}
+            {unreadRequests > 0 && (
+              <div className="relative">
+                <button
+                  onClick={() => {
+                    // Navigate to contact requests section
+                    if (setActiveSection) {
+                      setActiveSection('contact-requests');
+                    }
+                  }}
+                  className="inline-flex items-center px-3 py-2 text-sm font-medium text-white bg-red-500 rounded-md shadow-sm hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors duration-200"
+                >
+                  <svg className="mr-2 -ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 17h5l-5 5v-5zM4 7l1-1h5.586a1 1 0 01.707.293L16 11v6a2 2 0 01-2 2H6a2 2 0 01-2-2V7z" />
+                  </svg>
+                  <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-white text-red-600">
+                    {unreadRequests}
+                  </span>
+                  <span className="ml-2">New Requests</span>
+                </button>
+              </div>
+            )}
+            
             {/* View Website Button */}
             <button
               onClick={() => window.open('/', '_blank')}

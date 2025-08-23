@@ -88,6 +88,7 @@ function Dashboard() {
           currentUser={currentUser}
           logout={logout}
           setSidebarOpen={setSidebarOpen}
+          setActiveSection={setActiveSection}
         />
         
         {/* Page content */}

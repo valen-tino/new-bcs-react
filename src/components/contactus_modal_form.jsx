@@ -178,7 +178,7 @@ export default function ContactUsModal({ hide }) {
                   <div className="relative">
                     <label htmlFor="email" className="text-sm leading-7 text-gray-600">{lang.email}</label>
                     <input
-                      placeholder='Ex. admin@bcsvisa.com'
+                      placeholder='Ex. johndoe@bcsvisa.com'
                       type="email"
                       id="email"
                       name="email"
