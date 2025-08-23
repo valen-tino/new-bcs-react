@@ -10,32 +10,32 @@ function ContactRequestsManager() {
   const [loading, setLoading] = useState(false);
 
   // Debug logging
-  useEffect(() => {
-    console.log('📋 ContactRequestsManager - Contact requests data:', {
-      total: contactRequests?.length || 0,
-      unread: unreadRequests,
-      contactRequestsType: typeof contactRequests,
-      contactRequestsIsArray: Array.isArray(contactRequests),
-      contactRequestsUndefined: contactRequests === undefined,
-      contactRequestsNull: contactRequests === null,
-      fullData: contactRequests,
-      requests: contactRequests?.map(req => ({
-        id: req.id,
-        name: req.name,
-        email: req.email,
-        isRead: req.isRead,
-        hasMessage: !!req.message,
-        hasService: !!req.service
-      }))
-    });
-  }, [contactRequests, unreadRequests]);
+  // useEffect(() => {
+  //   console.log('📋 ContactRequestsManager - Contact requests data:', {
+  //     total: contactRequests?.length || 0,
+  //     unread: unreadRequests,
+  //     contactRequestsType: typeof contactRequests,
+  //     contactRequestsIsArray: Array.isArray(contactRequests),
+  //     contactRequestsUndefined: contactRequests === undefined,
+  //     contactRequestsNull: contactRequests === null,
+  //     fullData: contactRequests,
+  //     requests: contactRequests?.map(req => ({
+  //       id: req.id,
+  //       name: req.name,
+  //       email: req.email,
+  //       isRead: req.isRead,
+  //       hasMessage: !!req.message,
+  //       hasService: !!req.service
+  //     }))
+  //   });
+  // }, [contactRequests, unreadRequests]);
 
-  // Additional debug logging for immediate values
-  console.log('🔍 ContactRequestsManager - Immediate values:', {
-    contactRequests,
-    contactRequestsLength: contactRequests?.length,
-    unreadRequests
-  });
+  // // Additional debug logging for immediate values
+  // console.log('🔍 ContactRequestsManager - Immediate values:', {
+  //   contactRequests,
+  //   contactRequestsLength: contactRequests?.length,
+  //   unreadRequests
+  // });
 
   const filteredRequests = contactRequests?.filter(request => {
     if (filter === 'unread') return !request.isRead;
@@ -161,7 +161,7 @@ function ContactRequestsManager() {
       </div>
 
       {/* Diagnostic Information (for debugging) */}
-      <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+      {/* <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
         <div className="flex">
           <div className="flex-shrink-0">
             <svg className="h-5 w-5 text-yellow-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
@@ -189,7 +189,7 @@ function ContactRequestsManager() {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
 
       {contactRequests && contactRequests.length > 0 && (
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
