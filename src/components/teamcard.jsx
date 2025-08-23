@@ -16,7 +16,7 @@ export default function teamCard (props) {
     return (
     <>
         <div className="basis-1/3" data-aos="fade-up">
-            <div className="flex flex-col justify-center w-auto mx-auto transition duration-300 ease-in-out delay-150 bg-orange-100 shadow-lg hover:shadow-xl md:w-96 rounded-2xl hover:-translate-y-0 hover:scale-110">
+            <div className="flex flex-col justify-center w-auto mx-auto transition duration-300 ease-in-out delay-150 bg-orange-100 shadow-lg hover:shadow-xl md:w-96 rounded-2xl hover:-translate-y-0 hover:scale-110 font-Sora">
                 <img className="object-cover object-center w-auto h-auto aspect-square md:w-96 rounded-t-2xl" src={path} alt={name}/>
                 <div className="p-6">
                     <small className="text-gray-800 text-md">{title}</small>

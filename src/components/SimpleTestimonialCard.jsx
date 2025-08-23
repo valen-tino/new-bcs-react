@@ -23,7 +23,7 @@ export default function SimpleTestimonialCard({ clientName, email, desc, rating 
 
   return (
     <div 
-      className="bg-gradient-to-br from-orange-50 to-orange-100 rounded-2xl shadow-lg border border-orange-200 p-6 hover:shadow-xl hover:from-orange-100 hover:to-orange-150 transition-all duration-300 transform hover:-translate-y-1"
+      className="bg-gradient-to-br from-orange-50 to-orange-100 rounded-2xl shadow-lg border border-orange-200 p-6 hover:shadow-xl hover:from-orange-100 hover:to-orange-150 transition-all duration-300 transform hover:-translate-y-1 font-Sora"
       itemScope
       itemType="https://schema.org/Review"
     >

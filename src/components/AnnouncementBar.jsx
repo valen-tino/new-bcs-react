@@ -52,7 +52,7 @@ function AnnouncementBar() {
   };
 
   return (
-    <div className="bg-gradient-to-r from-orange-500 to-orange-600 text-white py-3 px-4 shadow-md">
+    <div className="bg-gradient-to-r from-orange-500 to-orange-600 text-white py-3 px-4 shadow-md font-Sora">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         <div className="flex items-center space-x-4 flex-grow">
           {/* Announcement Icon */}

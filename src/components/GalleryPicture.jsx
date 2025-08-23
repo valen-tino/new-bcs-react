@@ -5,7 +5,7 @@ export default function GalleryPicture({ path, alt, title, className = "" }) {
   const imagePath = (rawPath.startsWith('http') || rawPath.includes('/')) ? rawPath : `gallery/${rawPath}`;
   
   return (
-    <div className={`relative group ${className}`}>
+    <div className={`relative group font-Sora ${className}`}>
       <img 
         src={imagePath} 
         alt={alt || title || 'Gallery image'} 

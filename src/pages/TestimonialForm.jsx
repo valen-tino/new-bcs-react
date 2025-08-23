@@ -122,7 +122,7 @@ function TestimonialForm() {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center min-h-screen bg-gray-50">
+      <div className="flex justify-center items-center min-h-screen bg-gray-50 font-Sora">
         <div className="w-12 h-12 rounded-full border-b-2 border-orange-500 animate-spin"></div>
       </div>
     );
@@ -130,7 +130,7 @@ function TestimonialForm() {
 
   if (!linkValid) {
     return (
-      <div className="flex justify-center items-center min-h-screen bg-gray-50">
+      <div className="flex justify-center items-center min-h-screen bg-gray-50 font-Sora">
         <div className="p-6 w-full max-w-md text-center bg-white rounded-lg shadow-md">
           <div className="mb-4">
             <img src={logoIcon} alt="BCS Logo" className="mx-auto h-12" />
@@ -151,7 +151,7 @@ function TestimonialForm() {
   }
 
   return (
-    <div className="py-12 min-h-screen bg-gray-50">
+    <div className="py-12 min-h-screen bg-gray-50 font-Sora">
       <div className="px-4 mx-auto max-w-2xl sm:px-6 lg:px-8">
         <div className="overflow-hidden bg-white rounded-lg shadow-md">
           {/* Header */}
