@@ -46,6 +46,10 @@ function Services(props){
     const [tempData, setTempData] = useState([])
     const { visaAbroad: cmsVisaAbroad, visaBali: cmsVisaBali, services: servicesData, uiText } = useCMS();
     
+    // Debug: Log the services data structure
+    console.log('🔍 Services Data from CMS:', servicesData);
+    console.log('🔍 UI Text Services:', uiText?.services);
+    
     // Use CMS data if available and valid (has non-empty titles), otherwise use fallback static data
     const normalizedAbroad = normalizeVisaAbroadItems(cmsVisaAbroad || []);
     const filteredAbroad = normalizedAbroad.filter(i => typeof i.title === 'string' && i.title.trim().length > 0);
@@ -64,40 +68,65 @@ function Services(props){
     // Helper function to get CMS description with language support
     const getCMSDescription = (serviceType, fallback, language = 'English') => {
         const serviceData = servicesData?.[serviceType];
+        console.log(`🔍 Getting CMS description for ${serviceType}:`, {
+            serviceData,
+            language,
+            fallback,
+            hasDescription: !!serviceData?.description,
+            descriptionType: typeof serviceData?.description,
+            descriptionKeys: serviceData?.description ? Object.keys(serviceData.description) : 'none'
+        });
+        
         if (serviceData?.description) {
             // Check if description is bilingual object
             if (typeof serviceData.description === 'object' && serviceData.description[language]) {
+                console.log(`✅ Found ${language} description for ${serviceType}:`, serviceData.description[language]);
                 return serviceData.description[language];
             }
             // Fallback to string description (for backward compatibility)
             if (typeof serviceData.description === 'string') {
+                console.log(`📝 Using string description for ${serviceType}:`, serviceData.description);
                 return serviceData.description;
             }
         }
+        console.log(`⚠️ Using fallback for ${serviceType}:`, fallback);
         return fallback;
     };
 
-    const lang = uiText?.services ? 
-        (props.language === "Indonesia" ? uiText.services.Indonesia : uiText.services.English) : 
-        {
-            vaa: "Visa Assistance Abroad",
-            vaadesc: "We provide visa assistance for various countries including Schengen, UK, USA, Australia, Japan, Korea, and more.",
-            vaasub: "Select a country to see requirements",
-            vab: "Visa Assistance in Bali",
-            vabdesc: "We also offer visa assistance services in Bali, Indonesia.",
-            wedding: "Wedding Ceremony Organizer",
-            weddingsub: "Make your special day unforgettable",
-            weddingdesc: getCMSDescription('wedding', "We provide comprehensive wedding ceremony organization services in Bali.", props.language === "Indonesia" ? "Indonesian" : "English"),
-            weddingbtn: "View Gallery",
-            translate: "Translation Documents",
-            translatedesc: getCMSDescription('translation', "Professional translation services for all document types.", props.language === "Indonesia" ? "Indonesian" : "English"),
-            travel: "Travel Insurance",
-            traveldesc: getCMSDescription('travel', "Comprehensive travel insurance coverage.", props.language === "Indonesia" ? "Indonesian" : "English"),
-            others: "Other Services",
-            otherssub: getCMSDescription('others', "We also provide additional services", props.language === "Indonesia" ? "Indonesian" : "English"),
-            email: "Email Us",
-            wa: "WhatsApp Us"
+    // Determine current language
+    const currentLanguage = props.language === "Indonesia" ? "Indonesian" : "English";
+
+    // Get UI text content with CMS descriptions merged in
+    const getServiceContent = () => {
+        const baseContent = uiText?.services ? 
+            (props.language === "Indonesia" ? uiText.services.Indonesia : uiText.services.English) : 
+            {
+                vaa: "Visa Assistance Abroad",
+                vaadesc: "We provide visa assistance for various countries including Schengen, UK, USA, Australia, Japan, Korea, and more.",
+                vaasub: "Select a country to see requirements",
+                vab: "Visa Assistance in Bali",
+                vabdesc: "We also offer visa assistance services in Bali, Indonesia.",
+                wedding: "Wedding Ceremony Organizer",
+                weddingsub: "Make your special day unforgettable",
+                weddingbtn: "View Gallery",
+                translate: "Translation Documents",
+                travel: "Travel Insurance",
+                others: "Other Services",
+                email: "Email Us",
+                wa: "WhatsApp Us"
+            };
+        
+        // Override with CMS descriptions
+        return {
+            ...baseContent,
+            weddingdesc: getCMSDescription('wedding', "We provide comprehensive wedding ceremony organization services in Bali.", currentLanguage),
+            translatedesc: getCMSDescription('translation', "Professional translation services for all document types.", currentLanguage),
+            traveldesc: getCMSDescription('travel', "Comprehensive travel insurance coverage.", currentLanguage),
+            otherssub: getCMSDescription('others', "We also provide additional services", currentLanguage)
         };
+    };
+
+    const lang = getServiceContent();
 
     return (
         <>
