@@ -32,13 +32,12 @@
     @apply border-b-4 border-orange-500;
   }
   
-
-  li{
-    @apply p-4 
+  li.nav-list{
+    @apply p-4
   }
 
   a.navlinks{
-    @apply hover:border-b-4 hover:rounded-sm hover:border-orange-500 transition ease-in-out focus:border-orange-500
+    @apply hover:border-b-4 hover:rounded-sm hover:border-orange-500 transition ease-in-out focus:border-orange-500 p-4
   }
 
   button.main{

@@ -61,6 +61,11 @@ function Services(props){
         return setModal(true)
     }
 
+    // Helper function to get CMS description or fallback
+    const getCMSDescription = (serviceType, fallback) => {
+        return servicesData?.[serviceType]?.description || fallback;
+    };
+
     const lang = servicesData && uiText?.services ? 
         (props.language === "Indonesia" ? servicesData.Indonesia : servicesData.English) : 
         (props.language === "Indonesia" ? {
@@ -71,21 +76,21 @@ function Services(props){
             vabdesc: "We also offer visa assistance services in Bali, Indonesia. Our services range from helping you apply for a visa to providing the necessary documents for your application.",
             wedding: "Wedding Ceremony Organizer",
             weddingsub: "Make your special day unforgettable",
-            weddingdesc: "We provide comprehensive wedding ceremony organization services in Bali, including legal documentation, venue selection, and coordination with local authorities.",
+            weddingdesc: getCMSDescription('wedding', "We provide comprehensive wedding ceremony organization services in Bali, including legal documentation, venue selection, and coordination with local authorities."),
             weddingsub2: "Contact us for more details",
             weddingbtn: "View Gallery",
             translate: "Translation Documents",
-            translatedesc: "BCS will provide translation services for any documents into any languages with certified translators.",
+            translatedesc: getCMSDescription('translation', "BCS will provide translation services for any documents into any languages with certified translators."),
             translatedesc2: "Provided by Sworn Translation Services in Indonesia for various languages including English, Chinese, Japanese, Korean, German, Arabic, and more.",
             suchas: "such as:",
             travel: "Travel Insurance",
-            traveldesc: "Protect your journey with comprehensive travel insurance coverage.",
+            traveldesc: getCMSDescription('travel', "Protect your journey with comprehensive travel insurance coverage."),
             travelsub: "Travel with peace of mind",
             traveldesc2: "We partner with",
             ck: "Chubb Insurance",
             traveldesc3: "to provide you with reliable travel insurance coverage.",
             others: "Other Services",
-            otherssub: "We also provide additional services",
+            otherssub: getCMSDescription('others', "We also provide additional services"),
             contactus: "Contact Us",
             email: "Email Us",
             wa: "WhatsApp Us"
@@ -97,21 +102,21 @@ function Services(props){
             vabdesc: "We also offer visa assistance services in Bali, Indonesia. Our services range from helping you apply for a visa to providing the necessary documents for your application.",
             wedding: "Wedding Ceremony Organizer",
             weddingsub: "Make your special day unforgettable",
-            weddingdesc: "We provide comprehensive wedding ceremony organization services in Bali, including legal documentation, venue selection, and coordination with local authorities.",
+            weddingdesc: getCMSDescription('wedding', "We provide comprehensive wedding ceremony organization services in Bali, including legal documentation, venue selection, and coordination with local authorities."),
             weddingsub2: "Contact us for more details",
             weddingbtn: "View Gallery",
             translate: "Translation Documents",
-            translatedesc: "BCS will provide translation services for any documents into any languages with certified translators.",
+            translatedesc: getCMSDescription('translation', "BCS will provide translation services for any documents into any languages with certified translators."),
             translatedesc2: "Provided by Sworn Translation Services in Indonesia for various languages including English, Chinese, Japanese, Korean, German, Arabic, and more.",
             suchas: "such as:",
             travel: "Travel Insurance",
-            traveldesc: "Protect your journey with comprehensive travel insurance coverage.",
+            traveldesc: getCMSDescription('travel', "Protect your journey with comprehensive travel insurance coverage."),
             travelsub: "Travel with peace of mind",
             traveldesc2: "We partner with",
             ck: "Chubb Insurance",
             traveldesc3: "to provide you with reliable travel insurance coverage.",
             others: "Other Services",
-            otherssub: "We also provide additional services",
+            otherssub: getCMSDescription('others', "We also provide additional services"),
             contactus: "Contact Us",
             email: "Email Us",
             wa: "WhatsApp Us"
@@ -206,9 +211,8 @@ function Services(props){
 
                             <h1 className='z-10 py-2 pl-2 text-5xl leading-tight text-bold' data-aos="fade-down">{lang.wedding}</h1>
                             <h2 className='pl-2 text-sm' data-aos="fade-down">
-                                {lang.weddingsub}<br/><br/>{lang.weddingdesc}
+                                {lang.weddingsub}<br/><br/><span dangerouslySetInnerHTML={{__html: lang.weddingdesc}}></span>
                             </h2>
-                            <h3 className='pl-2 text-lg text-bold' data-aos="fade-down">{lang.weddingsub2}</h3>
                             <div className='flex flex-wrap gap-2 py-2 pr-2'>
                                 <button className='px-8 py-3 bg-orange-500 text-white rounded-lg shadow-md hover:bg-orange-600 transition-colors duration-200' data-aos="fade-up"><a href='#gallery'><i className="fa-solid fa-images"></i> {lang.weddingbtn}</a></button>
                             </div>
@@ -237,110 +241,9 @@ function Services(props){
                             <h1 className='z-10 py-2 pl-2 text-5xl leading-tight text-bold' data-aos="fade-down">{lang.translate}</h1>
                             <div className='pl-2 pr-2 text-sm text-bold'>
                                 <div data-aos="fade-down">
-                                {lang.translatedesc}&nbsp;{lang.suchas}<br/><br/>
-                                </div>
-
-
-                                <div className="flex flex-col">
-                                    <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
-                                        <div className="inline-block min-w-full sm:px-6 lg:px-8 ">
-                                            <div className="overflow-hidden">
-                                                <table className="min-w-full text-center">
-
-                                                    <tbody className='text-left'>
-                                                        <tr data-aos="fade-down">
-                                                            <td className="py-1 text-sm font-medium text-gray-900 whitespace-nowrap">
-                                                                - KTP / ID CARD
-                                                            </td>
-                                                            <td className="py-1 text-sm font-light text-gray-900 whitespace-nowrap">
-                                                                -Akte Nikah / <br />Marriage Certifcate
-                                                            </td>
-                                                        </tr>
-                                                        <tr data-aos="fade-down">
-                                                            <td className="py-1 text-sm font-medium text-gray-900 whitespace-nowrap">
-                                                                - IJAZAH / Diploma Certificate
-                                                            </td>
-                                                            <td className="py-1 text-sm font-light text-gray-900 whitespace-nowrap">
-                                                                - Akte Nikah 
-                                                            </td>
-                                                        </tr>
-                                                        <tr data-aos="fade-down">
-                                                            <td className="py-1 text-sm font-medium text-gray-900 whitespace-nowrap">
-                                                                - Transkrip Nilai /<br/>Academic Transcripts
-                                                            </td>
-                                                            <td className="py-1 text-sm font-light text-gray-900 whitespace-nowrap">
-                                                                - Akte Cerai / Divorce Certificate
-                                                            </td>
-                                                        </tr>
-                                                        <tr data-aos="fade-down">
-                                                            <td className="py-1 text-sm font-medium text-gray-900 whitespace-nowrap">
-                                                                - Akte Lahir / <br/>Birth Certificate
-                                                            </td>
-                                                            <td className="py-1 text-sm font-light text-gray-900 whitespace-nowrap">
-                                                                - Akte Jual Beli /<br/>Notary document
-                                                            </td>
-                                                        </tr>
-                                                        <tr data-aos="fade-down">
-                                                            <td className="py-1 text-sm font-medium text-gray-900 whitespace-nowrap">
-                                                                - SKCK / Police Clearence certificate
-                                                            </td>
-                                                            <td className="py-1 text-sm font-light text-gray-900 whitespace-nowrap">
-                                                                - Keterangan Belum Nikah/ <br/>Single Certificate
-                                                            </td>
-                                                        </tr>
-                                                        <tr data-aos="fade-down">
-                                                            <td className="py-1 text-sm font-medium text-gray-900 whitespace-nowrap">
-                                                                - Surat Wali Hakim/
-                                                            </td>
-                                                            <td className="py-1 text-sm font-light text-gray-900 whitespace-nowrap">
-                                                                - Surat Penetapan Pengadilan <br/>Wali/Pengampu
-                                                            </td>
-                                                        </tr>
-                                                        <tr data-aos="fade-down">
-                                                            <td className="py-1 text-sm font-medium text-gray-900 whitespace-nowrap">
-                                                                - Surat Rekom BPJS
-                                                            </td>
-                                                            <td className="py-1 text-sm font-light text-gray-900 whitespace-nowrap">
-                                                                - Surat Penetapan Pengadilan <br/>Anak Angkat
-                                                            </td>
-                                                        </tr>
-                                                        <tr data-aos="fade-down">
-                                                            <td className="py-1 text-sm font-medium text-gray-900 whitespace-nowrap">
-                                                                - Surat Kuasa Asuh Anak
-                                                            </td>
-                                                            <td className="py-1 text-sm font-light text-gray-900 whitespace-nowrap">
-                                                                - Surat Penetapan Pengadilan <br/>Anak Angkat
-                                                            </td>
-                                                        </tr>
-                                                        <tr data-aos="fade-down">
-                                                            <td className="py-1 text-sm font-medium text-gray-900 whitespace-nowrap">
-                                                                - Kartu Keluarga / <br/>Family Card
-                                                            </td>
-                                                            <td className="py-1 text-sm font-light text-gray-900 whitespace-nowrap">
-                                                                - Surat Penetapan Pengadilan <br/>Hak Asuh Anak
-                                                            </td>
-                                                        </tr>
-                                                        <tr data-aos="fade-down">
-                                                            <td className="py-1 text-sm font-medium text-gray-900 whitespace-nowrap">
-                                                                - Akte lahir / <br/>Birth Certificate
-                                                            </td>
-                                                            <td className="py-1 text-sm font-light text-gray-900 whitespace-nowrap">
-                                                                - Surat Penetapan Pengadilan <br/>Hak Asuh Anak
-                                                            </td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <br />
-                                <div data-aos="fade-down">
-                                {lang.translatedesc2}
+                                <span dangerouslySetInnerHTML={{__html: lang.translatedesc}}></span><br/>
                                 </div>
                             </div>
-
-                            <h1 className='pl-2 pr-2 text-lg text-bold' data-aos="fade-down">{lang.contactus}</h1>
                             <div className='flex flex-wrap gap-4 py-2 pr-2'>
                             <Emailbutton input={lang.email} contactForm={props.contactForm}/> <Longwabutton desc={lang.wa}/>
                             </div>
@@ -362,11 +265,7 @@ function Services(props){
 
                             <h1 className='z-10 py-2 pl-2 text-5xl leading-tight text-bold' data-aos="fade-down">{lang.travel}</h1>
                             <h2 className='pl-2 text-sm text-bold' data-aos="fade-down">
-                                <p className='text-md'>{lang.traveldesc}</p><br />
-                                <p className='text-2xl'><u>All you need to know to travel smarter.</u></p><br/>
-                                {lang.travelsub}<br/><br/>
-                                {lang.traveldesc2}&nbsp;<button className='px-3 py-1 bg-orange-500 text-white rounded-md shadow-sm hover:bg-orange-600 transition-colors duration-200'><a href='//www.chubb.com/id-en/personal/travel-insurance.html'>{lang.ck}</a></button><br/><br/>
-                                {lang.traveldesc3}
+                                <p className='text-md' dangerouslySetInnerHTML={{__html: lang.traveldesc}}></p><br />                                
                             </h2>
 
                             <div className='flex flex-wrap gap-4 py-2 pr-2' data-aos="fade-up">
@@ -396,57 +295,9 @@ function Services(props){
 
                             <h1 className='z-10 py-2 pl-2 text-5xl leading-tight text-bold' data-aos="fade-down">{lang.others}</h1>
                             <div className='pl-2 pr-2 text-sm text-bold'>
-                                <div data-aos="fade-down">{lang.otherssub}&nbsp;{lang.suchas}</div>
-
-                                <div className="flex flex-col">
-                                    <div className="overflow-x-auto sm:-mx-6 lg:-mx-8">
-                                        <div className="inline-block min-w-full py-2 sm:px-6 lg:px-8 ">
-                                            <div className="overflow-hidden">
-                                                <table className="min-w-full text-center">
-                                                    <tbody className='text-left'>
-                                                        <tr data-aos="fade-down">
-                                                            <td className="py-1 text-sm font-medium text-gray-900 whitespace-nowrap">
-                                                            - Cetak KTP 
-                                                            </td>
-                                                            <td className="py-1 text-sm font-light text-gray-900 whitespace-nowrap">
-                                                            - Akte Lahir Elektronik
-                                                            </td>
-                                                        </tr>
-                                                        <tr data-aos="fade-down">
-                                                            <td className="py-1 text-sm font-medium text-gray-900 whitespace-nowrap">
-                                                            - KK Elektronik
-                                                            </td>
-                                                            <td className="py-1 text-sm font-light text-gray-900 whitespace-nowrap">
-                                                            - Akte Cerai
-                                                            </td>
-                                                        </tr>
-                                                        <tr data-aos="fade-down">
-                                                            <td className="py-1 text-sm font-medium text-gray-900 whitespace-nowrap">
-                                                            - Surat Pengakuan <br/>Anak
-                                                            </td>
-                                                            <td className="py-1 text-sm font-light text-gray-900 whitespace-nowrap">
-                                                            - SKTT untuk WNA
-                                                            </td>
-                                                        </tr>
-                                                        <tr data-aos="fade-down">
-                                                            <td className="py-1 text-sm font-medium text-gray-900 whitespace-nowrap">
-                                                            - Pelaporan <br/>perkawinan<br/>campur
-                                                            </td>
-                                                            <td className="py-1 text-sm font-light text-gray-900 whitespace-nowrap">
-                                                            -  Samsat motor dan <br/> mobil khusus wilayah <br/> Denpasar, Badung <br/>dan Gianyar
-                                                            </td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <br />
+                                <div data-aos="fade-down"><span dangerouslySetInnerHTML={{__html: lang.otherssub}}></span></div>
                                 
                             </div>
-
-                            <h1 className='pl-2 pr-2 text-lg text-bold' data-aos="fade-down">{lang.contactus}</h1>
                             <div className='flex flex-wrap gap-4 py-2 pr-2'>
                             <Emailbutton input={lang.email} contactForm={props.contactForm}/> <Longwabutton desc={lang.wa}/>
                             </div>

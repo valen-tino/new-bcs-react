@@ -43,12 +43,12 @@ function Navbar(props) {
                 <img src={logoIcon} width='100px' height='50px' alt='BCS Logo'/>
               </div>
                 <ul className='hidden md:flex'>
-                  <li><Link activeClass="is-active" to="hero" spy={true} smooth={true} offset={-100} duration={500}>{lang.home}</Link></li>
-                  <li><Link activeClass="is-active" to="services" spy={true} smooth={true} offset={-100} duration={500}>{lang.services}</Link></li>
-                  <li><Link activeClass="is-active" to="about" spy={true} smooth={true} offset={-100} duration={500}>{lang.about}</Link></li>
-                  <li><Link activeClass="is-active" to="gallery" spy={true} smooth={true} offset={-100} duration={500}>{lang.gallery}</Link></li>
-                  <li><Link activeClass="is-active" to="testi" spy={true} smooth={true} offset={-100} duration={500}>{lang.testi}</Link></li> 
-                  <li><Link activeClass="is-active" to="contactus" spy={true} smooth={true} offset={-100} duration={500}>{lang.contactus}</Link></li>
+                  <li className='nav-list'><Link activeClass="is-active" to="hero" spy={true} smooth={true} offset={-100} duration={500}>{lang.home}</Link></li>
+                  <li className='nav-list'><Link activeClass="is-active" to="services" spy={true} smooth={true} offset={-100} duration={500}>{lang.services}</Link></li>
+                  <li className='nav-list'><Link activeClass="is-active" to="about" spy={true} smooth={true} offset={-100} duration={500}>{lang.about}</Link></li>
+                  <li className='nav-list'><Link activeClass="is-active" to="gallery" spy={true} smooth={true} offset={-100} duration={500}>{lang.gallery}</Link></li>
+                  <li className='nav-list'><Link activeClass="is-active" to="testi" spy={true} smooth={true} offset={-100} duration={500}>{lang.testi}</Link></li> 
+                  <li className='nav-list'><Link activeClass="is-active" to="contactus" spy={true} smooth={true} offset={-100} duration={500}>{lang.contactus}</Link></li>
                 </ul>  
             </div>
 
@@ -72,12 +72,12 @@ function Navbar(props) {
           </div>
 
           <ul className={!Nav ? 'hidden' : 'sticky  bg-orange-100 w-full px-8'}>
-              <li><Link activeClass="is-active" to="hero" spy={true} smooth={true} offset={-100} duration={500}>{lang.home}</Link></li>
-              <li><Link activeClass="is-active" to="services" spy={true} smooth={true} offset={-100} duration={500}>{lang.services}</Link></li>
-              <li><Link activeClass="is-active" to="about" spy={true} smooth={true} offset={-100} duration={500}>{lang.about}</Link></li>
-              <li><Link activeClass="is-active" to="gallery" spy={true} smooth={true} offset={-100} duration={500}>{lang.gallery}</Link></li>
-              <li><Link activeClass="is-active" to="testi" spy={true} smooth={true} offset={-100} duration={500}>{lang.testi}</Link></li>
-              <li><Link activeClass="is-active" to="contactus" spy={true} smooth={true} offset={-100} duration={500}>{lang.contactus}</Link></li>
+              <li className='nav-list'><Link activeClass="is-active" to="hero" spy={true} smooth={true} offset={-100} duration={500}>{lang.home}</Link></li>
+              <li className='nav-list'><Link activeClass="is-active" to="services" spy={true} smooth={true} offset={-100} duration={500}>{lang.services}</Link></li>
+              <li className='nav-list'><Link activeClass="is-active" to="about" spy={true} smooth={true} offset={-100} duration={500}>{lang.about}</Link></li>
+              <li className='nav-list'><Link activeClass="is-active" to="gallery" spy={true} smooth={true} offset={-100} duration={500}>{lang.gallery}</Link></li>
+              <li className='nav-list'><Link activeClass="is-active" to="testi" spy={true} smooth={true} offset={-100} duration={500}>{lang.testi}</Link></li>
+              <li className='nav-list'><Link activeClass="is-active" to="contactus" spy={true} smooth={true} offset={-100} duration={500}>{lang.contactus}</Link></li>
               <div className='flex flex-col pb-2 my-4 text-center gap-y-3'>
               <Emailbutton input={lang.email} contactForm={props.contactForm}/>
                 <select

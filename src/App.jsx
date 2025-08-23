@@ -10,6 +10,7 @@ import Navbar from './sections/nav/nav';
 import Header from './sections/header/hero';
 import Services from './sections/services/services';
 import About from './sections/about/about';
+import Team from './sections/team/team';
 import Gallery from './sections/gallery/gallery';
 import Testimonial from './sections/testimonial/testimonial';
 import Footer from './sections/footer/contactus';
@@ -50,6 +51,7 @@ function HomeContent() {
         contactForm={openContactForm}
       />
       <About language={language} />
+      <Team language={language} />
       <Gallery language={language} />
       <Testimonial language={language} />
       <Footer 
