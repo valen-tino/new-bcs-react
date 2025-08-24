@@ -74,16 +74,29 @@ function Testimonial(props){
                 autoPlay={true} 
                 interval={5000}
                 className="mb-8 testimonial-carousel max-w-4xl w-full"
+                id="testimonial-carousel"
+                role="region"
+                aria-label="Customer testimonials carousel"
                 renderArrowPrev={(onClickHandler, hasPrev) =>
                   hasPrev && (
                     <button
                       type="button"
                       onClick={onClickHandler}
-                      className="absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-white/90 hover:bg-white text-orange-600 rounded-full p-4 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-110"
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          onClickHandler();
+                        }
+                      }}
+                      aria-label="Previous testimonial"
+                      aria-controls="testimonial-carousel"
+                      aria-disabled={!hasPrev}
+                      className="absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-white/90 hover:bg-white text-orange-600 rounded-full p-4 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-600"
                     >
-                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
                       </svg>
+                      <span className="sr-only">Previous testimonial</span>
                     </button>
                   )
                 }
@@ -92,11 +105,21 @@ function Testimonial(props){
                     <button
                       type="button"
                       onClick={onClickHandler}
-                      className="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-white/90 hover:bg-white text-orange-600 rounded-full p-4 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-110"
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          onClickHandler();
+                        }
+                      }}
+                      aria-label="Next testimonial"
+                      aria-controls="testimonial-carousel"
+                      aria-disabled={!hasNext}
+                      className="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-white/90 hover:bg-white text-orange-600 rounded-full p-4 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-600"
                     >
-                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
                       </svg>
+                      <span className="sr-only">Next testimonial</span>
                     </button>
                   )
                 }
@@ -106,8 +129,18 @@ function Testimonial(props){
                       isSelected 
                         ? 'w-10 bg-orange-600 shadow-lg' 
                         : 'w-3 bg-orange-300 hover:bg-orange-400 hover:w-6'
-                    } h-3 rounded-full`}
+                    } h-3 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-600`}
                     onClick={onClickHandler}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        onClickHandler();
+                      }
+                    }}
+                    role="button"
+                    tabIndex={0}
+                    aria-label={`Go to testimonial ${index + 1}`}
+                    aria-pressed={isSelected}
                     key={index}
                   />
                 )}

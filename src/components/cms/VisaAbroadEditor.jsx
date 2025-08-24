@@ -165,7 +165,7 @@ function VisaAbroadEditor() {
               {visaAbroad?.map((country) => (
                 <div key={country.id} className="flex justify-between items-center p-3 rounded-lg border border-gray-200 hover:bg-gray-50">
                   <div className="flex items-center space-x-3">
-                    <img src={country.flag} alt={country.country} className="object-cover w-8 h-6 rounded" />
+                    <img src={country.flag} alt="" aria-hidden="true" className="object-cover w-8 h-6 rounded" />
                     <span className="font-medium text-gray-900">{country.country}</span>
                   </div>
                   <div className="flex items-center space-x-2">

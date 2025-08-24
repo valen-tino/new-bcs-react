@@ -43,16 +43,29 @@ function Gallery(props){
               autoPlay={true} 
               interval={4000}
               className="mb-8 gallery-carousel"
+              id="gallery-carousel"
+              role="region"
+              aria-label="Gallery images carousel"
               renderArrowPrev={(onClickHandler, hasPrev) =>
                 hasPrev && (
                   <button
                     type="button"
                     onClick={onClickHandler}
-                    className="absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-orange-600/80 hover:bg-orange-700 text-white rounded-full p-3 shadow-lg transition-all duration-200"
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        onClickHandler();
+                      }
+                    }}
+                    aria-label="Previous slide"
+                    aria-controls="gallery-carousel"
+                    aria-disabled={!hasPrev}
+                    className="absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-orange-600/80 hover:bg-orange-700 text-white rounded-full p-3 shadow-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-600"
                   >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                     </svg>
+                    <span className="sr-only">Previous slide</span>
                   </button>
                 )
               }
@@ -61,11 +74,21 @@ function Gallery(props){
                   <button
                     type="button"
                     onClick={onClickHandler}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-orange-600/80 hover:bg-orange-700 text-white rounded-full p-3 shadow-lg transition-all duration-200"
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        onClickHandler();
+                      }
+                    }}
+                    aria-label="Next slide"
+                    aria-controls="gallery-carousel"
+                    aria-disabled={!hasNext}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-orange-600/80 hover:bg-orange-700 text-white rounded-full p-3 shadow-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-600"
                   >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                     </svg>
+                    <span className="sr-only">Next slide</span>
                   </button>
                 )
               }
@@ -73,8 +96,18 @@ function Gallery(props){
                 <li
                   className={`inline-block mx-1 cursor-pointer transition-all duration-200 ${
                     isSelected ? 'w-8 bg-orange-600' : 'w-2 bg-orange-300 hover:bg-orange-400'
-                  } h-2 rounded-full`}
+                  } h-2 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-600`}
                   onClick={onClickHandler}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      onClickHandler();
+                    }
+                  }}
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`Go to slide ${index + 1}`}
+                  aria-pressed={isSelected}
                   key={index}
                 />
               )}

@@ -80,6 +80,10 @@
   height: 50px;
   position: absolute;
   top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 @media only screen and (max-width: 934px) {
@@ -114,6 +118,20 @@
   font-size: 30px;
   box-shadow: 2px 2px 3px #999;
   z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.3s ease;
+}
+
+@media (max-width: 768px) {
+  .whatsapp_float {
+    width: 50px;
+    height: 50px;
+    bottom: 20px;
+    right: 20px;
+    font-size: 24px;
+  }
 }
 
 .whatsapp-icon {

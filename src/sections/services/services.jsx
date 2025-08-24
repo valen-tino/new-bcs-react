@@ -127,23 +127,23 @@ function Services(props){
                             </div>
                         </div>
 
-                        <div className='flex flex-col justify-center w-full gap-5 py-0 md:items-start md:px-20 md:py-40'>
+                        <div className='flex flex-col justify-center w-full gap-3 sm:gap-5 py-4 sm:py-8 md:py-40 px-4 sm:px-8 md:px-20 min-w-0'>
 
-                            <h1 className='z-10 py-2 pl-2 text-5xl leading-tight text-bold' data-aos="fade-down">{lang.vaa}</h1>
-                            <h2 className='pl-2 text-sm text-bold' data-aos="fade-down">{lang.vaadesc}</h2>
-                            <h3 className='pl-2 text-lg text-bold' data-aos="fade-down">{lang.vaasub}</h3>
-                            <div className='flex flex-wrap gap-2 pr-4'>
+                            <h1 className='z-10 py-2 text-3xl sm:text-4xl md:text-5xl leading-tight font-bold break-words' data-aos="fade-down">{lang.vaa}</h1>
+                            <h2 className='text-sm sm:text-base leading-relaxed break-words' data-aos="fade-down">{lang.vaadesc}</h2>
+                            <h3 className='text-base sm:text-lg font-bold break-words' data-aos="fade-down">{lang.vaasub}</h3>
+                            <div className='flex flex-wrap gap-2 sm:gap-3 max-w-full overflow-hidden'>
                                 {visaAbroad.map((item, key) => (
                                     <button
                                         key={key}
-                                        className="flex items-center gap-2 px-4 py-2 bg-orange-500 text-white rounded-lg shadow-md hover:bg-orange-600 transition-colors duration-200 modal-open"
+                                        className="flex items-center gap-1 sm:gap-2 px-3 sm:px-4 py-2 bg-orange-500 text-white rounded-lg shadow-md hover:bg-orange-600 transition-colors duration-200 modal-open text-sm sm:text-base min-w-0 flex-shrink-0"
                                         data-aos="fade-up"
                                         onClick={() => getData(item.title, item.desc)}
                                     >
                                         {item.flag && (
-                                        <img src={item.flag} alt={item.title} className="w-6 h-4 object-cover" />
+                                        <img src={item.flag} alt="" aria-hidden="true" className="w-4 h-3 sm:w-6 sm:h-4 object-cover flex-shrink-0" />
                                         )}
-                                        {item.title}
+                                        <span className="truncate">{item.title}</span>
                                     </button>
                                     ))}
                             </div>
@@ -166,19 +166,19 @@ function Services(props){
                             </div>
                         </div>
 
-                        <div className='flex flex-col justify-center w-full gap-5 py-0 md:items-start md:px-20 md:py-40'>
+                        <div className='flex flex-col justify-center w-full gap-3 sm:gap-5 py-4 sm:py-8 md:py-40 px-4 sm:px-8 md:px-20 min-w-0'>
 
-                            <h1 className='z-10 py-2 pl-2 text-5xl leading-tight text-bold' data-aos="fade-down">{lang.vab}</h1>
-                            <h2 className='pl-2 pr-2 text-sm text-bold' data-aos="fade-down">{lang.vabdesc}</h2>
-                            <div className='flex flex-wrap gap-2 py-2 pr-4'>
+                            <h1 className='z-10 py-2 text-3xl sm:text-4xl md:text-5xl leading-tight font-bold break-words' data-aos="fade-down">{lang.vab}</h1>
+                            <h2 className='text-sm sm:text-base leading-relaxed break-words' data-aos="fade-down">{lang.vabdesc}</h2>
+                            <div className='flex flex-wrap gap-2 sm:gap-3 max-w-full overflow-hidden'>
                                 {visaBali.map((item, key) => {
                                     return (
                                         <button 
-                                            className='px-4 py-2 bg-orange-500 text-white rounded-lg shadow-md hover:bg-orange-600 transition-colors duration-200 modal-open' 
+                                            className='min-h-[44px] min-w-[44px] px-3 sm:px-4 py-2 bg-orange-500 text-white rounded-lg shadow-md hover:bg-orange-600 transition-colors duration-200 modal-open text-sm sm:text-base min-w-0 flex-shrink-0 touch-manipulation' 
                                             data-aos="fade-up" 
                                             key={key} 
                                             onClick={() => getData(item.title, item.desc)}
-                                        >{item.title}</button>
+                                        ><span className="truncate">{item.title}</span></button>
                                     )
                                 })}
 
@@ -198,14 +198,14 @@ function Services(props){
                             </div>
                         </div>
 
-                        <div className='flex flex-col justify-center w-full gap-5 py-0 md:items-start md:px-20 md:py-40'>
+                        <div className='flex flex-col justify-center w-full gap-3 sm:gap-5 py-4 sm:py-8 md:py-40 px-4 sm:px-8 md:px-20 min-w-0'>
 
-                            <h1 className='z-10 py-2 pl-2 text-5xl leading-tight text-bold' data-aos="fade-down">{lang.wedding}</h1>
-                            <h2 className='pl-2 text-sm' data-aos="fade-down">
+                            <h1 className='z-10 py-2 text-3xl sm:text-4xl md:text-5xl leading-tight font-bold break-words' data-aos="fade-down">{lang.wedding}</h1>
+                            <h2 className='text-sm sm:text-base leading-relaxed break-words' data-aos="fade-down">
                                 {lang.weddingsub}<br/><br/><span dangerouslySetInnerHTML={{__html: lang.weddingdesc}}></span>
                             </h2>
-                            <div className='flex flex-wrap gap-2 py-2 pr-2'>
-                                <button className='px-8 py-3 bg-orange-500 text-white rounded-lg shadow-md hover:bg-orange-600 transition-colors duration-200' data-aos="fade-up"><a href='#gallery'><i className="fa-solid fa-images"></i> {lang.weddingbtn}</a></button>
+                            <div className='flex flex-wrap gap-2 sm:gap-3 max-w-full overflow-hidden'>
+                                <button className='px-6 sm:px-8 py-3 bg-orange-500 text-white rounded-lg shadow-md hover:bg-orange-600 transition-colors duration-200 text-sm sm:text-base min-w-0 flex-shrink-0' data-aos="fade-up"><a href='#gallery' className="flex items-center gap-2"><i className="fa-solid fa-images"></i> <span className="truncate">{lang.weddingbtn}</span></a></button>
                             </div>
 
 
@@ -227,15 +227,15 @@ function Services(props){
                             </div>
                         </div>
 
-                        <div className='flex flex-col justify-center w-full gap-5 py-0 md:items-start md:px-20 md:py-40'>
+                        <div className='flex flex-col justify-center w-full gap-3 sm:gap-5 py-4 sm:py-8 md:py-40 px-4 sm:px-8 md:px-20 min-w-0'>
 
-                            <h1 className='z-10 py-2 pl-2 text-5xl leading-tight text-bold' data-aos="fade-down">{lang.translate}</h1>
-                            <div className='pl-2 pr-2 text-sm text-bold'>
+                            <h1 className='z-10 py-2 text-3xl sm:text-4xl md:text-5xl leading-tight font-bold break-words' data-aos="fade-down">{lang.translate}</h1>
+                            <div className='text-sm sm:text-base leading-relaxed break-words'>
                                 <div data-aos="fade-down">
                                 <span dangerouslySetInnerHTML={{__html: lang.translatedesc}}></span><br/>
                                 </div>
                             </div>
-                            <div className='flex flex-wrap gap-4 py-2 pr-2'>
+                            <div className='flex flex-wrap gap-2 sm:gap-4 max-w-full overflow-hidden'>
                             <Emailbutton input={lang.email} contactForm={props.contactForm}/> <Longwabutton desc={lang.wa}/>
                             </div>
                         </div>
@@ -252,14 +252,14 @@ function Services(props){
                             </div>
                         </div>
 
-                        <div className='flex flex-col justify-center w-full gap-5 py-0 md:items-start md:px-20 md:py-40'>
+                        <div className='flex flex-col justify-center w-full gap-3 sm:gap-5 py-4 sm:py-8 md:py-40 px-4 sm:px-8 md:px-20 min-w-0'>
 
-                            <h1 className='z-10 py-2 pl-2 text-5xl leading-tight text-bold' data-aos="fade-down">{lang.travel}</h1>
-                            <h2 className='pl-2 text-sm text-bold' data-aos="fade-down">
-                                <p className='text-md' dangerouslySetInnerHTML={{__html: lang.traveldesc}}></p><br />                                
+                            <h1 className='z-10 py-2 text-3xl sm:text-4xl md:text-5xl leading-tight font-bold break-words' data-aos="fade-down">{lang.travel}</h1>
+                            <h2 className='text-sm sm:text-base leading-relaxed break-words' data-aos="fade-down">
+                                <p className='text-sm sm:text-base' dangerouslySetInnerHTML={{__html: lang.traveldesc}}></p><br />                                
                             </h2>
 
-                            <div className='flex flex-wrap gap-4 py-2 pr-2' data-aos="fade-up">
+                            <div className='flex flex-wrap gap-2 sm:gap-4 max-w-full overflow-hidden' data-aos="fade-up">
                             <Emailbutton input={lang.email} contactForm={props.contactForm}/> <Longwabutton desc={lang.wa}/>
                             </div>
 
@@ -282,14 +282,14 @@ function Services(props){
                             </div>
                         </div>
 
-                        <div className='flex flex-col justify-center w-full gap-5 py-0 md:items-start md:px-20 md:py-40'>
+                        <div className='flex flex-col justify-center w-full gap-3 sm:gap-5 py-4 sm:py-8 md:py-40 px-4 sm:px-8 md:px-20 min-w-0'>
 
-                            <h1 className='z-10 py-2 pl-2 text-5xl leading-tight text-bold' data-aos="fade-down">{lang.others}</h1>
-                            <div className='pl-2 pr-2 text-sm text-bold'>
+                            <h1 className='z-10 py-2 text-3xl sm:text-4xl md:text-5xl leading-tight font-bold break-words' data-aos="fade-down">{lang.others}</h1>
+                            <div className='text-sm sm:text-base leading-relaxed break-words'>
                                 <div data-aos="fade-down"><span dangerouslySetInnerHTML={{__html: lang.otherssub}}></span></div>
                                 
                             </div>
-                            <div className='flex flex-wrap gap-4 py-2 pr-2'>
+                            <div className='flex flex-wrap gap-2 sm:gap-4 max-w-full overflow-hidden'>
                             <Emailbutton input={lang.email} contactForm={props.contactForm}/> <Longwabutton desc={lang.wa}/>
                             </div>
                         </div>

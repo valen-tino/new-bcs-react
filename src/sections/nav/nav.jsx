@@ -144,9 +144,10 @@ function Navbar(props) {
           <div className='hidden pr-4 md:flex'>
             <Emailbutton input={lang.email} contactForm={props.contactForm}/>
             <select
-              className="px-2 ml-2 text-black bg-orange-300 rounded-full custom-select"
+              className="px-2 ml-2 text-black bg-orange-300 rounded-full custom-select min-h-[44px] touch-manipulation"
               value={props.language}
               onChange={e => props.handleSetLanguage(e.target.value)}
+              aria-label="Select language"
             >
               <option value="English">English</option>
               <option value="Indonesia">Indonesia</option>
@@ -154,7 +155,13 @@ function Navbar(props) {
           </div>
 
           <div className='px-8 md:hidden' onClick={toggleNav}>
-            {Nav ? <i className="text-black fa-solid fa-times"></i> : <i className="fa-solid fa-bars"></i>}
+            <button 
+              className="min-h-[44px] min-w-[44px] flex items-center justify-center touch-manipulation"
+              aria-label={Nav ? "Close menu" : "Open menu"}
+              aria-expanded={Nav}
+            >
+              {Nav ? <i className="text-black fa-solid fa-times"></i> : <i className="fa-solid fa-bars"></i>}
+            </button>
           </div>
         </div>
 
@@ -170,9 +177,10 @@ function Navbar(props) {
           <div className='flex flex-col pb-2 my-4 text-center gap-y-3'>
             <Emailbutton input={lang.email} contactForm={props.contactForm}/>
             <select
-              className="py-3 pl-2 text-black bg-orange-300 rounded-full custom-select"
+              className="py-3 pl-2 text-black bg-orange-300 rounded-full custom-select min-h-[44px] touch-manipulation"
               value={props.language}
               onChange={e => props.handleSetLanguage(e.target.value)}
+              aria-label="Select language"
             >
               <option value="English">English</option>
               <option value="Indonesia">Indonesia</option>

@@ -26,7 +26,13 @@ const lang = activeNotification
     <>
         <div className="items-center py-2 mx-0 text-center text-white uppercase bg-red-500 rounded-b-2xl font-Sora md:mx-2" data-aos="fade-down">
           {lang.update} &nbsp;
-          <button onClick={() => setShowInfo(true)}>{lang.ck}</button>
+          <button 
+            onClick={() => setShowInfo(true)}
+            className="min-h-[44px] min-w-[44px] px-3 py-2 touch-manipulation underline hover:no-underline transition-all duration-200"
+            aria-label="Open notification details"
+          >
+            {lang.ck}
+          </button>
         </div>
         
         <NotifModal 
