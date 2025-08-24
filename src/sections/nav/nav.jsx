@@ -178,7 +178,7 @@ function Navbar(props) {
         
         {/* Mobile controls outside of list for proper HTML structure */}
         {Nav && (
-          <div className='flex flex-col pb-2 my-4 mx-8 text-center gap-y-3 bg-orange-100'>
+          <div className='flex flex-col pb-2 py-4 px-8 text-center gap-y-3 bg-orange-100'>
             <Emailbutton input={lang.email} contactForm={props.contactForm}/>
             <select
               className="py-3 pl-2 text-black bg-orange-300 rounded-full custom-select min-h-[44px] touch-manipulation"

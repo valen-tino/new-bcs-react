@@ -42,10 +42,10 @@ function ContactUs (props){
       
         <div className="flex flex-col items-center p-6 mb-10 bg-orange-200 rounded-lg shadow-lg sm:flex-row sm:justify-between" data-aos="fade-up">
           <strong className="text-xl text-center md:text-left sm:text-xl">{lang.desc}</strong>
-          <div className="flex-row">
-          <Emailbutton input={lang.email} contactForm={props.contactForm}/> &nbsp;<Longwabutton desc={lang.wa}/>
+          <div className="flex flex-col gap-y-3 md:flex-row md:gap-0 md:gap-x-3">
+            <Emailbutton input={lang.email} contactForm={props.contactForm}/>
+            <Longwabutton desc={lang.wa}/>
           </div>
-
         </div>
         
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-4">
