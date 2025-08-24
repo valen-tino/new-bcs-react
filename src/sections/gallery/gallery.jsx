@@ -33,7 +33,7 @@ function Gallery(props){
         </div>
         <div className="flex flex-col items-center px-6 pb-6 mx-auto md:pl-10">
           {/* Mobile Carousel */}
-          <div className="block md:hidden w-full max-w-sm mb-4">
+          <div className="block md:hidden w-full max-w-sm mb-4" style={{minHeight: '320px'}}>
             <Carousel 
               showArrows={true} 
               infiniteLoop={true} 
@@ -46,6 +46,14 @@ function Gallery(props){
               id="gallery-carousel"
               role="region"
               aria-label="Gallery images carousel"
+              aria-roledescription="carousel"
+              onClickItem={(index) => {
+                // Handle focus management on item click
+                const indicators = document.querySelectorAll('[aria-label*="Go to slide"]');
+                if (indicators[index]) {
+                  indicators[index].focus();
+                }
+              }}
               renderArrowPrev={(onClickHandler, hasPrev) =>
                 hasPrev && (
                   <button
@@ -59,8 +67,7 @@ function Gallery(props){
                     }}
                     aria-label="Previous slide"
                     aria-controls="gallery-carousel"
-                    aria-disabled={!hasPrev}
-                    className="absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-orange-600/80 hover:bg-orange-700 text-white rounded-full p-3 shadow-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-600"
+                    className="absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-orange-600/80 hover:bg-orange-700 text-white rounded-full p-3 shadow-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-600 min-h-[48px] min-w-[48px] touch-manipulation"
                   >
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -82,8 +89,7 @@ function Gallery(props){
                     }}
                     aria-label="Next slide"
                     aria-controls="gallery-carousel"
-                    aria-disabled={!hasNext}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-orange-600/80 hover:bg-orange-700 text-white rounded-full p-3 shadow-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-600"
+                    className="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-orange-600/80 hover:bg-orange-700 text-white rounded-full p-3 shadow-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-600 min-h-[48px] min-w-[48px] touch-manipulation"
                   >
                     <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
@@ -93,10 +99,11 @@ function Gallery(props){
                 )
               }
               renderIndicator={(onClickHandler, isSelected, index) => (
-                <li
+                <button
+                  type="button"
                   className={`inline-block mx-1 cursor-pointer transition-all duration-200 ${
                     isSelected ? 'w-8 bg-orange-600' : 'w-2 bg-orange-300 hover:bg-orange-400'
-                  } h-2 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-600`}
+                  } h-2 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-600 min-h-[24px] min-w-[24px] p-1 touch-manipulation`}
                   onClick={onClickHandler}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter' || e.key === ' ') {
@@ -104,8 +111,6 @@ function Gallery(props){
                       onClickHandler();
                     }
                   }}
-                  role="button"
-                  tabIndex={0}
                   aria-label={`Go to slide ${index + 1}`}
                   aria-pressed={isSelected}
                   key={index}
@@ -115,7 +120,7 @@ function Gallery(props){
               {gallery.slice(0, 5).map((item, key) => {
                 const src = item.src || item.path || '';
                 return (
-                  <div key={key} className="rounded-xl overflow-hidden">
+                  <div key={key} className="rounded-xl overflow-hidden" style={{minHeight: '256px'}}>
                     <GalleryPicture 
                       path={src} 
                       alt={item.alt} 

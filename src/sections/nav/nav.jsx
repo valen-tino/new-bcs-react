@@ -165,7 +165,7 @@ function Navbar(props) {
           </div>
         </div>
 
-        <ul className={!Nav ? 'hidden' : 'sticky bg-orange-100 w-full px-8'}>
+        <ul className={!Nav ? 'hidden' : 'sticky bg-orange-100 w-full px-8'} role="navigation" aria-label="Mobile menu">
           <li className='nav-list'><NavItem sectionId="hero" isMobile={true}>{lang.home}</NavItem></li>
           <li className='nav-list'><NavItem sectionId="services" isMobile={true}>{lang.services}</NavItem></li>
           <li className='nav-list'><NavItem sectionId="about" isMobile={true}>{lang.about}</NavItem></li>
@@ -174,7 +174,11 @@ function Navbar(props) {
           <li className='nav-list'><NavItem sectionId="testi" isMobile={true}>{lang.testi}</NavItem></li>
           <li className='nav-list'><a href="/announcements" className="cursor-pointer" onClick={(e) => { e.preventDefault(); navigate('/announcements'); setNav(false); }}>Announcements</a></li>
           <li className='nav-list'><NavItem sectionId="contactus" isMobile={true}>{lang.contactus}</NavItem></li>
-          <div className='flex flex-col pb-2 my-4 text-center gap-y-3'>
+        </ul>
+        
+        {/* Mobile controls outside of list for proper HTML structure */}
+        {Nav && (
+          <div className='flex flex-col pb-2 my-4 mx-8 text-center gap-y-3 bg-orange-100'>
             <Emailbutton input={lang.email} contactForm={props.contactForm}/>
             <select
               className="py-3 pl-2 text-black bg-orange-300 rounded-full custom-select min-h-[44px] touch-manipulation"
@@ -186,7 +190,7 @@ function Navbar(props) {
               <option value="Indonesia">Indonesia</option>
             </select>
           </div>
-        </ul>
+        )}
       </nav>
     </>
   );

@@ -129,8 +129,8 @@ function Services(props){
 
                         <div className='flex flex-col justify-center w-full gap-3 sm:gap-5 py-4 sm:py-8 md:py-40 px-4 sm:px-8 md:px-20 min-w-0'>
 
-                            <h1 className='z-10 py-2 text-3xl sm:text-4xl md:text-5xl leading-tight font-bold break-words' data-aos="fade-down">{lang.vaa}</h1>
-                            <h2 className='text-sm sm:text-base leading-relaxed break-words' data-aos="fade-down">{lang.vaadesc}</h2>
+                            <h2 className='z-10 py-2 text-3xl sm:text-4xl md:text-5xl leading-tight font-bold break-words' data-aos="fade-down">{lang.vaa}</h2>
+                            <p className='text-sm sm:text-base leading-relaxed break-words' data-aos="fade-down">{lang.vaadesc}</p>
                             <h3 className='text-base sm:text-lg font-bold break-words' data-aos="fade-down">{lang.vaasub}</h3>
                             <div className='flex flex-wrap gap-2 sm:gap-3 max-w-full overflow-hidden'>
                                 {visaAbroad.map((item, key) => (
@@ -168,8 +168,8 @@ function Services(props){
 
                         <div className='flex flex-col justify-center w-full gap-3 sm:gap-5 py-4 sm:py-8 md:py-40 px-4 sm:px-8 md:px-20 min-w-0'>
 
-                            <h1 className='z-10 py-2 text-3xl sm:text-4xl md:text-5xl leading-tight font-bold break-words' data-aos="fade-down">{lang.vab}</h1>
-                            <h2 className='text-sm sm:text-base leading-relaxed break-words' data-aos="fade-down">{lang.vabdesc}</h2>
+                            <h2 className='z-10 py-2 text-3xl sm:text-4xl md:text-5xl leading-tight font-bold break-words' data-aos="fade-down">{lang.vab}</h2>
+                            <p className='text-sm sm:text-base leading-relaxed break-words' data-aos="fade-down">{lang.vabdesc}</p>
                             <div className='flex flex-wrap gap-2 sm:gap-3 max-w-full overflow-hidden'>
                                 {visaBali.map((item, key) => {
                                     return (
@@ -200,10 +200,10 @@ function Services(props){
 
                         <div className='flex flex-col justify-center w-full gap-3 sm:gap-5 py-4 sm:py-8 md:py-40 px-4 sm:px-8 md:px-20 min-w-0'>
 
-                            <h1 className='z-10 py-2 text-3xl sm:text-4xl md:text-5xl leading-tight font-bold break-words' data-aos="fade-down">{lang.wedding}</h1>
-                            <h2 className='text-sm sm:text-base leading-relaxed break-words' data-aos="fade-down">
+                            <h2 className='z-10 py-2 text-3xl sm:text-4xl md:text-5xl leading-tight font-bold break-words' data-aos="fade-down">{lang.wedding}</h2>
+                            <p className='text-sm sm:text-base leading-relaxed break-words' data-aos="fade-down">
                                 {lang.weddingsub}<br/><br/><span dangerouslySetInnerHTML={{__html: lang.weddingdesc}}></span>
-                            </h2>
+                            </p>
                             <div className='flex flex-wrap gap-2 sm:gap-3 max-w-full overflow-hidden'>
                                 <button className='px-6 sm:px-8 py-3 bg-orange-500 text-white rounded-lg shadow-md hover:bg-orange-600 transition-colors duration-200 text-sm sm:text-base min-w-0 flex-shrink-0' data-aos="fade-up"><a href='#gallery' className="flex items-center gap-2"><i className="fa-solid fa-images"></i> <span className="truncate">{lang.weddingbtn}</span></a></button>
                             </div>
@@ -229,7 +229,7 @@ function Services(props){
 
                         <div className='flex flex-col justify-center w-full gap-3 sm:gap-5 py-4 sm:py-8 md:py-40 px-4 sm:px-8 md:px-20 min-w-0'>
 
-                            <h1 className='z-10 py-2 text-3xl sm:text-4xl md:text-5xl leading-tight font-bold break-words' data-aos="fade-down">{lang.translate}</h1>
+                            <h2 className='z-10 py-2 text-3xl sm:text-4xl md:text-5xl leading-tight font-bold break-words' data-aos="fade-down">{lang.translate}</h2>
                             <div className='text-sm sm:text-base leading-relaxed break-words'>
                                 <div data-aos="fade-down">
                                 <span dangerouslySetInnerHTML={{__html: lang.translatedesc}}></span><br/>
@@ -254,10 +254,10 @@ function Services(props){
 
                         <div className='flex flex-col justify-center w-full gap-3 sm:gap-5 py-4 sm:py-8 md:py-40 px-4 sm:px-8 md:px-20 min-w-0'>
 
-                            <h1 className='z-10 py-2 text-3xl sm:text-4xl md:text-5xl leading-tight font-bold break-words' data-aos="fade-down">{lang.travel}</h1>
-                            <h2 className='text-sm sm:text-base leading-relaxed break-words' data-aos="fade-down">
+                            <h2 className='z-10 py-2 text-3xl sm:text-4xl md:text-5xl leading-tight font-bold break-words' data-aos="fade-down">{lang.travel}</h2>
+                            <div className='text-sm sm:text-base leading-relaxed break-words' data-aos="fade-down">
                                 <p className='text-sm sm:text-base' dangerouslySetInnerHTML={{__html: lang.traveldesc}}></p><br />                                
-                            </h2>
+                            </div>
 
                             <div className='flex flex-wrap gap-2 sm:gap-4 max-w-full overflow-hidden' data-aos="fade-up">
                             <Emailbutton input={lang.email} contactForm={props.contactForm}/> <Longwabutton desc={lang.wa}/>
@@ -284,7 +284,7 @@ function Services(props){
 
                         <div className='flex flex-col justify-center w-full gap-3 sm:gap-5 py-4 sm:py-8 md:py-40 px-4 sm:px-8 md:px-20 min-w-0'>
 
-                            <h1 className='z-10 py-2 text-3xl sm:text-4xl md:text-5xl leading-tight font-bold break-words' data-aos="fade-down">{lang.others}</h1>
+                            <h2 className='z-10 py-2 text-3xl sm:text-4xl md:text-5xl leading-tight font-bold break-words' data-aos="fade-down">{lang.others}</h2>
                             <div className='text-sm sm:text-base leading-relaxed break-words'>
                                 <div data-aos="fade-down"><span dangerouslySetInnerHTML={{__html: lang.otherssub}}></span></div>
                                 

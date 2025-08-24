@@ -1,9 +1,8 @@
-// Firebase configuration
+// Firebase configuration with optimized loading
 import { initializeApp } from 'firebase/app';
 import { getAuth, GoogleAuthProvider } from 'firebase/auth';
-import { getFirestore, connectFirestoreEmulator } from 'firebase/firestore';
+import { getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
-import { getAnalytics } from "firebase/analytics";
 
 // Load environment variables - all required for security
 const requiredEnvVars = {
@@ -28,29 +27,30 @@ if (missingVars.length > 0) {
 
 const firebaseConfig = requiredEnvVars;
 
-// Initialize Firebase
+// Initialize Firebase app
 const app = initializeApp(firebaseConfig);
 
-// Initialize Analytics only in browser environment to prevent SSR issues
-let analytics = null;
-try {
-  if (typeof window !== 'undefined') {
-    analytics = getAnalytics(app);
-  }
-} catch (error) {
-  console.error('Analytics initialization error:', error);
-}
-
-// Initialize Firebase Authentication and get a reference to the service
-export const auth = getAuth(app);
-export const googleProvider = new GoogleAuthProvider();
-
-// Initialize Cloud Firestore with error handling
+// Initialize services (optimized for performance)
 let db;
 try {
-  // In Firebase v9, settings are passed directly to getFirestore
   db = getFirestore(app);
-  console.log('Firestore initialized successfully');
+  
+  // Configure Firestore settings for better performance and error handling
+  if (typeof window !== 'undefined') {
+    // Enable offline persistence only in browser
+    import('firebase/firestore').then(({ enableNetwork, disableNetwork }) => {
+      // Add connection handling
+      window.addEventListener('online', () => {
+        enableNetwork(db).catch(console.error);
+      });
+      
+      window.addEventListener('offline', () => {
+        disableNetwork(db).catch(console.error);
+      });
+    }).catch(console.error);
+  }
+  
+  console.log('🔥 Firestore initialized successfully');
 } catch (error) {
   console.error('Firestore initialization error:', error);
   // Create a mock db object to prevent app crashes
@@ -66,19 +66,14 @@ try {
       })
     })
   };
-  console.error('Using mock Firestore instance due to initialization failure');
 }
 
-export { db };
-
-// Initialize Cloud Storage with error handling
 let storage;
 try {
   storage = getStorage(app);
-  console.log('Storage initialized successfully');
+  console.log('📁 Firebase Storage initialized successfully');
 } catch (error) {
   console.error('Storage initialization error:', error);
-  // Create a mock storage object to prevent app crashes
   storage = {
     ref: () => ({
       put: async () => ({
@@ -90,6 +85,25 @@ try {
   };
 }
 
+// Initialize auth and provider
+export const auth = getAuth(app);
+export const googleProvider = new GoogleAuthProvider();
+export { db };
 export { storage };
+
+// Lazy load analytics only when needed
+let analytics = null;
+export const getAnalytics = async () => {
+  if (!analytics && typeof window !== 'undefined') {
+    try {
+      const { getAnalytics: getAnalyticsService } = await import('firebase/analytics');
+      analytics = getAnalyticsService(app);
+      console.log('📊 Firebase Analytics loaded');
+    } catch (error) {
+      console.error('Analytics initialization error:', error);
+    }
+  }
+  return analytics;
+};
 
 export default app;

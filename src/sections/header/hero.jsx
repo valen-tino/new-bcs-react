@@ -38,7 +38,16 @@ function Hero(props){
                 </div>
               </div>
               <div className='flex-shrink-0 w-full sm:w-auto max-w-xs sm:max-w-sm md:max-w-md'>
-              <img src={heroImage} className='w-full h-auto rounded-2xl' alt='deco-only' data-aos="fade-up"/>
+              <img 
+                src={heroImage} 
+                className='w-full h-auto rounded-2xl' 
+                alt='BCS Visa consultation services in Bali' 
+                data-aos="fade-up"
+                fetchpriority="high"
+                width="400"
+                height="300"
+                style={{ aspectRatio: '4/3' }}
+              />
               </div>
           </div>
         </div>

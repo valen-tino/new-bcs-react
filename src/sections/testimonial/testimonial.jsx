@@ -77,6 +77,14 @@ function Testimonial(props){
                 id="testimonial-carousel"
                 role="region"
                 aria-label="Customer testimonials carousel"
+                aria-roledescription="carousel"
+                onClickItem={(index) => {
+                  // Handle focus management on item click
+                  const indicators = document.querySelectorAll('[aria-label*="Go to testimonial"]');
+                  if (indicators[index]) {
+                    indicators[index].focus();
+                  }
+                }}
                 renderArrowPrev={(onClickHandler, hasPrev) =>
                   hasPrev && (
                     <button
@@ -90,8 +98,7 @@ function Testimonial(props){
                       }}
                       aria-label="Previous testimonial"
                       aria-controls="testimonial-carousel"
-                      aria-disabled={!hasPrev}
-                      className="absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-white/90 hover:bg-white text-orange-600 rounded-full p-4 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-600"
+                      className="absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-white/90 hover:bg-white text-orange-600 rounded-full p-4 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-600 min-h-[56px] min-w-[56px] touch-manipulation"
                     >
                       <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
@@ -113,8 +120,7 @@ function Testimonial(props){
                       }}
                       aria-label="Next testimonial"
                       aria-controls="testimonial-carousel"
-                      aria-disabled={!hasNext}
-                      className="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-white/90 hover:bg-white text-orange-600 rounded-full p-4 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-600"
+                      className="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-white/90 hover:bg-white text-orange-600 rounded-full p-4 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-600 min-h-[56px] min-w-[56px] touch-manipulation"
                     >
                       <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
@@ -124,12 +130,13 @@ function Testimonial(props){
                   )
                 }
                 renderIndicator={(onClickHandler, isSelected, index) => (
-                  <li
+                  <button
+                    type="button"
                     className={`inline-block mx-2 cursor-pointer transition-all duration-300 ${
                       isSelected 
                         ? 'w-10 bg-orange-600 shadow-lg' 
                         : 'w-3 bg-orange-300 hover:bg-orange-400 hover:w-6'
-                    } h-3 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-600`}
+                    } h-3 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-600 min-h-[32px] min-w-[32px] p-2 touch-manipulation`}
                     onClick={onClickHandler}
                     onKeyDown={(e) => {
                       if (e.key === 'Enter' || e.key === ' ') {
@@ -137,8 +144,6 @@ function Testimonial(props){
                         onClickHandler();
                       }
                     }}
-                    role="button"
-                    tabIndex={0}
                     aria-label={`Go to testimonial ${index + 1}`}
                     aria-pressed={isSelected}
                     key={index}

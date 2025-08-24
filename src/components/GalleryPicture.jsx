@@ -16,6 +16,9 @@ export default function GalleryPicture({ path, alt, title, className = "" }) {
           alt="" 
           role="presentation"
           className="w-full h-64 md:h-80 object-cover rounded-lg transition-transform duration-300 group-hover:scale-105"
+          width="400"
+          height="300"
+          loading="lazy"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent rounded-lg">
           <div className="absolute bottom-4 left-4 right-4">
@@ -34,6 +37,9 @@ export default function GalleryPicture({ path, alt, title, className = "" }) {
         src={imagePath} 
         alt={imageAlt}
         className="w-full h-64 md:h-80 object-cover rounded-lg transition-transform duration-300 group-hover:scale-105"
+        width="400"
+        height="300"
+        loading="lazy"
       />
     </div>
   );

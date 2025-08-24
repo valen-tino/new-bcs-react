@@ -11,7 +11,7 @@ if(!visible) return null;
               <div className="relative flex flex-col w-full bg-orange-100 border border-orange-500 outline-none focus:outline-none rounded-xl" data-aos="fade-down">
                 <div className="relative flex-auto p-2">
                   <button 
-                    className='my-2 min-h-[44px] min-w-[44px] flex items-center justify-center bg-white/80 hover:bg-white text-gray-700 hover:text-gray-900 rounded-full shadow-md hover:shadow-lg transition-all duration-200 touch-manipulation'
+                    className='my-2 min-h-[44px] min-w-[44px] flex items-center justify-center bg-white hover:bg-gray-50 text-gray-800 hover:text-gray-900 rounded-full shadow-md hover:shadow-lg transition-all duration-200 touch-manipulation focus:ring-2 focus:ring-orange-500 focus:ring-offset-2'
                     onClick={onClose}
                     aria-label="Close notification"
                   >
@@ -25,9 +25,9 @@ if(!visible) return null;
                       <img src={png} alt={pic}/>
                     </picture>
 
-                  <h1 className='text-2xl'>{title}</h1><br/>
-                  <h2>{sub}</h2>
-                  <p className='text-sm md:text-md'>{desc}</p>
+                  <h2 className='text-2xl font-bold text-gray-900 mb-2'>{title}</h2>
+                  <h3 className='text-lg font-semibold text-gray-800 mb-3'>{sub}</h3>
+                  <p className='text-sm md:text-base text-gray-800 leading-relaxed'>{desc}</p>
                 </div>
 
               </div>
