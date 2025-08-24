@@ -82,30 +82,43 @@ function Navbar(props) {
 
   // Navigation item component that handles both scroll and route navigation
   const NavItem = ({ sectionId, children, isMobile = false }) => {
-    if (isHomePage) {
-      return (
-        <ScrollLink
-          to={sectionId}
-          spy={true}
-          smooth={true}
-          offset={-80}
-          duration={500}
-          className="cursor-pointer"
-          onClick={() => isMobile && setNav(false)}
-        >
-          {children}
-        </ScrollLink>
-      );
-    } else {
-      return (
-        <button
-          className="cursor-pointer"
-          onClick={() => handleNavigation(sectionId, isMobile)}
-        >
-          {children}
-        </button>
-      );
-    }
+    const href = isHomePage ? `#${sectionId}` : `/#${sectionId}`;
+    
+    const handleClick = (e) => {
+      e.preventDefault(); // Prevent default anchor behavior
+      if (isMobile) {
+        setNav(false); // Close mobile menu
+      }
+      
+      if (isHomePage) {
+        // If on homepage, scroll to section
+        const element = document.getElementById(sectionId);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
+      } else {
+        // If on other page, navigate to homepage with hash
+        navigate(`/#${sectionId}`);
+        
+        // After navigation, scroll to the section
+        setTimeout(() => {
+          const element = document.getElementById(sectionId);
+          if (element) {
+            element.scrollIntoView({ behavior: 'smooth' });
+          }
+        }, 100);
+      }
+    };
+
+    return (
+      <a
+        href={href}
+        className="cursor-pointer"
+        onClick={handleClick}
+      >
+        {children}
+      </a>
+    );
   };
 
   return (
@@ -113,9 +126,9 @@ function Navbar(props) {
       <nav className={`sticky top-0 z-50 max-w-screen h-[80px] bg-orange-100 font-Sora ${scrollPosition > 0 ? 'drop-shadow-xl' : 'drop-shadow-none'}`}>
         <div className='flex items-center justify-between h-full px-2'>
           <div className='flex items-center'>
-            <RouterLink to="/" className='mr-4 font-bold transition duration-300 ease-in-out delay-150 md:ml-8 hover:-translate-y-1 hover:scale-110'>
+            <a href="/" className='mr-4 font-bold transition duration-300 ease-in-out delay-150 md:ml-8 hover:-translate-y-1 hover:scale-110' onClick={(e) => { e.preventDefault(); navigate('/'); }}>
               <img src={logoIcon} width='100px' height='50px' alt='BCS Logo'/>
-            </RouterLink>
+            </a>
             <ul className='hidden md:flex'>
               <li className='nav-list'><NavItem sectionId="hero">{lang.home}</NavItem></li>
               <li className='nav-list'><NavItem sectionId="services">{lang.services}</NavItem></li>
@@ -123,7 +136,7 @@ function Navbar(props) {
               {/* <li className='nav-list'><NavItem sectionId="team">{lang.team}</NavItem></li>
               <li className='nav-list'><NavItem sectionId="gallery">{lang.gallery}</NavItem></li> */}
               <li className='nav-list'><NavItem sectionId="testi">{lang.testi}</NavItem></li>
-              <li className='nav-list'><RouterLink to="/announcements" className="cursor-pointer">Announcements</RouterLink></li>
+              <li className='nav-list'><a href="/announcements" className="cursor-pointer" onClick={(e) => { e.preventDefault(); navigate('/announcements'); }}>Announcements</a></li>
               <li className='nav-list'><NavItem sectionId="contactus">{lang.contactus}</NavItem></li>
             </ul>
           </div>
@@ -152,7 +165,7 @@ function Navbar(props) {
           {/* <li className='nav-list'><NavItem sectionId="team" isMobile={true}>{lang.team}</NavItem></li>
           <li className='nav-list'><NavItem sectionId="gallery" isMobile={true}>{lang.gallery}</NavItem></li> */}
           <li className='nav-list'><NavItem sectionId="testi" isMobile={true}>{lang.testi}</NavItem></li>
-          <li className='nav-list'><RouterLink to="/announcements" className="cursor-pointer" onClick={() => setNav(false)}>Announcements</RouterLink></li>
+          <li className='nav-list'><a href="/announcements" className="cursor-pointer" onClick={(e) => { e.preventDefault(); navigate('/announcements'); setNav(false); }}>Announcements</a></li>
           <li className='nav-list'><NavItem sectionId="contactus" isMobile={true}>{lang.contactus}</NavItem></li>
           <div className='flex flex-col pb-2 my-4 text-center gap-y-3'>
             <Emailbutton input={lang.email} contactForm={props.contactForm}/>
