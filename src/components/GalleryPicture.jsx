@@ -9,14 +9,10 @@ export default function GalleryPicture({ path, alt, title, className = "" }) {
     if (cloudinaryService.isCloudinaryUrl(url)) {
       const publicId = cloudinaryService.extractPublicId(url);
       if (publicId) {
-        return cloudinaryService.generateImageUrl(publicId, {
-          width: 400,
-          height: 300,
-          crop: 'fill',
-          quality: 'auto',
-          format: 'auto',
-          gravity: 'auto'
-        });
+        // Use proper folder structure to ensure working URL pattern
+        // Based on user feedback: gallery/publicId format works reliably
+        const properPublicId = cloudinaryService.ensureProperFolderStructure(publicId, 'gallery');
+        return cloudinaryService.generateSimpleImageUrl(properPublicId);
       }
     }
     // For non-Cloudinary URLs, use as-is

@@ -27,6 +27,32 @@ class CloudinaryService {
       console.error('Missing Cloudinary configuration:', missingVars);
       throw new Error(`Missing Cloudinary configuration: ${missingVars.join(', ')}`);
     }
+    
+    console.log('Cloudinary configuration loaded:', {
+      cloudName: this.cloudName,
+      apiKey: this.apiKey ? '***configured***' : 'missing',
+      uploadPreset: this.uploadPreset
+    });
+  }
+
+  /**
+   * Test if Cloudinary configuration is working
+   * @returns {Promise<boolean>} True if configuration is valid
+   */
+  async testConfiguration() {
+    try {
+      // Test if we can access Cloudinary API
+      const testUrl = `https://api.cloudinary.com/v1_1/${this.cloudName}/image/upload`;
+      const response = await fetch(testUrl, {
+        method: 'OPTIONS', // Use OPTIONS to test connectivity
+      });
+      
+      console.log('Cloudinary API accessibility test:', response.status);
+      return response.status < 500; // Accept anything except server errors
+    } catch (error) {
+      console.error('Cloudinary configuration test failed:', error);
+      return false;
+    }
   }
 
   /**
@@ -93,6 +119,44 @@ class CloudinaryService {
       console.error('Cloudinary upload error:', error);
       throw new Error(`Failed to upload image: ${error.message}`);
     }
+  }
+
+  /**
+   * Generate a simple Cloudinary URL without transformations
+   * Useful for testing and fallback scenarios
+   * @param {string} publicId - The Cloudinary public ID
+   * @returns {string} Simple image URL
+   */
+  generateSimpleImageUrl(publicId) {
+    if (!publicId || !this.cloudName) {
+      throw new Error('Public ID and cloud name are required');
+    }
+    
+    return `https://res.cloudinary.com/${this.cloudName}/image/upload/${publicId}`;
+  }
+
+  /**
+   * Ensure proper folder structure for Cloudinary URLs
+   * Based on user feedback: gallery/publicId format works reliably
+   * @param {string} publicId - The Cloudinary public ID
+   * @param {string} folder - The folder name (default: 'gallery')
+   * @returns {string} Properly formatted public ID with folder
+   */
+  ensureProperFolderStructure(publicId, folder = 'gallery') {
+    if (!publicId) return publicId;
+    
+    // If publicId already includes the folder, return as-is
+    if (publicId.startsWith(`${folder}/`)) {
+      return publicId;
+    }
+    
+    // If publicId includes any folder, return as-is
+    if (publicId.includes('/')) {
+      return publicId;
+    }
+    
+    // Add folder prefix to match working URL pattern
+    return `${folder}/${publicId}`;
   }
 
   /**

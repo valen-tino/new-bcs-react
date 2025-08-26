@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>URL Generation Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test-result { margin: 10px 0; padding: 10px; border: 1px solid #ccc; }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        img { max-width: 200px; max-height: 200px; margin: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Cloudinary URL Generation Test</h1>
+    <div id="results"></div>
+    
+    <script>
+        // Simulate the cloudinary service logic
+        const cloudName = 'dzdiaslf9';
+        
+        // Simulate extractPublicId method
+        function extractPublicId(url) {
+            if (!url || !url.includes('cloudinary.com')) {
+                return null;
+            }
+
+            try {
+                const cleanUrl = url.split('?')[0];
+                const uploadIndex = cleanUrl.indexOf('/upload/');
+                if (uploadIndex === -1) return null;
+                
+                const afterUpload = cleanUrl.substring(uploadIndex + 8);
+                const parts = afterUpload.split('/');
+                
+                if (parts.length === 1) {
+                    return parts[0].split('.')[0];
+                }
+                
+                let publicId = parts[parts.length - 1];
+                
+                if (parts.length > 1 && /^v\d+$/.test(publicId)) {
+                    publicId = parts[parts.length - 2];
+                }
+                
+                return publicId.split('.')[0];
+            } catch (error) {
+                console.error('Error extracting public ID from URL:', url, error);
+                return null;
+            }
+        }
+        
+        // Simulate ensureProperFolderStructure method
+        function ensureProperFolderStructure(publicId, folder = 'gallery') {
+            if (!publicId) return publicId;
+            
+            if (publicId.startsWith(`${folder}/`)) {
+                return publicId;
+            }
+            
+            if (publicId.includes('/')) {
+                return publicId;
+            }
+            
+            return `${folder}/${publicId}`;
+        }
+        
+        // Simulate generateSimpleImageUrl method
+        function generateSimpleImageUrl(publicId) {
+            if (!publicId || !cloudName) {
+                throw new Error('Public ID and cloud name are required');
+            }
+            
+            return `https://res.cloudinary.com/${cloudName}/image/upload/${publicId}`;
+        }
+        
+        // Test cases
+        const testCases = [
+            {
+                name: 'Raw Public ID',
+                input: 'j3uxoaovolm96j24tg3i',
+                expected: 'https://res.cloudinary.com/dzdiaslf9/image/upload/gallery/j3uxoaovolm96j24tg3i'
+            },
+            {
+                name: 'Full Cloudinary URL',
+                input: 'https://res.cloudinary.com/dzdiaslf9/image/upload/q_auto,f_auto,c_fill,w_400,h_300,g_auto/y7by8cgtxw9fy4l76f77',
+                expected: 'https://res.cloudinary.com/dzdiaslf9/image/upload/gallery/y7by8cgtxw9fy4l76f77'
+            },
+            {
+                name: 'Already with gallery folder',
+                input: 'gallery/j3uxoaovolm96j24tg3i',
+                expected: 'https://res.cloudinary.com/dzdiaslf9/image/upload/gallery/j3uxoaovolm96j24tg3i'
+            }
+        ];
+        
+        const resultsDiv = document.getElementById('results');
+        
+        testCases.forEach((testCase, index) => {
+            const container = document.createElement('div');
+            container.className = 'test-result';
+            
+            try {
+                let publicId;
+                if (testCase.input.includes('cloudinary.com')) {
+                    publicId = extractPublicId(testCase.input);
+                } else {
+                    publicId = testCase.input;
+                }
+                
+                const properPublicId = ensureProperFolderStructure(publicId, 'gallery');
+                const result = generateSimpleImageUrl(properPublicId);
+                
+                const success = result === testCase.expected;
+                container.className += success ? ' success' : ' error';
+                
+                container.innerHTML = `
+                    <h3>Test ${index + 1}: ${testCase.name}</h3>
+                    <p><strong>Input:</strong> ${testCase.input}</p>
+                    <p><strong>Extracted Public ID:</strong> ${publicId}</p>
+                    <p><strong>Proper Public ID:</strong> ${properPublicId}</p>
+                    <p><strong>Generated URL:</strong> ${result}</p>
+                    <p><strong>Expected:</strong> ${testCase.expected}</p>
+                    <p><strong>Status:</strong> ${success ? '✅ PASS' : '❌ FAIL'}</p>
+                    <div>
+                        <strong>Image Test:</strong><br>
+                        <img src="${result}" alt="Test image" 
+                             onload="this.nextSibling.textContent = '✅ Image loads successfully'"
+                             onerror="this.nextSibling.textContent = '❌ Image failed to load'">
+                        <span>Loading...</span>
+                    </div>
+                `;
+            } catch (error) {
+                container.className += ' error';
+                container.innerHTML = `
+                    <h3>Test ${index + 1}: ${testCase.name}</h3>
+                    <p><strong>Input:</strong> ${testCase.input}</p>
+                    <p><strong>Error:</strong> ${error.message}</p>
+                    <p><strong>Status:</strong> ❌ FAIL</p>
+                `;
+            }
+            
+            resultsDiv.appendChild(container);
+        });
+    </script>
+</body>
+</html>

@@ -118,23 +118,53 @@ function EnhancedImageUpload({
 
       const result = await cloudinaryService.uploadImage(file, folder, uploadOptions);
       
+      console.log('Cloudinary upload result:', {
+        publicId: result.publicId,
+        url: result.url,
+        folder: result.folder,
+        width: result.width,
+        height: result.height
+      });
+      
       clearInterval(progressInterval);
       setUploadProgress(100);
 
-      // Generate optimized URL with transformations
-      const optimizedUrl = cloudinaryService.generateImageUrl(result.publicId, {
-        width: 1200,
-        quality: 'auto',
-        format: 'auto',
-        crop: 'limit',
-        ...transformations
-      });
+      // Generate URLs prioritizing simple format (which works according to user feedback)
+      let simpleUrl = null;
+      let optimizedUrl = null;
+      
+      try {
+        // Ensure proper folder structure for reliable URL format
+        const properPublicId = cloudinaryService.ensureProperFolderStructure(result.publicId, folder);
+        console.log('Original publicId:', result.publicId);
+        console.log('Proper publicId with folder:', properPublicId);
+        
+        // Generate simple URL using the proper folder structure
+        simpleUrl = cloudinaryService.generateSimpleImageUrl(properPublicId);
+        console.log('Generated simple URL (PRIORITY - matches working pattern):', simpleUrl);
+        
+        // Use simple format for reliability (no transformations)
+        optimizedUrl = simpleUrl;
+        
+        console.log('Using simple URL format for maximum compatibility');
+      } catch (error) {
+        console.warn('Failed to generate URLs:', error);
+        // Fall back to result URL if URL generation fails
+        simpleUrl = result.url;
+        optimizedUrl = result.url;
+      }
+
+      // Always use simple URL format based on user feedback
+      const finalUrl = simpleUrl || result.url;
+      console.log('Final URL to use for preview:', finalUrl);
 
       const imageMetadata = {
-        url: optimizedUrl,
+        url: finalUrl,
         publicId: result.publicId,
         provider: 'cloudinary',
         originalUrl: result.url,
+        optimizedUrl: optimizedUrl,
+        simpleUrl: simpleUrl,
         width: result.width,
         height: result.height,
         size: result.size,
@@ -143,11 +173,11 @@ function EnhancedImageUpload({
         createdAt: result.createdAt
       };
 
-      setPreviewUrl(optimizedUrl);
+      setPreviewUrl(finalUrl);
       setImageData(imageMetadata);
 
       // Call the callback with both URL and metadata
-      onImageUploaded(optimizedUrl, imageMetadata);
+      onImageUploaded(finalUrl, imageMetadata);
 
       toast.success('Image uploaded and optimized successfully via Cloudinary');
     } catch (error) {
@@ -308,31 +338,51 @@ function EnhancedImageUpload({
                 onError={(e) => {
                   const failedUrl = e.target.src;
                   console.error('Failed to load preview image:', failedUrl);
+                  let extractedPublicId = null;
                   
-                  // If it's a Cloudinary URL, try to extract public ID and create a simpler URL
+                  // If it's a Cloudinary URL, try to extract public ID and create fallback URLs
                   if (cloudinaryService.isCloudinaryUrl(failedUrl)) {
-                    const publicId = cloudinaryService.extractPublicId(failedUrl);
-                    if (publicId) {
-                      console.log('Extracted public ID:', publicId, 'trying simpler URL...');
-                      // Try a simpler URL without transformations
-                      const simpleUrl = `https://res.cloudinary.com/${cloudinaryService.cloudName}/image/upload/${publicId}`;
-                      if (failedUrl !== simpleUrl) {
-                        console.log('Retrying with simple URL:', simpleUrl);
-                        e.target.src = simpleUrl;
+                    extractedPublicId = cloudinaryService.extractPublicId(failedUrl);
+                    if (extractedPublicId) {
+                      console.log('Extracted public ID:', extractedPublicId);
+                      
+                      // Try different URL formats as fallbacks (prioritizing working pattern)
+                      const fallbackUrls = [
+                        // PRIORITY: folder/publicId format (confirmed working by user)
+                        `https://res.cloudinary.com/${cloudinaryService.cloudName}/image/upload/gallery/${extractedPublicId}`,
+                        // Simple URL without folder (in case publicId already includes folder)
+                        `https://res.cloudinary.com/${cloudinaryService.cloudName}/image/upload/${extractedPublicId}`,
+                        // Use the original URL from imageData if available
+                        imageData?.originalUrl,
+                        // Use simple URL from imageData if available
+                        imageData?.simpleUrl
+                      ].filter(Boolean); // Remove null/undefined URLs
+                      
+                      // Try the first fallback URL that's different from the failed one
+                      const nextUrl = fallbackUrls.find(url => url && url !== failedUrl);
+                      
+                      if (nextUrl) {
+                        console.log('Trying fallback URL (prioritizing gallery/ format):', nextUrl);
+                        e.target.src = nextUrl;
                         return;
                       }
                     }
                   }
                   
-                  // If retry failed or not a Cloudinary URL, show placeholder
+                  // If all fallbacks failed or not a Cloudinary URL, show placeholder
+                  console.log('All fallback URLs failed, showing placeholder');
                   e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDIwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0xMDAgMTUwQzEyNy42MTQgMTUwIDE1MCAxMjcuNjE0IDE1MCAxMDBTMTI3LjYxNCA1MCAxMDAgNTBTNTAgNzIuMzg2IDUwIDEwMFM3Mi4zODYgMTUwIDEwMCAxNTBaIiBzdHJva2U9IiM5Q0EzQUYiIHN0cm9rZS13aWR0aD0iMiIgZmlsbD0ibm9uZSIvPgo8cGF0aCBkPSJNODUgOTBIMTE1TTg1IDExMEgxMTUiIHN0cm9rZT0iIzlDQTNBRiIgc3Ryb2tlLXdpZHRoPSIyIi8+Cjx0ZXh0IHg9IjEwMCIgeT0iMTc1IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjNkI3Mjc5IiBmb250LXNpemU9IjEyIj5JbWFnZSBOb3QgRm91bmQ8L3RleHQ+Cjwvc3ZnPgo=';
                   e.target.alt = 'Image preview failed to load';
                   
-                  // Show an error message
+                  // Show an error message with debug info
                   if (!document.querySelector('.image-error-message')) {
                     const errorDiv = document.createElement('div');
                     errorDiv.className = 'image-error-message mt-2 text-sm text-red-600 text-center';
-                    errorDiv.textContent = `Failed to load image: ${publicId || 'Invalid URL'}`;
+                    errorDiv.innerHTML = `
+                      <div>Failed to load image</div>
+                      <div class="text-xs text-gray-500 mt-1">Public ID: ${extractedPublicId || 'Could not extract'}</div>
+                      <div class="text-xs text-gray-500">Check browser console for details</div>
+                    `;
                     e.target.parentNode.appendChild(errorDiv);
                   }
                 }}

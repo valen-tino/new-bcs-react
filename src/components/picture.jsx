@@ -1,14 +1,31 @@
 import AOS from 'aos';
 import 'aos/dist/aos.css';
 import React, { useEffect } from 'react'
+import cloudinaryService from '../services/cloudinaryService';
 
 export default function Picture (props) {
   useEffect(() => {
     AOS.init();
   }, []);
+  
   const alt = props.alt
   const rawPath = props.path || ''
-  const path = (rawPath.startsWith('http') || rawPath.includes('/')) ? rawPath : `gallery/${rawPath}`
+  
+  // Generate proper URL for Cloudinary images
+  const getImageUrl = (url) => {
+    if (cloudinaryService.isCloudinaryUrl(url)) {
+      const publicId = cloudinaryService.extractPublicId(url);
+      if (publicId) {
+        // Use proper folder structure for working URL pattern
+        const properPublicId = cloudinaryService.ensureProperFolderStructure(publicId, 'gallery');
+        return cloudinaryService.generateSimpleImageUrl(properPublicId);
+      }
+    }
+    // For non-Cloudinary URLs, use as-is or add gallery prefix
+    return (rawPath.startsWith('http') || rawPath.includes('/')) ? rawPath : `gallery/${rawPath}`;
+  };
+  
+  const path = getImageUrl(rawPath);
   return (
     <div className="px-4 mb-8 md:w-1/4 font-Sora" data-aos="fade-up">
       <div className="relative group">
