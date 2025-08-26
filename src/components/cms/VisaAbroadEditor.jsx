@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
 import { useCMS } from '../../contexts/CMSContext';
 import { toast } from 'react-toastify';
+import CORSSafeImage from '../CORSSafeImage';
 
 function VisaAbroadEditor() {
   const { visaAbroad, updateVisaAbroad, addVisaAbroad, deleteVisaAbroad } = useCMS();
@@ -165,7 +166,13 @@ function VisaAbroadEditor() {
               {visaAbroad?.map((country) => (
                 <div key={country.id} className="flex justify-between items-center p-3 rounded-lg border border-gray-200 hover:bg-gray-50">
                   <div className="flex items-center space-x-3">
-                    <img src={country.flag} alt="" aria-hidden="true" className="object-cover w-8 h-6 rounded" />
+                    <CORSSafeImage 
+                      src={country.flag} 
+                      alt="" 
+                      ariaHidden={true}
+                      className="object-cover w-8 h-6 rounded" 
+                      useProxy={true}
+                    />
                     <span className="font-medium text-gray-900">{country.country}</span>
                   </div>
                   <div className="flex items-center space-x-2">

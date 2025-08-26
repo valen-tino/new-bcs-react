@@ -9,6 +9,7 @@ import dataVisaBali from '../../data/dataVisaBali';
 import Modal from '../../components/modal'
 import Longwabutton from '../../components/longwabutton';
 import { Emailbutton } from '../../components/emailbutton';
+import CORSSafeImage from '../../components/CORSSafeImage';
 
 function Services(props){
     useEffect(() => {
@@ -141,7 +142,14 @@ function Services(props){
                                         onClick={() => getData(item.title, item.desc)}
                                     >
                                         {item.flag && (
-                                        <img src={item.flag} alt="" aria-hidden="true" className="w-4 h-3 sm:w-6 sm:h-4 object-cover flex-shrink-0" />
+                                        <CORSSafeImage 
+                                            src={item.flag} 
+                                            alt="" 
+                                            ariaHidden={true}
+                                            className="w-4 h-3 sm:w-6 sm:h-4 object-cover flex-shrink-0" 
+                                            useProxy={true}
+                                            onError={(e) => console.warn('Flag image failed:', item.flag)}
+                                        />
                                         )}
                                         <span className="truncate">{item.title}</span>
                                     </button>
