@@ -25,8 +25,8 @@ function Login() {
     if (result === true) {
       navigate('/cms/dashboard');
     } else if (result === 'popup-closed') {
-      // User closed popup intentionally - don't show error
-      setErrorMessage('');
+      setShowRedirectOption(true);
+      setErrorMessage('The sign-in popup was closed before completing. You can try the redirect method below.');
     } else if (result === 'popup-blocked') {
       setShowRedirectOption(true);
       setErrorMessage('Popup was blocked. You can try the redirect method below.');

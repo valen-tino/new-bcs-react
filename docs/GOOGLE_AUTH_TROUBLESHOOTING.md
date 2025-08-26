@@ -111,12 +111,16 @@ googleProvider.setCustomParameters({
 ## 🚀 Quick Fixes for Common Issues
 
 ### Issue: "Popup appears but immediately closes"
-**Cause**: Usually CSP or cookie restrictions
-**Fix**: ✅ Already resolved with enhanced CSP configuration
+**Cause**: Misconfigured security headers (e.g., `Cross-Origin-Opener-Policy`) or cookie restrictions
+**Fix**: Ensure `Cross-Origin-Opener-Policy` is set to `same-origin-allow-popups` and CSP allows Google domains
 
 ### Issue: "Sign-in takes too long"
 **Cause**: Network or Firebase config issues
 **Fix**: Check network connectivity and Firebase project status
+
+### Issue: "Redirects back to login after Google sign-in"
+**Cause**: Deployment domain or subdomain not authorized, browser blocks third-party cookies, security headers block the popup, or user lacks admin permissions
+**Fix**: Add your production domain (and any subdomains) to Firebase Auth's authorized domains, ensure the account email exists in the `admins` collection or `primaryAdmins` list, enable third-party cookies, and verify headers like `Cross-Origin-Opener-Policy` allow popups
 
 ### Issue: "Access denied after successful Google login"
 **Cause**: User email not in admin list
