@@ -28,11 +28,11 @@ class CloudinaryService {
       throw new Error(`Missing Cloudinary configuration: ${missingVars.join(', ')}`);
     }
     
-    console.log('Cloudinary configuration loaded:', {
-      cloudName: this.cloudName,
-      apiKey: this.apiKey ? '***configured***' : 'missing',
-      uploadPreset: this.uploadPreset
-    });
+    // console.log('Cloudinary configuration loaded:', {
+    //   cloudName: this.cloudName,
+    //   apiKey: this.apiKey ? '***configured***' : 'missing',
+    //   uploadPreset: this.uploadPreset
+    // });
   }
 
   /**
