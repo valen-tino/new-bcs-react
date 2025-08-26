@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import cloudinaryService from '../services/cloudinaryService';
 import { storage } from '../config/firebase';
@@ -17,9 +17,38 @@ function EnhancedImageUpload({
 }) {
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
-  const [previewUrl, setPreviewUrl] = useState(currentImageUrl);
+  const [previewUrl, setPreviewUrl] = useState(currentImageUrl || '');
   const [imageData, setImageData] = useState(null);
   const fileInputRef = useRef(null);
+
+  // Initialize preview URL when currentImageUrl changes
+  useEffect(() => {
+    if (currentImageUrl && currentImageUrl !== previewUrl) {
+      setPreviewUrl(currentImageUrl);
+      
+      // If it's a Cloudinary URL, extract metadata
+      if (cloudinaryService.isCloudinaryUrl(currentImageUrl)) {
+        const publicId = cloudinaryService.extractPublicId(currentImageUrl);
+        if (publicId) {
+          setImageData({
+            url: currentImageUrl,
+            publicId: publicId,
+            provider: 'cloudinary'
+          });
+        }
+      } else if (currentImageUrl) {
+        // For non-Cloudinary URLs (Firebase or external)
+        setImageData({
+          url: currentImageUrl,
+          provider: 'external'
+        });
+      }
+    } else if (!currentImageUrl && previewUrl) {
+      // Clear preview if currentImageUrl is empty
+      setPreviewUrl('');
+      setImageData(null);
+    }
+  }, [currentImageUrl, previewUrl]);
 
   const detectBestProvider = () => {
     // Auto-detect best provider based on configuration and file size
@@ -191,26 +220,65 @@ function EnhancedImageUpload({
   const handleRemoveImage = async () => {
     if (!previewUrl) return;
 
+    const confirmDelete = window.confirm('Are you sure you want to remove this image?');
+    if (!confirmDelete) return;
+
     try {
+      let deletionResult = { success: false };
+      
       if (imageData?.provider === 'cloudinary' && imageData.publicId) {
-        // Note: Actual deletion requires server-side implementation
-        await cloudinaryService.deleteImage(imageData.publicId);
+        console.log('Attempting to delete Cloudinary image:', imageData.publicId);
+        deletionResult = await cloudinaryService.deleteImage(imageData.publicId);
+        
+        if (deletionResult.success) {
+          if (deletionResult.result === 'already_marked') {
+            toast.info('Image was already marked for deletion');
+          } else {
+            toast.success(
+              `Image marked for deletion (${deletionResult.pendingCount} pending cleanup)`,
+              {
+                autoClose: 5000,
+                hideProgressBar: false
+              }
+            );
+            
+            // Show additional info about manual cleanup
+            setTimeout(() => {
+              toast.info(
+                '💡 Tip: Use Admin Tools to manage pending deletions in Cloudinary dashboard',
+                { autoClose: 7000 }
+              );
+            }, 2000);
+          }
+        } else {
+          console.warn('Cloudinary deletion failed:', deletionResult.error);
+          toast.warning('Image removed from form. Manual cleanup may be needed in Cloudinary.');
+        }
       } else if (imageData?.provider === 'firebase' && imageData.path) {
         const imageRef = ref(storage, imageData.path);
         await deleteObject(imageRef);
+        deletionResult.success = true;
+        toast.success('Image removed from Firebase successfully');
+      } else {
+        // External URL or no provider info
+        deletionResult.success = true;
+        toast.success('Image removed from form');
       }
       
+      // Always clear the UI state regardless of deletion success
       setPreviewUrl('');
       setImageData(null);
       onImageUploaded('', null);
-      toast.success('Image removed successfully');
+      
     } catch (error) {
       console.error('Failed to remove image:', error);
-      // Still remove from UI even if deletion fails
+      
+      // Still clear the UI state even if deletion fails
       setPreviewUrl('');
       setImageData(null);
       onImageUploaded('', null);
-      toast.warning('Image removed from form (deletion from storage may have failed)');
+      
+      toast.warning('Image removed from form, but deletion from storage may have failed. You may need to manually clean up the image.');
     }
   };
 
@@ -238,8 +306,24 @@ function EnhancedImageUpload({
                 alt="Preview"
                 className="max-w-full h-48 object-cover rounded-lg mx-auto shadow-md"
                 onError={(e) => {
-                  console.error('Failed to load preview image');
-                  e.target.style.display = 'none';
+                  console.error('Failed to load preview image:', previewUrl);
+                  // Show a placeholder instead of hiding the image
+                  e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDIwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0xMDAgMTUwQzEyNy42MTQgMTUwIDE1MCAxMjcuNjE0IDE1MCAxMDBTMTI3LjYxNCA1MCAxMDAgNTBTNTAgNzIuMzg2IDUwIDEwMFM3Mi4zODYgMTUwIDEwMCAxNTBaIiBzdHJva2U9IiM5Q0EzQUYiIHN0cm9rZS13aWR0aD0iMiIgZmlsbD0ibm9uZSIvPgo8cGF0aCBkPSJNODUgOTBIMTE1TTg1IDExMEgxMTUiIHN0cm9rZT0iIzlDQTNBRiIgc3Ryb2tlLXdpZHRoPSIyIi8+Cjx0ZXh0IHg9IjEwMCIgeT0iMTc1IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjNkI3Mjc5IiBmb250LXNpemU9IjEyIj5JbWFnZSBOb3QgRm91bmQ8L3RleHQ+Cjwvc3ZnPgo=';
+                  e.target.alt = 'Image preview failed to load';
+                  // Also show an error message
+                  if (!document.querySelector('.image-error-message')) {
+                    const errorDiv = document.createElement('div');
+                    errorDiv.className = 'image-error-message mt-2 text-sm text-red-600 text-center';
+                    errorDiv.textContent = 'Failed to load image preview';
+                    e.target.parentNode.appendChild(errorDiv);
+                  }
+                }}
+                onLoad={(e) => {
+                  // Remove error message if image loads successfully
+                  const errorMsg = e.target.parentNode.querySelector('.image-error-message');
+                  if (errorMsg) {
+                    errorMsg.remove();
+                  }
                 }}
               />
               <button

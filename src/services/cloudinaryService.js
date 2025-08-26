@@ -179,19 +179,77 @@ class CloudinaryService {
 
   /**
    * Delete an image from Cloudinary
-   * Note: This requires server-side implementation for security
+   * Uses tracking-based deletion due to client-side security limitations
    * @param {string} publicId - The Cloudinary public ID to delete
    * @returns {Promise<Object>} Deletion result
    */
   async deleteImage(publicId) {
-    console.warn('Image deletion requires server-side implementation for security');
-    
-    // For now, we'll just return a success response
-    // In production, this should call your backend API
-    return {
-      result: 'ok',
-      message: 'Image marked for deletion (requires server-side implementation)'
-    };
+    if (!publicId) {
+      throw new Error('Public ID is required for deletion');
+    }
+
+    try {
+      console.log('Processing deletion request for:', publicId);
+      
+      // Store the public ID in localStorage for manual cleanup reference
+      const deletedImages = JSON.parse(localStorage.getItem('bcs_deleted_images') || '[]');
+      
+      // Check if already marked for deletion
+      const existingEntry = deletedImages.find(img => img.publicId === publicId);
+      if (existingEntry) {
+        return {
+          success: true,
+          result: 'already_marked',
+          publicId: publicId,
+          message: 'Image already marked for deletion'
+        };
+      }
+      
+      // Add to deletion tracking
+      deletedImages.push({
+        publicId: publicId,
+        deletedAt: new Date().toISOString(),
+        status: 'marked_for_deletion',
+        url: `https://res.cloudinary.com/${this.cloudName}/image/upload/${publicId}`
+      });
+      
+      localStorage.setItem('bcs_deleted_images', JSON.stringify(deletedImages));
+      
+      // Provide clear feedback to user
+      console.log(`Image ${publicId} marked for deletion. Total pending: ${deletedImages.length}`);
+      
+      return {
+        success: true,
+        result: 'marked_for_deletion',
+        publicId: publicId,
+        pendingCount: deletedImages.length,
+        message: `Image marked for deletion. Please clean up manually in Cloudinary dashboard.`,
+        dashboardUrl: `https://console.cloudinary.com/console/${this.cloudName}/media_library/search?q=${publicId}`
+      };
+      
+    } catch (error) {
+      console.error('Failed to process image deletion:', error);
+      return {
+        success: false,
+        error: error.message,
+        publicId: publicId
+      };
+    }
+  }
+
+  /**
+   * Get list of images marked for deletion
+   * @returns {Array} List of images marked for deletion
+   */
+  getImagesMarkedForDeletion() {
+    return JSON.parse(localStorage.getItem('bcs_deleted_images') || '[]');
+  }
+
+  /**
+   * Clear the list of deleted images (after manual cleanup)
+   */
+  clearDeletedImagesList() {
+    localStorage.removeItem('bcs_deleted_images');
   }
 
   /**
