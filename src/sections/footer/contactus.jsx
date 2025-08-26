@@ -50,7 +50,16 @@ function ContactUs (props){
         
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-4">
           <div data-aos="fade-up">
-              <iframe title='Office Location' src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3944.565063931729!2d115.26495109999999!3d-8.637684400000001!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2dd23f0076c89d63%3A0x37c7099f01be0ce6!2sBCS%20Visa!5e0!3m2!1sen!2sid!4v1756183861584!5m2!1sen!2sid" width="400" height="300" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+              <iframe
+                title='Office Location'
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3944.565063931729!2d115.26495109999999!3d-8.637684400000001!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2dd23f0076c89d63%3A0x37c7099f01be0ce6!2sBCS%20Visa!5e0!3m2!1sen!2sid!4v1756183861584!5m2!1sen!2sid"
+                width="400"
+                height="300"
+                style={{ border: 0 }}
+                allowFullScreen=""
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              ></iframe>
           </div>
 
           <div className='px-2' data-aos="fade-up">
