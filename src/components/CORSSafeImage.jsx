@@ -32,11 +32,11 @@ function CORSSafeImage({
 
   // List of proxy services for CORS-blocked images
   const proxyServices = [
+    // Images.weserv.nl proxy service (most reliable)
+    (url) => `https://images.weserv.nl/?url=${encodeURIComponent(url)}`,
     // Cloudinary proxy (if you want to use your own Cloudinary for proxying)
     (url) => `https://res.cloudinary.com/dzdiaslf9/image/fetch/${encodeURIComponent(url)}`,
-    // Images.weserv.nl proxy service
-    (url) => `https://images.weserv.nl/?url=${encodeURIComponent(url)}`,
-    // Alternative proxy (you can add more as needed)
+    // Alternative proxy
     (url) => `https://imageproxy.pimg.tw/resize?url=${encodeURIComponent(url)}`
   ];
 
@@ -48,10 +48,12 @@ function CORSSafeImage({
     if (originalSrc.includes('worldometers.info') && originalSrc.includes('flag')) {
       const countryCode = extractCountryCode(originalSrc);
       if (countryCode) {
-        // Alternative flag sources
+        // Alternative flag sources (multiple sizes and formats)
         fallbacks.push(
           `https://flagcdn.com/w40/${countryCode}.png`,
           `https://flagcdn.com/w20/${countryCode}.png`,
+          `https://flagcdn.com/${countryCode}.svg`,
+          `https://flagpedia.net/data/flags/w580/${countryCode}.png`,
           `https://cdn.jsdelivr.net/npm/country-flag-emoji-json@2.0.0/dist/images/${countryCode.toUpperCase()}.svg`
         );
       }
@@ -102,14 +104,19 @@ function CORSSafeImage({
   };
 
   const handleImageError = (e) => {
-    console.warn('Image failed to load:', currentSrc);
+    // Only log on first attempt for each image to reduce console noise
+    if (retryCount === 0) {
+      console.warn(`🏳️ Flag image CORS blocked, trying fallbacks:`, currentSrc);
+    }
     
     const fallbackUrls = generateFallbackUrls(src);
     
     // Try next fallback URL
     if (retryCount < fallbackUrls.length) {
       const nextUrl = fallbackUrls[retryCount];
-      console.log(`Trying fallback ${retryCount + 1}/${fallbackUrls.length}:`, nextUrl);
+      if (retryCount === 0) {
+        console.log(`🔄 Trying fallback ${retryCount + 1}/${fallbackUrls.length}:`, nextUrl);
+      }
       setCurrentSrc(nextUrl);
       setRetryCount(prev => prev + 1);
       setIsLoading(true);
@@ -117,6 +124,7 @@ function CORSSafeImage({
     }
     
     // All fallbacks failed
+    console.warn(`❌ All fallbacks failed for:`, src);
     setHasError(true);
     setIsLoading(false);
     
@@ -169,7 +177,6 @@ function CORSSafeImage({
       onError={handleImageError}
       onLoad={handleImageLoad}
       aria-hidden={ariaHidden}
-      crossOrigin="anonymous"
       loading="lazy"
       {...props}
     />

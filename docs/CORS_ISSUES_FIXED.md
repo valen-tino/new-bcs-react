@@ -52,7 +52,7 @@ This policy requires **all** cross-origin resources to have explicit CORS header
 - ⚡ **Performance**: Lazy loading and optimized retries
 
 **Example Usage**:
-```jsx
+``jsx
 <CORSSafeImage 
   src="https://www.worldometers.info//img/flags/small/tn_us-flag.gif"
   alt="US Flag"
@@ -87,7 +87,7 @@ This policy requires **all** cross-origin resources to have explicit CORS header
 3. **Imageproxy**: `https://imageproxy.pimg.tw/resize?url=[URL]`
 
 ### Smart Flag Mapping:
-```javascript
+```
 const codeMap = {
   'us': 'us',      // United States
   'uk': 'gb',      // United Kingdom  
@@ -126,6 +126,36 @@ After deployment:
 3. **Open browser console** - verify no CORS errors
 4. **Test CMS editor** - verify flag previews work
 5. **Test with broken URLs** - verify fallbacks activate
+
+## 🆕 Latest Improvements (Post-Testing)
+
+### What You're Seeing in Console:
+✅ **Expected Behavior**: The CORS errors followed by "Trying fallback" messages show the system is working correctly!
+
+**Normal Flow**:
+1. ❌ Original worldometers.info image fails (CORS blocked)
+2. 🔄 CORSSafeImage tries flagcdn.com (should work)
+3. ✅ Flag displays properly with fallback source
+
+### Recent Optimizations:
+- ⚙️ **Removed `crossOrigin` attribute** to prevent additional CORS issues
+- 🚀 **Improved proxy service order** (weserv.nl prioritized for reliability)  
+- 🏳️ **Added more flag sources** (flagpedia.net, multiple CDNs)
+- 🔇 **Reduced console noise** (only logs first attempt per image)
+- 🔒 **Enhanced CSP img-src** to allow trusted flag CDNs
+
+## 🎥 What Success Looks Like
+
+**In Browser Console**:
+```
+.Fatalf Flag image CORS blocked, trying fallbacks: worldometers.info/...
+🔄 Trying fallback 1/8: https://flagcdn.com/w40/us.png
+```
+
+**On Website**:
+- ✅ All country flags display properly
+- ✅ No broken image icons  
+- ✅ Smooth user experience
 
 ## 📊 Performance Impact
 
