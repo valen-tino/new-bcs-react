@@ -1,8 +1,29 @@
 import React from 'react';
+import cloudinaryService from '../services/cloudinaryService';
 
 export default function GalleryPicture({ path, alt, title, className = "" }) {
   const rawPath = path || '';
-  const imagePath = (rawPath.startsWith('http') || rawPath.includes('/')) ? rawPath : `gallery/${rawPath}`;
+  
+  // Generate optimized image URL if it's a Cloudinary URL
+  const getOptimizedImageUrl = (url) => {
+    if (cloudinaryService.isCloudinaryUrl(url)) {
+      const publicId = cloudinaryService.extractPublicId(url);
+      if (publicId) {
+        return cloudinaryService.generateImageUrl(publicId, {
+          width: 400,
+          height: 300,
+          crop: 'fill',
+          quality: 'auto',
+          format: 'auto',
+          gravity: 'auto'
+        });
+      }
+    }
+    // For non-Cloudinary URLs, use as-is
+    return (rawPath.startsWith('http') || rawPath.includes('/')) ? rawPath : `gallery/${rawPath}`;
+  };
+  
+  const imagePath = getOptimizedImageUrl(rawPath);
   
   // If we have visible caption text (alt or title), make the image decorative
   const hasCaption = alt || title;

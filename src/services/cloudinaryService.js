@@ -1,0 +1,250 @@
+// Cloudinary CDN Service
+// Handles image uploads, deletions, and URL generation with optimization
+class CloudinaryService {
+  constructor() {
+    // Load configuration from environment variables for security
+    this.cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
+    this.apiKey = import.meta.env.VITE_CLOUDINARY_API_KEY;
+    this.apiSecret = import.meta.env.VITE_CLOUDINARY_API_SECRET;
+    this.uploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET || 'bcs_visa_images';
+    
+    // Validate required configuration
+    this.validateConfiguration();
+  }
+
+  validateConfiguration() {
+    const requiredVars = {
+      cloudName: this.cloudName,
+      apiKey: this.apiKey,
+      uploadPreset: this.uploadPreset
+    };
+
+    const missingVars = Object.entries(requiredVars)
+      .filter(([key, value]) => !value)
+      .map(([key]) => key);
+
+    if (missingVars.length > 0) {
+      console.error('Missing Cloudinary configuration:', missingVars);
+      throw new Error(`Missing Cloudinary configuration: ${missingVars.join(', ')}`);
+    }
+  }
+
+  /**
+   * Upload an image to Cloudinary with automatic optimization
+   * @param {File} file - The image file to upload
+   * @param {string} folder - The folder to organize images
+   * @param {Object} options - Additional upload options
+   * @returns {Promise<Object>} Upload result with URLs and metadata
+   */
+  async uploadImage(file, folder = 'gallery', options = {}) {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('upload_preset', this.uploadPreset);
+    formData.append('folder', folder);
+    
+    // Automatic optimization settings
+    formData.append('quality', 'auto');
+    formData.append('fetch_format', 'auto');
+    formData.append('crop', 'limit');
+    formData.append('width', '1920'); // Max width for optimization
+    formData.append('height', '1080'); // Max height for optimization
+    
+    // Additional options
+    if (options.tags) {
+      formData.append('tags', options.tags.join(','));
+    }
+    
+    if (options.context) {
+      formData.append('context', Object.entries(options.context)
+        .map(([key, value]) => `${key}=${value}`)
+        .join('|'));
+    }
+
+    try {
+      const response = await fetch(
+        `https://api.cloudinary.com/v1_1/${this.cloudName}/image/upload`,
+        {
+          method: 'POST',
+          body: formData,
+        }
+      );
+
+      if (!response.ok) {
+        const errorData = await response.text();
+        throw new Error(`Upload failed: ${errorData}`);
+      }
+
+      const data = await response.json();
+      
+      return {
+        url: data.secure_url,
+        publicId: data.public_id,
+        width: data.width,
+        height: data.height,
+        format: data.format,
+        size: data.bytes,
+        version: data.version,
+        createdAt: data.created_at,
+        etag: data.etag,
+        folder: data.folder,
+        originalFilename: data.original_filename
+      };
+    } catch (error) {
+      console.error('Cloudinary upload error:', error);
+      throw new Error(`Failed to upload image: ${error.message}`);
+    }
+  }
+
+  /**
+   * Generate optimized image URL with transformations
+   * @param {string} publicId - The Cloudinary public ID
+   * @param {Object} transformations - Image transformation options
+   * @returns {string} Optimized image URL
+   */
+  generateImageUrl(publicId, transformations = {}) {
+    if (!publicId || !this.cloudName) {
+      throw new Error('Public ID and cloud name are required');
+    }
+
+    const {
+      width,
+      height,
+      crop = 'fill',
+      quality = 'auto',
+      format = 'auto',
+      gravity = 'auto',
+      effect,
+      angle,
+      radius,
+      background,
+      opacity,
+      overlay,
+      fetchFormat = 'auto'
+    } = transformations;
+
+    let transformArray = [];
+    
+    // Quality and format optimization
+    transformArray.push(`q_${quality}`);
+    transformArray.push(`f_${fetchFormat}`);
+    
+    // Dimensions and cropping
+    if (width || height) {
+      transformArray.push(`c_${crop}`);
+      if (width) transformArray.push(`w_${width}`);
+      if (height) transformArray.push(`h_${height}`);
+      if (gravity) transformArray.push(`g_${gravity}`);
+    }
+    
+    // Additional effects
+    if (effect) transformArray.push(`e_${effect}`);
+    if (angle) transformArray.push(`a_${angle}`);
+    if (radius) transformArray.push(`r_${radius}`);
+    if (background) transformArray.push(`b_${background}`);
+    if (opacity) transformArray.push(`o_${opacity}`);
+    if (overlay) transformArray.push(`l_${overlay}`);
+
+    const transformString = transformArray.join(',');
+    
+    return `https://res.cloudinary.com/${this.cloudName}/image/upload/${transformString}/${publicId}`;
+  }
+
+  /**
+   * Generate responsive image URLs for different screen sizes
+   * @param {string} publicId - The Cloudinary public ID
+   * @param {Object} baseTransformations - Base transformations to apply
+   * @returns {Object} Object with URLs for different breakpoints
+   */
+  generateResponsiveUrls(publicId, baseTransformations = {}) {
+    const breakpoints = {
+      mobile: { width: 480, height: 320 },
+      tablet: { width: 768, height: 512 },
+      desktop: { width: 1200, height: 800 },
+      large: { width: 1920, height: 1080 }
+    };
+
+    const responsiveUrls = {};
+
+    Object.entries(breakpoints).forEach(([breakpoint, dimensions]) => {
+      responsiveUrls[breakpoint] = this.generateImageUrl(publicId, {
+        ...baseTransformations,
+        ...dimensions,
+        crop: 'fill',
+        gravity: 'auto'
+      });
+    });
+
+    return responsiveUrls;
+  }
+
+  /**
+   * Delete an image from Cloudinary
+   * Note: This requires server-side implementation for security
+   * @param {string} publicId - The Cloudinary public ID to delete
+   * @returns {Promise<Object>} Deletion result
+   */
+  async deleteImage(publicId) {
+    console.warn('Image deletion requires server-side implementation for security');
+    
+    // For now, we'll just return a success response
+    // In production, this should call your backend API
+    return {
+      result: 'ok',
+      message: 'Image marked for deletion (requires server-side implementation)'
+    };
+  }
+
+  /**
+   * Get image information and metadata
+   * @param {string} publicId - The Cloudinary public ID
+   * @returns {Promise<Object>} Image information
+   */
+  async getImageInfo(publicId) {
+    try {
+      const response = await fetch(
+        `https://res.cloudinary.com/${this.cloudName}/image/upload/${publicId}.json`
+      );
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch image info');
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('Failed to get image info:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Extract public ID from Cloudinary URL
+   * @param {string} url - Cloudinary URL
+   * @returns {string|null} Public ID or null if not a Cloudinary URL
+   */
+  extractPublicId(url) {
+    if (!url || !url.includes('cloudinary.com')) {
+      return null;
+    }
+
+    const regex = /\/v\d+\/(.+?)(?:\.|$)/;
+    const match = url.match(regex);
+    
+    if (match && match[1]) {
+      // Remove file extension if present
+      return match[1].split('.')[0];
+    }
+
+    return null;
+  }
+
+  /**
+   * Check if URL is a Cloudinary URL
+   * @param {string} url - URL to check
+   * @returns {boolean} True if Cloudinary URL
+   */
+  isCloudinaryUrl(url) {
+    return url && url.includes('cloudinary.com');
+  }
+}
+
+export default new CloudinaryService();

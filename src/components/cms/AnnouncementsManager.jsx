@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAnnouncements } from '../../contexts/AnnouncementContext';
 import { toast } from 'react-toastify';
+import EnhancedImageUpload from '../EnhancedImageUpload';
 
 function AnnouncementsManager() {
   const {
@@ -20,6 +21,7 @@ function AnnouncementsManager() {
     shortDescription: { English: '', Indonesia: '' },
     content: { English: '', Indonesia: '' },
     bannerImage: '',
+    bannerImageMetadata: null,
     status: 'active',
     showOnMain: false,
     scheduledDate: '',
@@ -33,6 +35,7 @@ function AnnouncementsManager() {
       shortDescription: { English: '', Indonesia: '' },
       content: { English: '', Indonesia: '' },
       bannerImage: '',
+      bannerImageMetadata: null,
       status: 'active',
       showOnMain: false,
       scheduledDate: '',
@@ -75,6 +78,7 @@ function AnnouncementsManager() {
       shortDescription: announcement.shortDescription || { English: '', Indonesia: '' },
       content: announcement.content || { English: '', Indonesia: '' },
       bannerImage: announcement.bannerImage || '',
+      bannerImageMetadata: announcement.bannerImageMetadata || null,
       status: announcement.status || 'active',
       showOnMain: announcement.showOnMain || false,
       scheduledDate: announcement.scheduledDate ? 
@@ -83,6 +87,15 @@ function AnnouncementsManager() {
     });
     setEditingAnnouncement(announcement);
     setShowForm(true);
+  };
+
+  // Handle banner image upload
+  const handleBannerImageUploaded = (url, metadata) => {
+    setFormData(prev => ({
+      ...prev,
+      bannerImage: url,
+      bannerImageMetadata: metadata
+    }));
   };
 
   // Handle delete with confirmation
@@ -289,28 +302,46 @@ function AnnouncementsManager() {
 
               {/* Banner Image */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Banner Image URL
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Banner Image
                 </label>
-                <input
-                  type="url"
-                  value={formData.bannerImage}
-                  onChange={(e) => setFormData(prev => ({ ...prev, bannerImage: e.target.value }))}
-                  className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-                  placeholder="https://example.com/banner-image.jpg"
+                <EnhancedImageUpload
+                  onImageUploaded={handleBannerImageUploaded}
+                  currentImageUrl={formData.bannerImage}
+                  folder="announcements"
+                  maxSizeMB={5}
+                  provider="auto"
+                  transformations={{
+                    width: 1200,
+                    height: 630,
+                    crop: 'fill',
+                    quality: 'auto',
+                    format: 'auto'
+                  }}
+                  acceptedTypes={['image/jpeg', 'image/png', 'image/webp']}
+                  className=""
                 />
-                {formData.bannerImage && (
-                  <div className="mt-2">
-                    <img
-                      src={formData.bannerImage}
-                      alt="Banner preview"
-                      className="max-w-full h-32 object-cover rounded-lg"
-                      onError={(e) => {
-                        e.target.style.display = 'none';
-                      }}
-                    />
-                  </div>
-                )}
+                
+                {/* Alternative URL Input */}
+                <div className="mt-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Or enter image URL directly:
+                  </label>
+                  <input
+                    type="url"
+                    value={formData.bannerImage}
+                    onChange={(e) => setFormData(prev => ({ 
+                      ...prev, 
+                      bannerImage: e.target.value,
+                      bannerImageMetadata: null 
+                    }))}
+                    className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500 focus:border-transparent text-sm"
+                    placeholder="https://example.com/banner-image.jpg"
+                  />
+                  <p className="mt-1 text-xs text-gray-500">
+                    Recommended: 1200x630 pixels for optimal display across platforms
+                  </p>
+                </div>
               </div>
 
               {/* Settings */}
