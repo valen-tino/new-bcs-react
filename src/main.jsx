@@ -3,6 +3,13 @@ import ReactDOM from 'react-dom/client'
 import App from './App'
 import './index.css'
 
+if (import.meta.env.PROD) {
+  const noop = () => {}
+  console.log = noop
+  console.info = noop
+  console.debug = noop
+}
+
 // Initialize lazy Firebase loading on user interaction
 import { initFirebaseOnInteraction } from './utils/lazyFirebase'
 
