@@ -50,7 +50,7 @@ function ContactUs (props){
         
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-4">
           <div data-aos="fade-up">
-              <iframe title='Office Location' src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3944.565477096446!2d115.26276991457078!3d-8.637644893792881!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2dd23f5fb17fd911%3A0x7efaf8b22c37d465!2sPerumahan%20Bumisanthi%20no.%2031!5e0!3m2!1sen!2sid!4v1661126256267!5m2!1sen!2sid" width="300" height="250" loading="lazy" referrerPolicy="no-referrer-when-downgrade"></iframe>
+              <iframe title='Office Location' src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3944.565063931729!2d115.26495109999999!3d-8.637684400000001!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2dd23f0076c89d63%3A0x37c7099f01be0ce6!2sBCS%20Visa!5e0!3m2!1sen!2sid!4v1756183861584!5m2!1sen!2sid" width="400" height="300" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
           </div>
 
           <div className='px-2' data-aos="fade-up">
@@ -96,7 +96,7 @@ function ContactUs (props){
                 <Link to="mailto:bcs.bali2008@gmail.com" icon="fa-solid fa-envelope" name="bcs.bali2008@gmail.com" isFooter="yes"/>
                 <Link to="https://wa.me/6281558759959" icon="fa-solid fa-phone" name="+62 (0) 81-558-759-959" isFooter="yes"/>
                 <Link to="https://wa.me/628123666187" icon="fa-solid fa-phone" name="+62 (0) 8123-666-187" isFooter="yes"/>
-                <Link to="https://www.google.com/maps/place/Perumahan+Bumisanthi+no.+31,+Jl.+Pratu+Made+Rambug+No.31,+Batubulan,+Sukawati,+Gianyar+Regency,+Bali+80237/@-8.6376449,115.2649586,17z/data=!4m5!3m4!1s0x2dd23f5fb17fd911:0x7efaf8b22c37d465!8m2!3d-8.6376449!4d115.2649586?force=pwa&source=mlapk" icon="fa-solid fa-location-dot" name="Jl. Pratu Made Rambug, Perum Bumi Santi No.31 Br. Sasih Batubulan Sukawati Gianyar - Bali" isFooter="yes"/>
+                <Link to="https://maps.app.goo.gl/xHauPNkC6DSXqubQ8" isFooter="yes"/>
               </ul>
           </div>
 
