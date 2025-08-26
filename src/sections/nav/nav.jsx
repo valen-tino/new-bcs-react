@@ -160,7 +160,7 @@ function Navbar(props) {
               aria-label={Nav ? "Close menu" : "Open menu"}
               aria-expanded={Nav}
             >
-              {Nav ? <i className="text-black fa-solid fa-times"></i> : <i className="fa-solid fa-bars"></i>}
+              {Nav ? <i className="text-black fa-solid fa-times"></i> : <i className="fa-solid fa-bars text-black"></i>}
             </button>
           </div>
         </div>

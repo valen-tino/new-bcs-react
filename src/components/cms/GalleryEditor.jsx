@@ -1,29 +1,34 @@
 import React, { useState } from 'react';
 import { useCMS } from '../../contexts/CMSContext';
 import { toast } from 'react-toastify';
+import EnhancedImageUpload from '../EnhancedImageUpload';
 
 function GalleryEditor() {
   const { gallery, addGalleryImage, deleteGalleryImage } = useCMS();
   const [isAdding, setIsAdding] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [uploadMethod, setUploadMethod] = useState('upload'); // 'upload' or 'url'
   const [newImage, setNewImage] = useState({
     src: '',
-    alt: ''
+    alt: '',
+    metadata: null
   });
 
   const handleAdd = () => {
-    setNewImage({ src: '', alt: '' });
+    setNewImage({ src: '', alt: '', metadata: null });
+    setUploadMethod('upload'); // Default to upload method
     setIsAdding(true);
   };
 
   const handleCancel = () => {
     setIsAdding(false);
-    setNewImage({ src: '', alt: '' });
+    setNewImage({ src: '', alt: '', metadata: null });
+    setUploadMethod('upload');
   };
 
   const handleSave = async () => {
     if (!newImage.src.trim()) {
-      toast.error('Image URL is required');
+      toast.error('Image is required');
       return;
     }
 
@@ -34,7 +39,13 @@ function GalleryEditor() {
 
     setLoading(true);
     try {
-      await addGalleryImage(newImage);
+      const imageData = {
+        src: newImage.src,
+        alt: newImage.alt,
+        ...(newImage.metadata && { metadata: newImage.metadata })
+      };
+      
+      await addGalleryImage(imageData);
       toast.success('Image added to gallery successfully');
       handleCancel();
     } catch (error) {
@@ -56,6 +67,19 @@ function GalleryEditor() {
         setLoading(false);
       }
     }
+  };
+
+  const handleImageUploaded = (url, metadata) => {
+    setNewImage(prev => ({ 
+      ...prev, 
+      src: url, 
+      metadata: metadata 
+    }));
+  };
+
+  const handleUploadMethodChange = (method) => {
+    setUploadMethod(method);
+    setNewImage(prev => ({ ...prev, src: '', metadata: null }));
   };
 
   const isValidImageUrl = (url) => {
@@ -88,21 +112,96 @@ function GalleryEditor() {
           <div className="px-4 py-5 sm:p-6">
             <h3 className="mb-4 text-lg font-medium text-gray-900">Add New Image</h3>
             
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Image URL</label>
-                <input
-                  type="url"
-                  value={newImage.src}
-                  onChange={(e) => setNewImage({ ...newImage, src: e.target.value })}
-                  className="block mt-1 w-full rounded-md border-gray-300 shadow-sm focus:ring-orange-500 focus:border-orange-500 sm:text-sm"
-                  placeholder="Enter image URL (jpg, png, gif, webp)"
-                />
-                {newImage.src && !isValidImageUrl(newImage.src) && (
-                  <p className="mt-1 text-sm text-red-600">Please enter a valid image URL</p>
-                )}
+            {/* Upload Method Selection */}
+            <div className="mb-6">
+              <div className="flex space-x-4">
+                <button
+                  type="button"
+                  onClick={() => handleUploadMethodChange('upload')}
+                  className={`px-4 py-2 text-sm font-medium rounded-md transition-colors duration-200 ${
+                    uploadMethod === 'upload'
+                      ? 'bg-orange-600 text-white'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
+                >
+                  📤 Upload File
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleUploadMethodChange('url')}
+                  className={`px-4 py-2 text-sm font-medium rounded-md transition-colors duration-200 ${
+                    uploadMethod === 'url'
+                      ? 'bg-orange-600 text-white'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
+                >
+                  🔗 Image URL
+                </button>
               </div>
+            </div>
+            
+            <div className="space-y-4">
+              {/* File Upload Method */}
+              {uploadMethod === 'upload' && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Upload Image
+                  </label>
+                  <EnhancedImageUpload
+                    onImageUploaded={handleImageUploaded}
+                    currentImageUrl={newImage.src}
+                    folder="gallery"
+                    maxSizeMB={10}
+                    provider="auto"
+                    transformations={{
+                      width: 1200,
+                      quality: 'auto',
+                      format: 'auto'
+                    }}
+                    className=""
+                  />
+                </div>
+              )}
 
+              {/* URL Input Method */}
+              {uploadMethod === 'url' && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">Image URL</label>
+                  <input
+                    type="url"
+                    value={newImage.src}
+                    onChange={(e) => setNewImage({ ...newImage, src: e.target.value })}
+                    className="block mt-1 w-full rounded-md border-gray-300 shadow-sm focus:ring-orange-500 focus:border-orange-500 sm:text-sm"
+                    placeholder="Enter image URL (jpg, png, gif, webp)"
+                  />
+                  {newImage.src && !isValidImageUrl(newImage.src) && (
+                    <p className="mt-1 text-sm text-red-600">Please enter a valid image URL</p>
+                  )}
+                  
+                  {/* URL Image Preview */}
+                  {newImage.src && isValidImageUrl(newImage.src) && (
+                    <div className="mt-4">
+                      <label className="block mb-2 text-sm font-medium text-gray-700">Preview</label>
+                      <div className="p-4 rounded-lg border border-gray-300">
+                        <img 
+                          src={newImage.src} 
+                          alt={newImage.alt || 'Preview'} 
+                          className="object-cover mx-auto max-w-full h-48 rounded-md"
+                          onError={(e) => {
+                            e.target.style.display = 'none';
+                            e.target.nextSibling.style.display = 'block';
+                          }}
+                        />
+                        <div className="mt-2 text-sm text-center text-gray-500" style={{display: 'none'}}>
+                          Failed to load image preview
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Alt Text Input (always visible) */}
               <div>
                 <label className="block text-sm font-medium text-gray-700">Alt Text</label>
                 <input
@@ -112,25 +211,32 @@ function GalleryEditor() {
                   className="block mt-1 w-full rounded-md border-gray-300 shadow-sm focus:ring-orange-500 focus:border-orange-500 sm:text-sm"
                   placeholder="Enter descriptive alt text for the image"
                 />
+                <p className="mt-1 text-xs text-gray-500">
+                  Describe what's in the image for accessibility and SEO
+                </p>
               </div>
 
-              {/* Image Preview */}
-              {newImage.src && isValidImageUrl(newImage.src) && (
-                <div>
-                  <label className="block mb-2 text-sm font-medium text-gray-700">Preview</label>
-                  <div className="p-4 rounded-lg border border-gray-300">
-                    <img 
-                      src={newImage.src} 
-                      alt={newImage.alt || 'Preview'} 
-                      className="object-cover mx-auto max-w-full h-48 rounded-md"
-                      onError={(e) => {
-                        e.target.style.display = 'none';
-                        e.target.nextSibling.style.display = 'block';
-                      }}
-                    />
-                    <div className="mt-2 text-sm text-center text-gray-500" style={{display: 'none'}}>
-                      Failed to load image preview
+              {/* Image Metadata Display */}
+              {newImage.metadata && (
+                <div className="bg-gray-50 rounded-lg p-3">
+                  <h4 className="text-sm font-medium text-gray-700 mb-2">Image Information</h4>
+                  <div className="text-xs text-gray-600 space-y-1">
+                    <div className="flex justify-between">
+                      <span>Provider:</span>
+                      <span className="capitalize text-orange-600">{newImage.metadata.provider}</span>
                     </div>
+                    {newImage.metadata.width && newImage.metadata.height && (
+                      <div className="flex justify-between">
+                        <span>Size:</span>
+                        <span>{newImage.metadata.width} × {newImage.metadata.height}px</span>
+                      </div>
+                    )}
+                    {newImage.metadata.size && (
+                      <div className="flex justify-between">
+                        <span>File Size:</span>
+                        <span>{(newImage.metadata.size / 1024 / 1024).toFixed(2)} MB</span>
+                      </div>
+                    )}
                   </div>
                 </div>
               )}
@@ -144,7 +250,12 @@ function GalleryEditor() {
                 </button>
                 <button
                   onClick={handleSave}
-                  disabled={loading || !newImage.src || !newImage.alt || !isValidImageUrl(newImage.src)}
+                  disabled={
+                    loading || 
+                    !newImage.src || 
+                    !newImage.alt || 
+                    (uploadMethod === 'url' && !isValidImageUrl(newImage.src))
+                  }
                   className="px-4 py-2 text-sm font-medium text-white bg-orange-600 rounded-md border border-transparent shadow-sm hover:bg-orange-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 disabled:opacity-50"
                 >
                   {loading ? 'Adding...' : 'Add Image'}
@@ -236,11 +347,13 @@ function GalleryEditor() {
             <h3 className="text-sm font-medium text-blue-800">Tips for adding images</h3>
             <div className="mt-2 text-sm text-blue-700">
               <ul className="pl-5 space-y-1 list-disc">
-                <li>Use high-quality images with good resolution</li> 
+                <li><strong>File Upload:</strong> Automatically optimized via Cloudinary CDN for fast loading</li>
+                <li><strong>URL Method:</strong> Use external URLs from image hosting services</li>
                 <li>Supported formats: JPG, PNG, GIF, WebP, SVG</li>
-                <li>Add descriptive alt text for accessibility</li>
-                <li>Consider image file size for faster loading</li>
-                <li>Use free stock photo sites like Unsplash or Pexels</li>
+                <li>Maximum file size: 10MB (automatically compressed)</li>
+                <li>Add descriptive alt text for accessibility and SEO</li>
+                <li>Images are automatically resized and optimized for web delivery</li>
+                <li>Free CDN storage with global fast delivery network</li>
               </ul>
             </div>
           </div>

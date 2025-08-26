@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useCMS } from '../../contexts/CMSContext';
 import DataImporter from './DataImporter';
+import CloudinaryAdminTools from '../CloudinaryAdminTools';
 
 function Overview({ setActiveSection }) {
   const { 
@@ -287,6 +288,9 @@ function Overview({ setActiveSection }) {
           )}
         </div>
       </div>
+
+      {/* Cloudinary Admin Tools */}
+      <CloudinaryAdminTools />
 
       
     </div>
