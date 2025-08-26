@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { auth, googleProvider, db } from '../config/firebase';
-import { signInWithPopup, signOut, onAuthStateChanged } from 'firebase/auth';
+import { signInWithPopup, signInWithRedirect, getRedirectResult, signOut, onAuthStateChanged } from 'firebase/auth';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { toast } from 'react-toastify';
 
@@ -48,9 +48,19 @@ export function AuthProvider({ children }) {
     }
   };
 
-  const signInWithGoogle = async () => {
+  const signInWithGoogle = async (useRedirect = false) => {
     try {
-      const result = await signInWithPopup(auth, googleProvider);
+      let result;
+      
+      if (useRedirect) {
+        // Use redirect method for better compatibility
+        await signInWithRedirect(auth, googleProvider);
+        return 'redirect'; // Will be handled by getRedirectResult
+      } else {
+        // Try popup method first
+        result = await signInWithPopup(auth, googleProvider);
+      }
+      
       const user = result.user;
       
       const adminStatus = await checkAdminStatus(user);
@@ -81,10 +91,19 @@ export function AuthProvider({ children }) {
       console.error('Error signing in with Google:', error);
       
       // Handle specific Firebase auth errors
-      if (error.code === 'auth/configuration-not-found') {
+      if (error.code === 'auth/popup-closed-by-user') {
+        // Don't show error for this - user intentionally closed popup
+        console.log('User closed the sign-in popup');
+        return 'popup-closed';
+      } else if (error.code === 'auth/popup-blocked') {
+        toast.error('Popup was blocked by your browser. Please allow popups and try again, or use the redirect option.');
+        return 'popup-blocked';
+      } else if (error.code === 'auth/configuration-not-found') {
         toast.error('Authentication configuration error. Please contact support.');
       } else if (error.code === 'auth/network-request-failed') {
         toast.error('Network error. Please check your connection and try again.');
+      } else if (error.code === 'auth/unauthorized-domain') {
+        toast.error('This domain is not authorized for authentication. Please contact support.');
       } else {
         toast.error('Failed to sign in. Please try again.');
       }
@@ -200,7 +219,50 @@ export function AuthProvider({ children }) {
     }
   };
 
+  // Handle redirect result (for when user uses redirect sign-in method)
+  const handleRedirectResult = async () => {
+    try {
+      const result = await getRedirectResult(auth);
+      if (result) {
+        const user = result.user;
+        
+        const adminStatus = await checkAdminStatus(user);
+        
+        if (!adminStatus) {
+          await signOut(auth);
+          toast.error('Access denied. You are not authorized to access this CMS.');
+          return false;
+        }
+
+        // Store user info in Firestore
+        try {
+          await setDoc(doc(db, 'users', user.uid), {
+            email: user.email,
+            displayName: user.displayName,
+            photoURL: user.photoURL,
+            lastLogin: new Date(),
+            isPrimaryAdmin: primaryAdmins.includes(user.email)
+          }, { merge: true });
+        } catch (firestoreError) {
+          console.error('Firestore error during sign-in:', firestoreError);
+        }
+
+        toast.success('Successfully signed in!');
+        return true;
+      }
+    } catch (error) {
+      console.error('Error handling redirect result:', error);
+      if (error.code !== 'auth/popup-closed-by-user') {
+        toast.error('Failed to complete sign-in. Please try again.');
+      }
+    }
+    return false;
+  };
+
   useEffect(() => {
+    // Check for redirect result first
+    handleRedirectResult();
+    
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setCurrentUser(user);
       if (user) {

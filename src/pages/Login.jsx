@@ -7,6 +7,8 @@ function Login() {
   const { signInWithGoogle, currentUser, isAdmin } = useAuth();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
+  const [showRedirectOption, setShowRedirectOption] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
     if (currentUser && isAdmin) {
@@ -14,12 +16,28 @@ function Login() {
     }
   }, [currentUser, isAdmin, navigate]);
 
-  const handleGoogleSignIn = async () => {
+  const handleGoogleSignIn = async (useRedirect = false) => {
     setIsLoading(true);
-    const success = await signInWithGoogle();
-    if (success) {
+    setErrorMessage('');
+    
+    const result = await signInWithGoogle(useRedirect);
+    
+    if (result === true) {
       navigate('/cms/dashboard');
+    } else if (result === 'popup-closed') {
+      // User closed popup intentionally - don't show error
+      setErrorMessage('');
+    } else if (result === 'popup-blocked') {
+      setShowRedirectOption(true);
+      setErrorMessage('Popup was blocked. You can try the redirect method below.');
+    } else if (result === 'redirect') {
+      // Redirect initiated - page will reload
+      setErrorMessage('Redirecting to Google sign-in...');
+      return;
+    } else if (result === false) {
+      setErrorMessage('Sign-in failed. Please try again.');
     }
+    
     setIsLoading(false);
   };
 
@@ -47,8 +65,14 @@ function Login() {
                 Only authorized administrators can access this CMS.
               </p>
               
+              {errorMessage && (
+                <div className="mb-4 p-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md">
+                  {errorMessage}
+                </div>
+              )}
+              
               <button
-                onClick={handleGoogleSignIn}
+                onClick={() => handleGoogleSignIn(false)}
                 disabled={isLoading}
                 className="flex relative justify-center px-4 py-3 w-full text-sm font-medium text-white bg-red-600 rounded-md border border-transparent transition-colors duration-200 group hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed"
               >
@@ -72,6 +96,26 @@ function Login() {
                   </div>
                 )}
               </button>
+              
+              {showRedirectOption && (
+                <div className="mt-4">
+                  <p className="mb-2 text-xs text-gray-500">
+                    If the popup doesn't work, try the redirect method:
+                  </p>
+                  <button
+                    onClick={() => handleGoogleSignIn(true)}
+                    disabled={isLoading}
+                    className="flex relative justify-center px-4 py-2 w-full text-sm font-medium text-red-600 bg-white rounded-md border border-red-600 transition-colors duration-200 hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    <div className="flex items-center">
+                      <svg className="mr-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                      </svg>
+                      Sign in via Redirect
+                    </div>
+                  </button>
+                </div>
+              )}
             </div>
             
             <div className="text-center">

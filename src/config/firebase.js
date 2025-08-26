@@ -88,6 +88,14 @@ try {
 // Initialize auth and provider
 export const auth = getAuth(app);
 export const googleProvider = new GoogleAuthProvider();
+
+// Configure Google provider for better compatibility
+googleProvider.addScope('profile');
+googleProvider.addScope('email');
+googleProvider.setCustomParameters({
+  prompt: 'select_account'
+});
+
 export { db };
 export { storage };
 
