@@ -219,62 +219,79 @@ export function AuthProvider({ children }) {
     }
   };
 
-  // Handle redirect result (for when user uses redirect sign-in method)
-  const handleRedirectResult = async () => {
-    try {
-      const result = await getRedirectResult(auth);
-      if (result) {
-        const user = result.user;
-        
-        const adminStatus = await checkAdminStatus(user);
-        
-        if (!adminStatus) {
-          await signOut(auth);
-          toast.error('Access denied. You are not authorized to access this CMS.');
-          return false;
-        }
-
-        // Store user info in Firestore
-        try {
-          await setDoc(doc(db, 'users', user.uid), {
-            email: user.email,
-            displayName: user.displayName,
-            photoURL: user.photoURL,
-            lastLogin: new Date(),
-            isPrimaryAdmin: primaryAdmins.includes(user.email)
-          }, { merge: true });
-        } catch (firestoreError) {
-          console.error('Firestore error during sign-in:', firestoreError);
-        }
-
-        toast.success('Successfully signed in!');
-        return true;
-      }
-    } catch (error) {
-      console.error('Error handling redirect result:', error);
-      if (error.code !== 'auth/popup-closed-by-user') {
-        toast.error('Failed to complete sign-in. Please try again.');
-      }
-    }
-    return false;
-  };
-
   useEffect(() => {
-    // Check for redirect result first
-    handleRedirectResult();
+    let mounted = true;
     
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      setCurrentUser(user);
-      if (user) {
-        await checkAdminStatus(user);
-        await fetchAdmins();
-      } else {
-        setIsAdmin(false);
+    const handleAuth = async () => {
+      try {
+        // Check for redirect result first
+        const result = await getRedirectResult(auth);
+        if (result && mounted) {
+          const user = result.user;
+          
+          // Set current user immediately
+          setCurrentUser(user);
+          
+          // Check admin status
+          const isUserAdmin = await checkAdminStatus(user);
+          
+          if (!isUserAdmin) {
+            await signOut(auth);
+            toast.error('Access denied. You are not authorized to access this CMS.');
+            if (mounted) {
+              setCurrentUser(null);
+              setIsAdmin(false);
+              setLoading(false);
+            }
+            return;
+          }
+
+          // Store user info in Firestore
+          try {
+            await setDoc(doc(db, 'users', user.uid), {
+              email: user.email,
+              displayName: user.displayName,
+              photoURL: user.photoURL,
+              lastLogin: new Date(),
+              isPrimaryAdmin: primaryAdmins.includes(user.email)
+            }, { merge: true });
+          } catch (firestoreError) {
+            console.error('Firestore error during sign-in:', firestoreError);
+          }
+
+          if (mounted) {
+            toast.success('Successfully signed in!');
+          }
+        }
+      } catch (error) {
+        console.error('Error handling redirect result:', error);
+        if (error.code !== 'auth/popup-closed-by-user' && mounted) {
+          toast.error('Failed to complete sign-in. Please try again.');
+        }
       }
-      setLoading(false);
+    };
+    
+    // Handle redirect result
+    handleAuth();
+    
+    // Set up auth state listener
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (mounted) {
+        setCurrentUser(user);
+        if (user) {
+          await checkAdminStatus(user);
+          await fetchAdmins();
+        } else {
+          setIsAdmin(false);
+        }
+        setLoading(false);
+      }
     });
 
-    return unsubscribe;
+    return () => {
+      mounted = false;
+      unsubscribe();
+    };
   }, []);
 
   const value = {
