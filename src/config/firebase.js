@@ -50,7 +50,7 @@ try {
     }).catch(console.error);
   }
   
-  console.log('🔥 Firestore initialized successfully');
+  // console.log('🔥 Firestore initialized successfully');
 } catch (error) {
   console.error('Firestore initialization error:', error);
   // Create a mock db object to prevent app crashes
@@ -71,7 +71,7 @@ try {
 let storage;
 try {
   storage = getStorage(app);
-  console.log('📁 Firebase Storage initialized successfully');
+  // console.log('📁 Firebase Storage initialized successfully');
 } catch (error) {
   console.error('Storage initialization error:', error);
   storage = {
@@ -106,7 +106,7 @@ export const getAnalytics = async () => {
     try {
       const { getAnalytics: getAnalyticsService } = await import('firebase/analytics');
       analytics = getAnalyticsService(app);
-      console.log('📊 Firebase Analytics loaded');
+      // console.log('📊 Firebase Analytics loaded');
     } catch (error) {
       console.error('Analytics initialization error:', error);
     }
