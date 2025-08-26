@@ -88,8 +88,10 @@ export function AuthProvider({ children }) {
       toast.success('Successfully signed in!');
       return true;
     } catch (error) {
-      console.error('Error signing in with Google:', error);
-      
+      if (error.code !== 'auth/popup-closed-by-user') {
+        console.error('Error signing in with Google:', error);
+      }
+
       // Handle specific Firebase auth errors
       if (error.code === 'auth/popup-closed-by-user') {
         if (typeof window !== 'undefined' && window.location.hostname !== 'localhost') {
@@ -271,8 +273,12 @@ export function AuthProvider({ children }) {
         }
       } catch (error) {
         console.error('Error handling redirect result:', error);
-        if (error.code !== 'auth/popup-closed-by-user' && mounted) {
-          toast.error('Failed to complete sign-in. Please try again.');
+        if (mounted) {
+          if (error.code === 'auth/unauthorized-domain') {
+            toast.error('This domain is not authorized for authentication. Please update Firebase Auth settings.');
+          } else if (error.code !== 'auth/popup-closed-by-user') {
+            toast.error('Failed to complete sign-in. Please try again.');
+          }
         }
       }
     };
