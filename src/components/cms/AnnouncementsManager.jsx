@@ -91,10 +91,23 @@ function AnnouncementsManager() {
 
   // Handle banner image upload
   const handleBannerImageUploaded = (url, metadata) => {
+    // Ensure metadata doesn't contain undefined values (Firebase doesn't allow them)
+    const cleanMetadata = metadata ? {
+      ...metadata,
+      // Ensure all values are defined or null
+      folder: metadata.folder || 'announcements',
+      provider: metadata.provider || 'unknown',
+      width: metadata.width || null,
+      height: metadata.height || null,
+      size: metadata.size || null,
+      format: metadata.format || null,
+      createdAt: metadata.createdAt || new Date().toISOString()
+    } : null;
+    
     setFormData(prev => ({
       ...prev,
       bannerImage: url,
-      bannerImageMetadata: metadata
+      bannerImageMetadata: cleanMetadata
     }));
   };
 

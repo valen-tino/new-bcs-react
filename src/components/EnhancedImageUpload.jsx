@@ -160,17 +160,17 @@ function EnhancedImageUpload({
 
       const imageMetadata = {
         url: finalUrl,
-        publicId: result.publicId,
+        publicId: result.publicId || null,
         provider: 'cloudinary',
-        originalUrl: result.url,
-        optimizedUrl: optimizedUrl,
-        simpleUrl: simpleUrl,
-        width: result.width,
-        height: result.height,
-        size: result.size,
-        format: result.format,
-        folder: result.folder,
-        createdAt: result.createdAt
+        originalUrl: result.url || null,
+        optimizedUrl: optimizedUrl || null,
+        simpleUrl: simpleUrl || null,
+        width: result.width || null,
+        height: result.height || null,
+        size: result.size || null,
+        format: result.format || null,
+        folder: result.folder || folder || 'announcements', // Use provided folder as fallback
+        createdAt: result.createdAt || new Date().toISOString()
       };
 
       setPreviewUrl(finalUrl);
@@ -219,9 +219,14 @@ function EnhancedImageUpload({
                 url: downloadURL,
                 provider: 'firebase',
                 path: `${folder}/${filename}`,
-                size: file.size,
-                type: file.type,
-                name: file.name
+                folder: folder || 'announcements', // Ensure folder is always defined
+                size: file.size || null,
+                type: file.type || null,
+                name: file.name || null,
+                width: null, // Firebase doesn't provide dimensions
+                height: null,
+                format: (file.type || '').split('/')[1] || null,
+                createdAt: new Date().toISOString()
               };
 
               setPreviewUrl(downloadURL);
