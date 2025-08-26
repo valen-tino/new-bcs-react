@@ -92,8 +92,14 @@ export function AuthProvider({ children }) {
       
       // Handle specific Firebase auth errors
       if (error.code === 'auth/popup-closed-by-user') {
-        // Don't show error for this - user intentionally closed popup
-        console.log('User closed the sign-in popup');
+        if (typeof window !== 'undefined' && window.location.hostname !== 'localhost') {
+          try {
+            await signInWithRedirect(auth, googleProvider);
+            return 'redirect';
+          } catch (redirectError) {
+            console.error('Redirect sign-in failed:', redirectError);
+          }
+        }
         return 'popup-closed';
       } else if (error.code === 'auth/popup-blocked') {
         toast.error('Popup was blocked by your browser. Please allow popups and try again, or use the redirect option.');
