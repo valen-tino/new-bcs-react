@@ -8,6 +8,7 @@ if (import.meta.env.PROD) {
   console.log = noop
   console.info = noop
   console.debug = noop
+  console.warn = noop
 }
 
 // Initialize lazy Firebase loading on user interaction
