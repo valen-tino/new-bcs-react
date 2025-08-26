@@ -118,6 +118,10 @@ googleProvider.setCustomParameters({
 **Cause**: Network or Firebase config issues
 **Fix**: Check network connectivity and Firebase project status
 
+### Issue: "Redirects back to login after Google sign-in"
+**Cause**: Deployment domain or subdomain not authorized, browser blocks third-party cookies, or user lacks admin permissions
+**Fix**: Add your production domain (and any subdomains) to Firebase Auth's authorized domains, ensure the account email exists in the `admins` collection or `primaryAdmins` list, and if the popup still closes immediately, enable third-party cookies or use the redirect method
+
 ### Issue: "Access denied after successful Google login"
 **Cause**: User email not in admin list
 **Fix**: Add user email to authorized admins in Firebase or code
