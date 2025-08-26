@@ -105,7 +105,7 @@ function ContactUs (props){
                 <Link to="mailto:bcs.bali2008@gmail.com" icon="fa-solid fa-envelope" name="bcs.bali2008@gmail.com" isFooter="yes"/>
                 <Link to="https://wa.me/6281558759959" icon="fa-solid fa-phone" name="+62 (0) 81-558-759-959" isFooter="yes"/>
                 <Link to="https://wa.me/628123666187" icon="fa-solid fa-phone" name="+62 (0) 8123-666-187" isFooter="yes"/>
-                <Link to="https://maps.app.goo.gl/xHauPNkC6DSXqubQ8" isFooter="yes"/>
+                <Link to="https://maps.app.goo.gl/xHauPNkC6DSXqubQ8" name="Office Location" isFooter="yes"/>
               </ul>
           </div>
 
