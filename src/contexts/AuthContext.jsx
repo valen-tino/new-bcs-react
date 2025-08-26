@@ -279,6 +279,7 @@ export function AuthProvider({ children }) {
           } else if (error.code !== 'auth/popup-closed-by-user') {
             toast.error('Failed to complete sign-in. Please try again.');
           }
+          setLoading(false);
         }
       }
     };
