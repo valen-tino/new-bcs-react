@@ -306,15 +306,33 @@ function EnhancedImageUpload({
                 alt="Preview"
                 className="max-w-full h-48 object-cover rounded-lg mx-auto shadow-md"
                 onError={(e) => {
-                  console.error('Failed to load preview image:', previewUrl);
-                  // Show a placeholder instead of hiding the image
+                  const failedUrl = e.target.src;
+                  console.error('Failed to load preview image:', failedUrl);
+                  
+                  // If it's a Cloudinary URL, try to extract public ID and create a simpler URL
+                  if (cloudinaryService.isCloudinaryUrl(failedUrl)) {
+                    const publicId = cloudinaryService.extractPublicId(failedUrl);
+                    if (publicId) {
+                      console.log('Extracted public ID:', publicId, 'trying simpler URL...');
+                      // Try a simpler URL without transformations
+                      const simpleUrl = `https://res.cloudinary.com/${cloudinaryService.cloudName}/image/upload/${publicId}`;
+                      if (failedUrl !== simpleUrl) {
+                        console.log('Retrying with simple URL:', simpleUrl);
+                        e.target.src = simpleUrl;
+                        return;
+                      }
+                    }
+                  }
+                  
+                  // If retry failed or not a Cloudinary URL, show placeholder
                   e.target.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgdmlld0JveD0iMCAwIDIwMCAyMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0xMDAgMTUwQzEyNy42MTQgMTUwIDE1MCAxMjcuNjE0IDE1MCAxMDBTMTI3LjYxNCA1MCAxMDAgNTBTNTAgNzIuMzg2IDUwIDEwMFM3Mi4zODYgMTUwIDEwMCAxNTBaIiBzdHJva2U9IiM5Q0EzQUYiIHN0cm9rZS13aWR0aD0iMiIgZmlsbD0ibm9uZSIvPgo8cGF0aCBkPSJNODUgOTBIMTE1TTg1IDExMEgxMTUiIHN0cm9rZT0iIzlDQTNBRiIgc3Ryb2tlLXdpZHRoPSIyIi8+Cjx0ZXh0IHg9IjEwMCIgeT0iMTc1IiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjNkI3Mjc5IiBmb250LXNpemU9IjEyIj5JbWFnZSBOb3QgRm91bmQ8L3RleHQ+Cjwvc3ZnPgo=';
                   e.target.alt = 'Image preview failed to load';
-                  // Also show an error message
+                  
+                  // Show an error message
                   if (!document.querySelector('.image-error-message')) {
                     const errorDiv = document.createElement('div');
                     errorDiv.className = 'image-error-message mt-2 text-sm text-red-600 text-center';
-                    errorDiv.textContent = 'Failed to load image preview';
+                    errorDiv.textContent = `Failed to load image: ${publicId || 'Invalid URL'}`;
                     e.target.parentNode.appendChild(errorDiv);
                   }
                 }}

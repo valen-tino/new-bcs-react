@@ -124,16 +124,20 @@ class CloudinaryService {
 
     let transformArray = [];
     
-    // Quality and format optimization
-    transformArray.push(`q_${quality}`);
-    transformArray.push(`f_${fetchFormat}`);
+    // Quality and format optimization (these should come first)
+    if (quality) transformArray.push(`q_${quality}`);
+    if (format !== 'auto') {
+      transformArray.push(`f_${format}`);
+    } else {
+      transformArray.push('f_auto');
+    }
     
     // Dimensions and cropping
     if (width || height) {
       transformArray.push(`c_${crop}`);
       if (width) transformArray.push(`w_${width}`);
       if (height) transformArray.push(`h_${height}`);
-      if (gravity) transformArray.push(`g_${gravity}`);
+      if (gravity && (width || height)) transformArray.push(`g_${gravity}`);
     }
     
     // Additional effects
@@ -146,7 +150,12 @@ class CloudinaryService {
 
     const transformString = transformArray.join(',');
     
-    return `https://res.cloudinary.com/${this.cloudName}/image/upload/${transformString}/${publicId}`;
+    // Only add transformation string if we have transformations
+    if (transformString) {
+      return `https://res.cloudinary.com/${this.cloudName}/image/upload/${transformString}/${publicId}`;
+    } else {
+      return `https://res.cloudinary.com/${this.cloudName}/image/upload/${publicId}`;
+    }
   }
 
   /**
@@ -284,15 +293,47 @@ class CloudinaryService {
       return null;
     }
 
-    const regex = /\/v\d+\/(.+?)(?:\.|$)/;
-    const match = url.match(regex);
-    
-    if (match && match[1]) {
+    try {
+      // Handle different Cloudinary URL formats
+      // Format: https://res.cloudinary.com/cloudname/image/upload/[transformations]/publicId
+      // Format: https://res.cloudinary.com/cloudname/image/upload/publicId
+      
+      // Remove query parameters first
+      const cleanUrl = url.split('?')[0];
+      
+      // Split by '/upload/' to get the part after upload
+      const uploadIndex = cleanUrl.indexOf('/upload/');
+      if (uploadIndex === -1) {
+        return null;
+      }
+      
+      const afterUpload = cleanUrl.substring(uploadIndex + 8); // 8 = length of '/upload/'
+      
+      // Split by '/' to handle transformations
+      const parts = afterUpload.split('/');
+      
+      // If there's only one part, it's the publicId
+      if (parts.length === 1) {
+        // Remove file extension if present
+        return parts[0].split('.')[0];
+      }
+      
+      // If there are multiple parts, the last part is usually the publicId
+      // unless it starts with 'v' followed by numbers (version)
+      let publicId = parts[parts.length - 1];
+      
+      // Handle versioned URLs - if last part is version, take the second to last
+      if (parts.length > 1 && /^v\d+$/.test(publicId)) {
+        publicId = parts[parts.length - 2];
+      }
+      
       // Remove file extension if present
-      return match[1].split('.')[0];
+      return publicId.split('.')[0];
+      
+    } catch (error) {
+      console.error('Error extracting public ID from URL:', url, error);
+      return null;
     }
-
-    return null;
   }
 
   /**
@@ -302,6 +343,44 @@ class CloudinaryService {
    */
   isCloudinaryUrl(url) {
     return url && url.includes('cloudinary.com');
+  }
+
+  /**
+   * Validate a Cloudinary URL by checking if the image exists
+   * @param {string} url - Cloudinary URL to validate
+   * @returns {Promise<boolean>} True if image exists and is accessible
+   */
+  async validateCloudinaryUrl(url) {
+    if (!this.isCloudinaryUrl(url)) {
+      return false;
+    }
+
+    try {
+      const response = await fetch(url, { method: 'HEAD' });
+      return response.ok;
+    } catch (error) {
+      console.error('Failed to validate Cloudinary URL:', url, error);
+      return false;
+    }
+  }
+
+  /**
+   * Get a fallback URL for a failed Cloudinary image
+   * @param {string} url - Original failed URL
+   * @returns {string|null} Simplified URL or null if cannot create fallback
+   */
+  getFallbackUrl(url) {
+    if (!this.isCloudinaryUrl(url)) {
+      return null;
+    }
+
+    const publicId = this.extractPublicId(url);
+    if (!publicId) {
+      return null;
+    }
+
+    // Return simple URL without transformations
+    return `https://res.cloudinary.com/${this.cloudName}/image/upload/${publicId}`;
   }
 }
 

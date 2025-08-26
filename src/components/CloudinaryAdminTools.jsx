@@ -5,14 +5,53 @@ import cloudinaryService from '../services/cloudinaryService';
 function CloudinaryAdminTools() {
   const [deletedImages, setDeletedImages] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [debugInfo, setDebugInfo] = useState(null);
 
   useEffect(() => {
     loadDeletedImages();
+    loadDebugInfo();
   }, []);
 
   const loadDeletedImages = () => {
     const images = cloudinaryService.getImagesMarkedForDeletion();
     setDeletedImages(images);
+  };
+
+  const loadDebugInfo = () => {
+    try {
+      cloudinaryService.validateConfiguration();
+      setDebugInfo({
+        cloudName: cloudinaryService.cloudName,
+        configured: true,
+        error: null
+      });
+    } catch (error) {
+      setDebugInfo({
+        cloudName: null,
+        configured: false,
+        error: error.message
+      });
+    }
+  };
+
+  const testImageUrl = async (url) => {
+    try {
+      const isValid = await cloudinaryService.validateCloudinaryUrl(url);
+      const publicId = cloudinaryService.extractPublicId(url);
+      const fallbackUrl = cloudinaryService.getFallbackUrl(url);
+      
+      toast.info(
+        `URL Test: ${isValid ? '✅ Valid' : '❌ Failed'}\n` +
+        `Public ID: ${publicId || 'Not extracted'}\n` +
+        `Fallback: ${fallbackUrl ? '✅ Available' : '❌ None'}`,
+        { autoClose: 5000 }
+      );
+      
+      return { isValid, publicId, fallbackUrl };
+    } catch (error) {
+      toast.error(`URL test failed: ${error.message}`);
+      return { isValid: false, error: error.message };
+    }
   };
 
   const clearDeletedImagesList = () => {
@@ -61,6 +100,31 @@ function CloudinaryAdminTools() {
         </span>
       </div>
 
+      {/* Debug Information */}
+      <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-6">
+        <h3 className="font-medium text-gray-800 mb-3">
+          🔧 Debug Information
+        </h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+          <div>
+            <span className="font-medium text-gray-600">Cloud Name:</span>
+            <span className="ml-2 text-gray-800">{debugInfo?.cloudName || 'Not configured'}</span>
+          </div>
+          <div>
+            <span className="font-medium text-gray-600">Status:</span>
+            <span className={`ml-2 ${debugInfo?.configured ? 'text-green-600' : 'text-red-600'}`}>
+              {debugInfo?.configured ? '✅ Configured' : '❌ Not configured'}
+            </span>
+          </div>
+          {debugInfo?.error && (
+            <div className="col-span-2">
+              <span className="font-medium text-red-600">Error:</span>
+              <span className="ml-2 text-red-800">{debugInfo.error}</span>
+            </div>
+          )}
+        </div>
+      </div>
+
       {/* Info Box */}
       <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
         <h3 className="font-medium text-yellow-800 mb-2">
@@ -83,7 +147,7 @@ function CloudinaryAdminTools() {
       </div>
 
       {/* Actions */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
         <button
           onClick={loadDeletedImages}
           className="flex items-center justify-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
@@ -105,6 +169,16 @@ function CloudinaryAdminTools() {
           className="flex items-center justify-center px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
           💾 Export List
+        </button>
+
+        <button
+          onClick={() => {
+            const url = prompt('Enter Cloudinary URL to test:');
+            if (url) testImageUrl(url);
+          }}
+          className="flex items-center justify-center px-4 py-2 bg-orange-600 text-white rounded-md hover:bg-orange-700 transition-colors"
+        >
+          🧪 Test URL
         </button>
       </div>
 
