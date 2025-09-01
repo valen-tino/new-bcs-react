@@ -38,11 +38,9 @@ function Testimonial(props){
     (props.language === "Indonesia" ? uiText.testimonial.Indonesia : uiText.testimonial.English) : 
     (props.language === "Indonesia" ? {
       heading: "Testimoni / Kesaksian",
-      seeall: "Lihat Semua Testimoni",
       noTestimonials: "Belum ada testimoni tersedia."
     } : {
       heading: "Guest Testimonies",
-      seeall: "See More Testimonials",
       noTestimonials: "No testimonials available yet."
     });
   
@@ -68,87 +66,12 @@ function Testimonial(props){
               <Carousel 
                 showArrows={true} 
                 infiniteLoop={true} 
-                showIndicators={true} 
+                showIndicators={false} 
                 showThumbs={false} 
                 showStatus={false} 
                 autoPlay={true} 
-                interval={5000}
-                className="mb-8 testimonial-carousel max-w-4xl w-full"
-                id="testimonial-carousel"
-                role="region"
-                aria-label="Customer testimonials carousel"
-                aria-roledescription="carousel"
-                onClickItem={(index) => {
-                  // Handle focus management on item click
-                  const indicators = document.querySelectorAll('[aria-label*="Go to testimonial"]');
-                  if (indicators[index]) {
-                    indicators[index].focus();
-                  }
-                }}
-                renderArrowPrev={(onClickHandler, hasPrev) =>
-                  hasPrev && (
-                    <button
-                      type="button"
-                      onClick={onClickHandler}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                          e.preventDefault();
-                          onClickHandler();
-                        }
-                      }}
-                      aria-label="Previous testimonial"
-                      aria-controls="testimonial-carousel"
-                      className="absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-white/90 hover:bg-white text-orange-600 rounded-full p-4 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-600 min-h-[56px] min-w-[56px] touch-manipulation"
-                    >
-                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
-                      </svg>
-                      <span className="sr-only">Previous testimonial</span>
-                    </button>
-                  )
-                }
-                renderArrowNext={(onClickHandler, hasNext) =>
-                  hasNext && (
-                    <button
-                      type="button"
-                      onClick={onClickHandler}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter' || e.key === ' ') {
-                          e.preventDefault();
-                          onClickHandler();
-                        }
-                      }}
-                      aria-label="Next testimonial"
-                      aria-controls="testimonial-carousel"
-                      className="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-white/90 hover:bg-white text-orange-600 rounded-full p-4 shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-600 min-h-[56px] min-w-[56px] touch-manipulation"
-                    >
-                      <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
-                      </svg>
-                      <span className="sr-only">Next testimonial</span>
-                    </button>
-                  )
-                }
-                renderIndicator={(onClickHandler, isSelected, index) => (
-                  <button
-                    type="button"
-                    className={`inline-block mx-2 cursor-pointer transition-all duration-300 ${
-                      isSelected 
-                        ? 'w-10 bg-orange-600 shadow-lg' 
-                        : 'w-3 bg-orange-300 hover:bg-orange-400 hover:w-6'
-                    } h-3 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-600 min-h-[32px] min-w-[32px] p-2 touch-manipulation`}
-                    onClick={onClickHandler}
-                    onKeyDown={(e) => {
-                      if (e.key === 'Enter' || e.key === ' ') {
-                        e.preventDefault();
-                        onClickHandler();
-                      }
-                    }}
-                    aria-label={`Go to testimonial ${index + 1}`}
-                    aria-pressed={isSelected}
-                    key={index}
-                  />
-                )}
+                interval={3500}
+                className="mb-8"
               >
                 {testimonials.map((item, key) => (
                   <SimpleTestimonialCard 
@@ -162,9 +85,9 @@ function Testimonial(props){
               </Carousel>
               <Link 
                 to="/testimonials" 
-                className="px-8 py-4 bg-gradient-to-r from-orange-500 to-orange-600 text-white font-semibold rounded-xl hover:from-orange-600 hover:to-orange-700 transform hover:scale-105 transition-all duration-200 shadow-lg hover:shadow-xl"
+                className="px-6 py-3 bg-orange-600 text-white font-medium rounded-lg hover:bg-orange-700 transition-colors"
               >
-                {lang.seeall}
+                See More Testimonials
               </Link>
             </>
           ) : (
