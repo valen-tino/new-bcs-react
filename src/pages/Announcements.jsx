@@ -7,7 +7,6 @@ import Navbar from '../sections/nav/nav';
 import Footer from '../sections/footer/contactus';
 import ContactUsModalForm from '../components/contactus_modal_form';
 import SEOComponent from '../components/SEOComponent';
-import AnnouncementBar from '../components/AnnouncementBar';
 
 function AnnouncementsPage() {
   const { announcements, loading } = useAnnouncements();
@@ -126,7 +125,6 @@ function AnnouncementsPage() {
   return (
     <>
       <SEOComponent {...seoData} />
-      <AnnouncementBar />
       <Navbar 
         language={language} 
         handleSetLanguage={changeLanguage} 

@@ -7,7 +7,6 @@ import Navbar from '../sections/nav/nav';
 import Footer from '../sections/footer/contactus';
 import ContactUsModalForm from '../components/contactus_modal_form';
 import SEOComponent from '../components/SEOComponent';
-import AnnouncementBar from '../components/AnnouncementBar';
 
 function AnnouncementDetail() {
   const { id } = useParams(); // This will be either slug or ID
@@ -201,7 +200,6 @@ function AnnouncementDetail() {
   return (
     <>
       <SEOComponent {...seoData} />
-      <AnnouncementBar />
       <Navbar 
         language={language} 
         handleSetLanguage={changeLanguage} 

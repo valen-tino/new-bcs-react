@@ -5,6 +5,7 @@ import { CMSProvider } from './contexts/CMSContext';
 import { NotificationProvider } from './contexts/NotificationContext';
 import { UITextProvider } from './contexts/UITextContext';
 import { AnnouncementProvider } from './contexts/AnnouncementContext';
+import AnnouncementBar from './components/AnnouncementBar';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Navbar from './sections/nav/nav';
@@ -75,6 +76,7 @@ function App() {
               <AnnouncementProvider>
                 <Router>
                   <div className="App">
+                    <AnnouncementBar />
                     <Routes>
                       <Route path="/login" element={<Login />} />
                       <Route path="/cms/*" element={<Dashboard />} />
