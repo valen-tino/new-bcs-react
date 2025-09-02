@@ -25,7 +25,7 @@ function Testimonial(props){
     return (cmsTestimonials || [])
       .filter(t => t.status === 'published')
       .sort((a, b) => getDateVal(b.publishedAt) - getDateVal(a.publishedAt))
-      .slice(0, 5) // Limit to 5 testimonials on homepage
+      .slice(0, 4) // Limit to 4 latest testimonials on homepage
       .map(t => ({
         clientName: t.name,
         email: t.email || '',
