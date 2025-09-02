@@ -30,7 +30,11 @@ function Testimonial(props){
         clientName: t.name,
         email: t.email || '',
         desc: t.description || t.content || '',
-        rating: t.rating || 5
+        rating: t.rating || 5,
+        avatar: t.avatar || '',
+        date: t.publishedAt || t.createdAt || new Date(),
+        location: t.location || '',
+        service: t.service || ''
       }));
   }, [cmsTestimonials]);
 
@@ -80,6 +84,10 @@ function Testimonial(props){
                     email={item.email} 
                     desc={item.desc}
                     rating={item.rating}
+                    avatar={item.avatar}
+                    date={item.date}
+                    location={item.location}
+                    service={item.service}
                   />
                 ))}
               </Carousel>

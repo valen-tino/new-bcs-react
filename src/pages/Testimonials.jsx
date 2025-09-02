@@ -156,11 +156,15 @@ function Testimonials() {
                 {testimonials.map((testimonial) => (
                   <div key={testimonial.id} className="break-inside-avoid mb-8">
                     <SimpleTestimonialCard
-                      clientName={testimonial.name}
-                      email={testimonial.email || ''}
-                      desc={testimonial.description || testimonial.content || ''}
-                      rating={testimonial.rating || 5}
-                    />
+                    clientName={testimonial.name}
+                    email={testimonial.email || ''}
+                    desc={testimonial.description || testimonial.content || ''}
+                    rating={testimonial.rating || 5}
+                    avatar={testimonial.avatar || ''}
+                    date={testimonial.publishedAt || testimonial.createdAt || new Date()}
+                    location={testimonial.location || ''}
+                    service={testimonial.service || ''}
+                  />
                   </div>
                 ))}
               </div>

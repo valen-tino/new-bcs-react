@@ -4,6 +4,7 @@ import { AuthProvider } from './contexts/AuthContext';
 import { CMSProvider } from './contexts/CMSContext';
 import { NotificationProvider } from './contexts/NotificationContext';
 import { UITextProvider } from './contexts/UITextContext';
+import { AnnouncementProvider } from './contexts/AnnouncementContext';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Navbar from './sections/nav/nav';
@@ -22,6 +23,8 @@ import UITextEditor from './pages/cms/UITextEditor';
 import TestimonialForm from './pages/TestimonialForm';
 import Testimonials from './pages/Testimonials';
 import GalleryPage from './pages/Gallery';
+import Announcements from './pages/Announcements';
+import AnnouncementDetail from './pages/AnnouncementDetail';
 import { useState } from 'react';
 import './App.css';
 
@@ -69,32 +72,36 @@ function App() {
         <NotificationProvider>
           <UITextProvider>
             <CMSProvider>
-              <Router>
-                <div className="App">
-                  <Routes>
-                    <Route path="/login" element={<Login />} />
-                    <Route path="/cms/*" element={<Dashboard />} />
-                    <Route path="/cms/notifications" element={<NotificationEditor />} />
-                    <Route path="/cms/uitext" element={<UITextEditor />} />
-                    <Route path="/testimonial/:token" element={<TestimonialForm />} />
-                    <Route path="/testimonials" element={<Testimonials />} />
-                    <Route path="/gallery" element={<GalleryPage />} />
-                    <Route path="/" element={<HomeContent />} />
-                  </Routes>
-                  <ToastContainer
-                    position="top-right"
-                    autoClose={5000}
-                    hideProgressBar={false}
-                    newestOnTop={false}
-                    closeOnClick
-                    rtl={false}
-                    pauseOnFocusLoss
-                    draggable
-                    pauseOnHover
-                    theme="light"
-                  />
-                </div>
-              </Router>
+              <AnnouncementProvider>
+                <Router>
+                  <div className="App">
+                    <Routes>
+                      <Route path="/login" element={<Login />} />
+                      <Route path="/cms/*" element={<Dashboard />} />
+                      <Route path="/cms/notifications" element={<NotificationEditor />} />
+                      <Route path="/cms/uitext" element={<UITextEditor />} />
+                      <Route path="/testimonial/:token" element={<TestimonialForm />} />
+                      <Route path="/testimonials" element={<Testimonials />} />
+                      <Route path="/gallery" element={<GalleryPage />} />
+                      <Route path="/announcements" element={<Announcements />} />
+                      <Route path="/announcements/:id" element={<AnnouncementDetail />} />
+                      <Route path="/" element={<HomeContent />} />
+                    </Routes>
+                    <ToastContainer
+                      position="top-right"
+                      autoClose={5000}
+                      hideProgressBar={false}
+                      newestOnTop={false}
+                      closeOnClick
+                      rtl={false}
+                      pauseOnFocusLoss
+                      draggable
+                      pauseOnHover
+                      theme="light"
+                    />
+                  </div>
+                </Router>
+              </AnnouncementProvider>
             </CMSProvider>
           </UITextProvider>
         </NotificationProvider>
