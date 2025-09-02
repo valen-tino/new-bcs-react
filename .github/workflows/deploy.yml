@@ -60,7 +60,7 @@ jobs:
 
           # The local directory to upload from (this is the build output)
           # IMPORTANT: Check if your project builds to 'dist' or 'build' and change this line if needed!
-          local-dir: ./dist_latest/ 
+          local-dir: ./dist/ 
           # The remote directory on your server to deploy to
           # This should match the directory you set for the FTP user
           server-dir: ./
