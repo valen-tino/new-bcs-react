@@ -54,6 +54,10 @@ jobs:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
+
+          protocol: ftps
+          port: 21
+
           # The local directory to upload from (this is the build output)
           # IMPORTANT: Check if your project builds to 'dist' or 'build' and change this line if needed!
           local-dir: ./dist/ 
