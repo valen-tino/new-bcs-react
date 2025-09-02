@@ -51,7 +51,7 @@ function Login() {
             alt="BCS logoIcon"
           />
           <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
-            BCS CMS Login
+            BCS CMS Login Panel
           </h2>
           <p className="mt-2 text-sm text-gray-600">
             Sign in with your authorized Google account
@@ -66,7 +66,7 @@ function Login() {
               </p>
               
               {errorMessage && (
-                <div className="mb-4 p-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md">
+                <div className="p-3 mb-4 text-sm text-red-600 bg-red-50 rounded-md border border-red-200">
                   {errorMessage}
                 </div>
               )}
