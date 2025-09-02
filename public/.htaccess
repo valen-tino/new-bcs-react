@@ -1,0 +1,14 @@
+<IfModule mod_rewrite.c>
+  # Turn on the rewrite engine
+  RewriteEngine On
+  
+  # Set the base path for the rewrite rules
+  RewriteBase /
+  
+  # If the requested file or folder doesn't exist on the server...
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  
+  # ...then serve the index.html file instead.
+  RewriteRule . /index.html [L]
+</IfModule>
