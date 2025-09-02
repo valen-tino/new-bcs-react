@@ -59,6 +59,6 @@ jobs:
           local-dir: ./dist/ 
           # The remote directory on your server to deploy to
           # This should match the directory you set for the FTP user
-          server-dir: ./
+          server-dir: ./bcsvisa.valentinojehaut.my.id/
           # Delete all files in server-dir before uploading, for a clean deployment
           dangerous-clean-dest: true
