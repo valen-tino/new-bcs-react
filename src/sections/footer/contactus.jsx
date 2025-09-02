@@ -21,9 +21,9 @@ function ContactUs (props){
     desc: "Ready to start your journey with us?",
     email: "Email Us",
     wa: "WhatsApp Us",
-    desc2: "Bali Celebrant Services is your trusted partner for all your wedding and legal documentation needs in Bali. With years of experience and a deep understanding of local regulations, we ensure your special day is seamless and stress-free.",
-    legal: "Legal Information",
-    legaldetails: "All services provided by Bali Celebrant Services comply with Indonesian law and regulations. Please consult with our legal team for specific requirements.",
+    desc2: "Bali Connection Services is your trusted partner for all your wedding and legal documentation needs in Bali. With years of experience and a deep understanding of local regulations, we ensure your special day is seamless and stress-free.",
+    legal: "Legal And Payment Details",
+    legaldetails: "All the payment can be settled by Cash or Transfer to our Bank company account:<br><br>BANK BCA, CAB/ SANUR<br>ACCOUNT NO: 7730316083<br>ACCOUNT NAME: VINSENSIUS JEHAUT<br>SWIFT CODE: CENAIDJA<br>With Business license (SIUP) : 2017/22-08/BPPT/SIUP-K/IV/2016<br>Business Registration Number (NIB) : 0290010222619<br>NPWP : 02.970.886.4-905.000",
     sub: "Legal compliance assured",
     firstlink: "Home",
     secondlink: "Services",
@@ -38,7 +38,7 @@ function ContactUs (props){
     <>
     <footer>
       <section id='contactus' className="bg-orange-100 font-Sora">
-      <div className="max-w-screen-xl px-4 pt-16 pb-6 mx-auto sm:px-6 lg:px-8 lg:pt-24">
+      <div className="px-4 pt-16 pb-6 mx-auto max-w-screen-xl sm:px-6 lg:px-8 lg:pt-24">
       
         <div className="flex flex-col items-center p-6 mb-10 bg-orange-200 rounded-lg shadow-lg sm:flex-row sm:justify-between" data-aos="fade-up">
           <strong className="text-xl text-center md:text-left sm:text-xl">{lang.desc}</strong>
