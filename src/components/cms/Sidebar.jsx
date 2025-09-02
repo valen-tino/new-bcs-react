@@ -22,68 +22,68 @@ function Sidebar({ activeSection, setActiveSection, sidebarOpen, setSidebarOpen 
     {
       id: 'overview',
       name: 'Dashboard Overview',
-      icon: <BellAlertIcon className="h-5 w-5" />
+      icon: <BellAlertIcon className="w-5 h-5" />
     },
     {
       id: 'visa-abroad',
       name: 'Visa Assistance Abroad',
-      icon: <GlobeAltIcon className="h-5 w-5" />
+      icon: <GlobeAltIcon className="w-5 h-5" />
     },
     {
       id: 'visa-bali',
       name: 'Visa Assistance in Bali',
-      icon: <GlobeAltIcon className="h-5 w-5" />
+      icon: <GlobeAltIcon className="w-5 h-5" />
     },
     {
       id: 'services',
       name: 'Services',
-      icon: <HandRaisedIcon className="h-5 w-5" />
+      icon: <HandRaisedIcon className="w-5 h-5" />
     },
     {
       id: 'about',
       name: 'About Us',
-      icon: <InformationCircleIcon className="h-5 w-5" />
+      icon: <InformationCircleIcon className="w-5 h-5" />
     },
     {
       id: 'gallery',
       name: 'Gallery',
-      icon: <PhotoIcon className="h-5 w-5" />
+      icon: <PhotoIcon className="w-5 h-5" />
     },
     {
       id: 'testimonials',
       name: 'Testimonials',
-      icon: <ChatBubbleLeftRightIcon className="h-5 w-5" />
+      icon: <ChatBubbleLeftRightIcon className="w-5 h-5" />
     },
     {
       id: 'notifications',
       name: 'Notifications',
-      icon: <BellAlertIcon className="h-5 w-5" />
+      icon: <BellAlertIcon className="w-5 h-5" />
     },
     {
       id: 'uitext',
       name: 'UI Text Editor',
-      icon: <LanguageIcon className="h-5 w-5" />
+      icon: <LanguageIcon className="w-5 h-5" />
     },
     {
       id: 'contact-requests',
       name: 'Contact Requests',
-      icon: <EnvelopeIcon className="h-5 w-5" />,
+      icon: <EnvelopeIcon className="w-5 h-5" />,
       badge: unreadRequests > 0 ? unreadRequests : null
     },
     {
       id: 'service-options',
       name: 'Service Options',
-      icon: <Cog6ToothIcon className="h-5 w-5" />
+      icon: <Cog6ToothIcon className="w-5 h-5" />
     },
     {
       id: 'announcements',
       name: 'Announcements',
-      icon: <SpeakerWaveIcon className="h-5 w-5" />
+      icon: <SpeakerWaveIcon className="w-5 h-5" />
     },
     {
       id: 'admin-manager',
       name: 'Admin Manager',
-      icon: <UserGroupIcon className="h-5 w-5" />
+      icon: <UserGroupIcon className="w-5 h-5" />
     }
   ];
 
@@ -126,7 +126,7 @@ function SidebarContent({ menuItems, activeSection, setActiveSection }) {
     <>
       <div className="flex flex-shrink-0 items-center px-4 h-16 bg-orange-600">
         <img className="w-auto h-8" src={logoIcon} alt="BCS" />
-        <span className="ml-2 text-lg font-semibold text-white">Dashbard</span>
+        <span className="ml-2 text-lg font-semibold text-white">Dashboard</span>
       </div>
       <div className="flex overflow-y-auto flex-col flex-1">
         <nav className="flex-1 px-2 py-4 space-y-1">

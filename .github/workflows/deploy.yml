@@ -1,0 +1,64 @@
+# Name of your workflow
+name: Build and Deploy to Arenhost cPanel
+
+# This action runs on every push to the 'main' branch
+on:
+  push:
+    branches:
+      - main  # Or 'master', depending on your branch name
+
+jobs:
+  build-and-deploy:
+    # Use the latest version of Ubuntu
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checks out your repository code so the job can access it
+      - name: Checkout Code 🛎️
+        uses: actions/checkout@v4
+
+      # 2. Sets up the specific version of Node.js you need
+      - name: Setup Node.js ⚙️
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22' # Change to your required Node.js version
+          cache: 'npm'
+
+      # 3. Installs the dependencies from your package-lock.json
+      - name: Install Dependencies 📦
+        run: npm install
+
+      # 4. Runs the build script defined in your package.json
+      - name: Build Project 🏗️
+        run: npm run build
+        env: # Add this section if you have environment variables for the build
+          VITE_FIREBASE_API_KEY: AIzaSyB2G_bsUmqdiyWudYlSE3sYhkCUK_Qjuqs
+          VITE_FIREBASE_AUTH_DOMAIN: bcs-cms-5ab14.firebaseapp.com
+          VITE_FIREBASE_PROJECT_ID: bcs-cms-5ab14
+          VITE_FIREBASE_STORAGE_BUCKET: bcs-cms-5ab14.firebasestorage.app
+          VITE_FIREBASE_MESSAGING_SENDER_ID: 937702124741
+          VITE_FIREBASE_APP_ID: 1:937702124741:web:b5a1a2c3bd8b8c81bed4ac
+          VITE_FIREBASE_MEASUREMENT_ID: G-C06GE7EH13
+          VITE_CLOUDINARY_CLOUD_NAME: dzdiaslf9
+          VITE_CLOUDINARY_API_KEY: 351429118649881
+          VITE_CLOUDINARY_API_SECRET: 1lzeSu2VLe5W9CcdCt7BnYTKcrQ
+          VITE_CLOUDINARY_UPLOAD_PRESET: bcs_visa_images
+          CI: false
+          # PUBLIC_URL: / # Example: uncomment if you need it
+          
+      # 5. Deploys the built files to your cPanel server via FTP
+      - name: FTP Deploy 🚀
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        with:
+          # Use the secrets you created in Step 2
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          # The local directory to upload from (this is the build output)
+          # IMPORTANT: Check if your project builds to 'dist' or 'build' and change this line if needed!
+          local-dir: ./dist/ 
+          # The remote directory on your server to deploy to
+          # This should match the directory you set for the FTP user
+          server-dir: ./
+          # Delete all files in server-dir before uploading, for a clean deployment
+          dangerous-clean-dest: true
