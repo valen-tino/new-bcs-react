@@ -51,7 +51,7 @@ export default function ContactUsModal({ hide }) {
     setIsSubmitting(true);
     
     try {
-      await submitContactRequest({
+      const result = await submitContactRequest({
         name: formFields.name,
         email: formFields.email,
         phone: formFields.phone,
@@ -59,6 +59,10 @@ export default function ContactUsModal({ hide }) {
         province: formFields.province,
         message: formFields.message,
       });
+      
+      if (result === false) {
+        throw new Error('Failed to submit request');
+      }
       
       // Reset form
       setFormFields({

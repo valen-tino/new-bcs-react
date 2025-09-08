@@ -817,15 +817,48 @@ export function CMSProvider({ children }) {
   // Submit contact request (for the public form)
   const submitContactRequest = async (requestData) => {
     try {
-      await addDoc(collection(db, 'contactRequests'), {
-        ...requestData,
+      console.log('📝 Submitting contact request:', requestData);
+      
+      // Validate required fields
+      if (!requestData.name || !requestData.email || !requestData.message) {
+        throw new Error('Missing required fields');
+      }
+      
+      // Validate Firebase connection
+      if (!db) {
+        throw new Error('Firebase not initialized');
+      }
+      
+      const docRef = await addDoc(collection(db, 'contactRequests'), {
+        name: requestData.name?.toString() || '',
+        email: requestData.email?.toString() || '',
+        phone: requestData.phone?.toString() || '',
+        service: requestData.service?.toString() || '',
+        province: requestData.province?.toString() || '',
+        message: requestData.message?.toString() || '',
         createdAt: serverTimestamp(),
-        isRead: false
+        isRead: false,
+        submissionSource: 'contact_form',
+        userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : 'unknown'
       });
+      
+      console.log('✅ Contact request submitted successfully:', docRef.id);
       return true;
     } catch (error) {
-      console.error('Error submitting contact request:', error);
-      return false;
+      console.error('❌ Error submitting contact request:', error);
+      
+      // Handle specific Firebase errors
+      if (error.code === 'unavailable') {
+        toast.error('Service temporarily unavailable. Please try again in a moment.');
+      } else if (error.code === 'permission-denied') {
+        toast.error('Permission denied. Please contact support.');
+      } else if (error.code === 'failed-precondition') {
+        toast.error('Database error. Please contact support.');
+      } else {
+        toast.error('Failed to submit your request. Please check your internet connection and try again.');
+      }
+      
+      throw error; // Re-throw to let the component handle it
     }
   };
 

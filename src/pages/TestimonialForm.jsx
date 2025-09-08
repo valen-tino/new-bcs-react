@@ -28,6 +28,15 @@ function TestimonialForm() {
 
   const validateLink = async () => {
     try {
+      console.log('🔍 Validating testimonial link:', token);
+      
+      if (!token) {
+        console.warn('⚠️ No token provided');
+        setLinkValid(false);
+        setLoading(false);
+        return;
+      }
+      
       const linksQuery = query(
         collection(db, 'testimonialLinks'),
         where('token', '==', token)
@@ -35,6 +44,7 @@ function TestimonialForm() {
       const snapshot = await getDocs(linksQuery);
       
       if (snapshot.empty) {
+        console.warn('⚠️ Link not found in database');
         setLinkValid(false);
         setLoading(false);
         return;
@@ -43,31 +53,49 @@ function TestimonialForm() {
       const linkDoc = snapshot.docs[0];
       const data = linkDoc.data();
       
+      console.log('📊 Link data found:', { id: linkDoc.id, used: data.used, expiresAt: data.expiresAt });
+      
       // Safely convert Firestore timestamp to Date object
       let expiryDate;
       try {
         expiryDate = data.expiresAt ? data.expiresAt.toDate() : new Date(0); // Default to epoch if missing
       } catch (dateError) {
-        console.error('Error converting expiresAt to date:', dateError);
+        console.error('❌ Error converting expiresAt to date:', dateError);
         // If date conversion fails, consider the link invalid
         setLinkValid(false);
         setLoading(false);
         return;
       }
       
-      if (expiryDate <= new Date() || data.used) {
-        // Link expired or already used, delete it
-        await deleteDoc(doc(db, 'testimonialLinks', linkDoc.id));
+      const now = new Date();
+      if (expiryDate <= now || data.used) {
+        console.warn('⚠️ Link expired or already used:', { expiryDate, now, used: data.used });
+        // Link expired or already used, try to delete it
+        try {
+          await deleteDoc(doc(db, 'testimonialLinks', linkDoc.id));
+          console.log('🗑️ Expired link deleted');
+        } catch (deleteError) {
+          console.error('⚠️ Could not delete expired link:', deleteError);
+        }
         setLinkValid(false);
         setLoading(false);
         return;
       }
       
+      console.log('✅ Link is valid');
       setLinkData({ id: linkDoc.id, ...data, expiresAt: expiryDate });
       setLinkValid(true);
       setLoading(false);
     } catch (error) {
-      console.error('Error validating link:', error);
+      console.error('❌ Error validating link:', error);
+      
+      // Handle specific Firebase errors
+      if (error.code === 'unavailable') {
+        console.error('Firebase service unavailable');
+      } else if (error.code === 'permission-denied') {
+        console.error('Permission denied accessing testimonial links');
+      }
+      
       setLinkValid(false);
       setLoading(false);
     }
@@ -91,20 +119,38 @@ function TestimonialForm() {
     
     setSubmitting(true);
     try {
+      console.log('📝 Submitting testimonial:', { ...formData, linkToken: token });
+      
+      // Validate link data still exists
+      if (!linkData || !linkData.id) {
+        throw new Error('Invalid link data');
+      }
+      
       // Add testimonial to the testimonials collection
-      await addDoc(collection(db, 'testimonials'), {
+      const docRef = await addDoc(collection(db, 'testimonials'), {
         ...formData,
+        name: formData.name.trim(),
+        content: formData.content.trim(),
+        email: formData.email?.trim() || '',
+        location: formData.location?.trim() || '',
+        serviceUsed: formData.serviceUsed || '',
+        title: formData.title?.trim() || '',
+        rating: Number(formData.rating) || 5,
         createdAt: new Date(),
         status: 'pending', // New status field: pending, published, archived
         submittedViaLink: true,
         linkToken: token
       });
       
+      console.log('✅ Testimonial created:', docRef.id);
+      
       // Mark the link as used
       await updateDoc(doc(db, 'testimonialLinks', linkData.id), {
         used: true,
         usedAt: new Date()
       });
+      
+      console.log('✅ Link marked as used');
       
       toast.success('Thank you! Your testimonial has been submitted successfully.');
       
@@ -113,8 +159,16 @@ function TestimonialForm() {
         navigate('/');
       }, 2000);
     } catch (error) {
-      console.error('Error submitting testimonial:', error);
-      toast.error('Failed to submit testimonial. Please try again.');
+      console.error('❌ Error submitting testimonial:', error);
+      
+      // Provide more specific error messages
+      if (error.code === 'unavailable') {
+        toast.error('Service unavailable. Please check your internet connection and try again.');
+      } else if (error.code === 'permission-denied') {
+        toast.error('Permission denied. The link may have expired.');
+      } else {
+        toast.error('Failed to submit testimonial. Please try again.');
+      }
     } finally {
       setSubmitting(false);
     }
