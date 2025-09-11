@@ -4,6 +4,7 @@ import { Link as ScrollLink } from "react-scroll";
 import { Link as RouterLink } from 'react-router-dom';
 import { logoIcon } from '../all/allpics';
 import { Emailbutton } from '../../components/emailbutton';
+import Longwabutton from '../../components/longwabutton';
 import { useCMS } from '../../contexts/CMSContext';
 
 function Navbar(props) {
@@ -51,7 +52,8 @@ function Navbar(props) {
     gallery: "Gallery",
     testi: "Testimonials",
     contactus: "Contact",
-    email: "Email Us"
+    email: "Email Us",
+    wa: "Contact Us Today!"
   };
 
   // Handle navigation for cross-page scenarios
@@ -142,7 +144,8 @@ function Navbar(props) {
           </div>
 
           <div className='hidden pr-4 md:flex'>
-            <Emailbutton input={lang.email} contactForm={props.contactForm}/>
+            <Longwabutton desc={"Contact Us Today!"}/>
+            {/* <Emailbutton input={lang.email} contactForm={props.contactForm}/> */}
             <select
               className="px-2 ml-2 text-black bg-orange-300 rounded-full custom-select min-h-[44px] touch-manipulation"
               value={props.language}
@@ -179,7 +182,8 @@ function Navbar(props) {
         {/* Mobile controls outside of list for proper HTML structure */}
         {Nav && (
           <div className='flex flex-col pb-2 py-4 px-8 text-center gap-y-3 bg-orange-100'>
-            <Emailbutton input={lang.email} contactForm={props.contactForm}/>
+            <Longwabutton desc={"Contact Us Today!"}/>
+            {/* <Emailbutton input={lang.email} contactForm={props.contactForm}/> */}
             <select
               className="py-3 pl-2 text-black bg-orange-300 rounded-full custom-select min-h-[44px] touch-manipulation"
               value={props.language}
