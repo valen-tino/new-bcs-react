@@ -37,6 +37,7 @@ export const populateUITextContent = async () => {
           gallery: "Gallery",
           testi: "Testimonials",
           contactus: "Contact Us",
+          announcements: "Announcements",
           email: "Request Form"
         },
         Indonesia: {
@@ -47,6 +48,7 @@ export const populateUITextContent = async () => {
           gallery: "Gallery",
           testi: "Testimoni / Kata Mereka",
           contactus: "Contact Us",
+          announcements: "Pengumuman",
           email: "Request Form"
         }
       },

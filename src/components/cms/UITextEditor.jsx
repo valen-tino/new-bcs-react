@@ -122,7 +122,7 @@ function UITextEditor() {
     // Note: Service descriptions and About description have been migrated to their respective CMS sections
     const fields = {
       hero: ['heading', 'subheading', 'wa', 'lm'],
-      nav: ['home', 'services', 'about', 'team', 'gallery', 'testi', 'contactus', 'email'],
+      nav: ['home', 'services', 'about', 'team', 'gallery', 'testi', 'contactus', 'announcements', 'email'],
       services: ['vaa', 'vaadesc', 'vaasub', 'vab', 'vabdesc', 'wedding', 'weddingsub', 'weddingbtn', 'translate', 'travel', 'others', 'email', 'wa'], // Removed: weddingdesc, translatedesc, traveldesc, otherssub
       about: ['heading'], // Removed: desc (now in About CMS)
       team: ['heading'],

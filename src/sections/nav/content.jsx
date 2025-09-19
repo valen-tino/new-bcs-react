@@ -6,7 +6,8 @@ export let content = {
       gallery:"Gallery",
       testi:"Testimonial",
       contactus:"Contact Us",
-      email:"Request Form"
+      email:"Request Form",
+      announcements:"Announcements"
     },  
     Indonesia:{
       home:"Home",
@@ -15,6 +16,7 @@ export let content = {
       gallery:"Gallery",
       testi:"Testimoni / Kata Mereka",
       contactus:"Contact Us",
-      email:"Request Form"
+      email:"Request Form",
+      announcements:"Pengumuman"
     }
   };

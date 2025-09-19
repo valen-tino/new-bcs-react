@@ -53,7 +53,8 @@ function Navbar(props) {
     testi: "Testimonials",
     contactus: "Contact",
     email: "Email Us",
-    wa: "Contact Us Today!"
+    wa: "Contact Us Today!",
+    announcements: props.language === 'Indonesia' ? "Pengumuman" : "Announcements"
   };
 
   // Handle navigation for cross-page scenarios
@@ -138,7 +139,7 @@ function Navbar(props) {
               {/* <li className='nav-list'><NavItem sectionId="team">{lang.team}</NavItem></li>
               <li className='nav-list'><NavItem sectionId="gallery">{lang.gallery}</NavItem></li> */}
               <li className='nav-list'><NavItem sectionId="testi">{lang.testi}</NavItem></li>
-              <li className='nav-list'><a href="/announcements" className="cursor-pointer" onClick={(e) => { e.preventDefault(); navigate('/announcements'); }}>Announcements</a></li>
+              <li className='nav-list'><a href="/announcements" className="cursor-pointer" onClick={(e) => { e.preventDefault(); navigate('/announcements'); }}>{lang.announcements}</a></li>
               <li className='nav-list'><NavItem sectionId="contactus">{lang.contactus}</NavItem></li>
             </ul>
           </div>
@@ -175,7 +176,7 @@ function Navbar(props) {
           {/* <li className='nav-list'><NavItem sectionId="team" isMobile={true}>{lang.team}</NavItem></li>
           <li className='nav-list'><NavItem sectionId="gallery" isMobile={true}>{lang.gallery}</NavItem></li> */}
           <li className='nav-list'><NavItem sectionId="testi" isMobile={true}>{lang.testi}</NavItem></li>
-          <li className='nav-list'><a href="/announcements" className="cursor-pointer" onClick={(e) => { e.preventDefault(); navigate('/announcements'); setNav(false); }}>Announcements</a></li>
+          <li className='nav-list'><a href="/announcements" className="cursor-pointer" onClick={(e) => { e.preventDefault(); navigate('/announcements'); setNav(false); }}>{lang.announcements}</a></li>
           <li className='nav-list'><NavItem sectionId="contactus" isMobile={true}>{lang.contactus}</NavItem></li>
         </ul>
         

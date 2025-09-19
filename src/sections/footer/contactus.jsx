@@ -38,7 +38,7 @@ function ContactUs (props){
     <>
     <footer>
       <section id='contactus' className="bg-orange-100 font-Sora">
-      <div className="px-4 pt-16 pb-6 mx-auto max-w-screen-xl sm:px-6 lg:px-8 lg:pt-24">
+      <div className="max-w-screen-xl px-4 pt-16 pb-6 mx-auto sm:px-6 lg:px-8 lg:pt-24">
       
         <div className="flex flex-col items-center p-6 mb-10 bg-orange-200 rounded-lg shadow-lg sm:flex-row sm:justify-between" data-aos="fade-up">
           <strong className="text-xl text-center md:text-left sm:text-xl">{lang.desc}</strong>
@@ -103,7 +103,7 @@ function ContactUs (props){
                 <Link to="https://www.instagram.com/vinsensiusjehaut/" icon="fa-brands fa-instagram" name="vinsensiusjehaut" isFooter="yes"/>
                 <Link to="https://www.facebook.com/vinsen.jehaut.3" icon="fa-brands fa-facebook" name="Vinsen Jehaut" isFooter="yes" />
                 <Link to="mailto:bcs.bali2008@gmail.com" icon="fa-solid fa-envelope" name="bcs.bali2008@gmail.com" isFooter="yes"/>
-                <Link to="https://wa.me/6281558759959" icon="fa-solid fa-phone" name="+62 (0) 81-558-759-959" isFooter="yes"/>
+                <Link to="https://wa.me/6281807082004" icon="fa-solid fa-phone" name="+62 (0) 81-807-082-004" isFooter="yes"/>
                 <Link to="https://wa.me/628123666187" icon="fa-solid fa-phone" name="+62 (0) 8123-666-187" isFooter="yes"/>
                 <Link to="https://maps.app.goo.gl/xHauPNkC6DSXqubQ8" name="Office Location" isFooter="yes"/>
               </ul>
